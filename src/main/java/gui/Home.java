@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class Home {
+    //attributi
     private static JFrame frame;
     JPanel mainPanel;
     JButton button1;
@@ -13,6 +14,7 @@ public class Home {
     JPasswordField inserirePasswordPasswordField;
     private JTextField textField1;
     JLabel label2;
+    //costruttore
     public Home() {
         button1.addActionListener(new ActionListener() {
             @Override
@@ -33,11 +35,15 @@ public class Home {
             }
         });
     }
+    //metodi
+    public static void creaFrame(){
+        frame = new JFrame("login");
+        frame.setContentPane(new Home().mainPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
     public static void main(String[] args) {
-         frame = new JFrame("login");
-         frame.setContentPane(new Home().mainPanel);
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         frame.pack();
-         frame.setVisible(true);
+        creaFrame();
     }
     }
