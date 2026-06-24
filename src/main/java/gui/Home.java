@@ -36,14 +36,15 @@ public class Home {
         });
     }
     //metodi
-    public static void creaFrame(){
+    public static void creaFrame() {
         frame = new JFrame("login");
         frame.setContentPane(new Home().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
-    public static void main(String[] args) {
-        creaFrame();
-    }
+        public static void main (String[]args){
+            creaFrame();
+        }
+
     }

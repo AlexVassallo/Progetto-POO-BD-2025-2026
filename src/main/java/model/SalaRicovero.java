@@ -1,12 +1,16 @@
 
-public class SalaRicovero {
+public class SalaRicovero extends Ospedale {
 private String codiceSala;
 private String tipoSala;
 private int numeroLetti;
 private int lettiLiberi;
 
-public SalaRicovero() {
-	
+public SalaRicovero(String nomeOspedale, String codiceSala, String tipoSala, int numeroLetti) {
+	super(nomeOspedale);
+	setCodiceSala(codiceSala);
+	setTipoSala(tipoSala);
+	setNumeroLetti(numeroLetti);
+	lettiLiberi=getNumeroLetti();
 }
 
 //setters
