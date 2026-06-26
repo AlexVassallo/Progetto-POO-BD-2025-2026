@@ -14,12 +14,15 @@ public class VisualizzaDisponibilita {
 
     //costruttore
     public VisualizzaDisponibilita(){
+
+        //creazione della frame
         frame=new JFrame("visualizza disponibilità ospedale");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
 
+        //listener
         mediciButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -31,14 +34,14 @@ public class VisualizzaDisponibilita {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                new visualizzaDisponibilitaSalaOperatoria();
+                new VisualizzaDisponibilitaSalaOperatoria();
             }
         });
         saleRicoveratorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                new visualizzaDisponibilitaSalaRicovero();
+                new VisualizzaDisponibilitaSalaRicovero();
             }
         });
     }

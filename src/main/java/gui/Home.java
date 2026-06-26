@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -14,6 +16,7 @@ public class Home {
     JPasswordField inserirePasswordPasswordField;
     private JTextField textField1;
     JLabel label2;
+    Controller controller = new Controller();
     //costruttore
     public Home() {
         button1.addActionListener(new ActionListener() {
@@ -24,7 +27,7 @@ public class Home {
                 qua ci sara la parte del codice che verificherà i dati inseriti
                  */
                 frame.setVisible(false);
-                PaginaPrincipale paginaPrincipale=new PaginaPrincipale();
+                PaginaPrincipale paginaPrincipale=new PaginaPrincipale(controller);
             }
         });
         button2.addActionListener(new ActionListener() {

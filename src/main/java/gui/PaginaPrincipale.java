@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,10 +35,11 @@ public class PaginaPrincipale {
     //bottoni finali
     private JButton gestioneOspedaleButton;
     private JButton logOutButton;
-
+    private Controller controller;
 
     //costruttore
-    public PaginaPrincipale(){
+    public PaginaPrincipale(Controller controller){
+        this.controller = controller;
         //creazione frame
         frame= new JFrame("pagina principale");
         frame.setContentPane(this.createPanel);
