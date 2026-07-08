@@ -56,6 +56,8 @@ public class PaginaPrincipale {
                 CreaOspedale creaOspedale= new CreaOspedale();
             }
         });
+
+
         //listener dei bottoni creazione
         creaRefertoButton.addActionListener(new ActionListener() {
             @Override
@@ -64,6 +66,7 @@ public class PaginaPrincipale {
                 CreaReferto referto=new CreaReferto();
             }
         });
+
         creaSalaOperatoriaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,6 +74,7 @@ public class PaginaPrincipale {
                 CreaSalaOperatoria salaOperatoria=new CreaSalaOperatoria();
             }
         });
+
         creaSalaRicoveroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,6 +93,7 @@ public class PaginaPrincipale {
             }
         });
 
+
         //listener dei bottoni visualizza
         visualizzaMediciButton.addActionListener(new ActionListener() {
             @Override
@@ -97,6 +102,7 @@ public class PaginaPrincipale {
                 VisualizzaMedici medici=new VisualizzaMedici();
             }
         });
+
         visualizzaPazientiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -104,12 +110,14 @@ public class PaginaPrincipale {
                 VisualizzaPazienti pazienti=new VisualizzaPazienti();
             }
         });
+
         visualizzaDisponibilitaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
             }
         });
+
         visualizzaSalaRicoveroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -117,6 +125,7 @@ public class PaginaPrincipale {
                 VisualizzaSalaRicovero salaRicovero= new VisualizzaSalaRicovero();
             }
         });
+
         visualizzaSalaOperatoriaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,6 +133,7 @@ public class PaginaPrincipale {
                 VisualizzaSalaOperatoria salaOperatoria= new VisualizzaSalaOperatoria();
             }
         });
+
 
         //listener finali
         gestioneOspedaleButton.addActionListener(new ActionListener() {
@@ -133,6 +143,7 @@ public class PaginaPrincipale {
                 GestioneOspedale ospedale=new GestioneOspedale();
             }
         });
+
         logOutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
