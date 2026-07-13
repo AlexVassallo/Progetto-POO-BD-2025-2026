@@ -1,3 +1,5 @@
+package model;
+
 import java.time.*;
 
 public class Persona {
@@ -10,7 +12,12 @@ public class Persona {
     protected String indirizzo;
     
 //costruttore    
-public Persona(String codiceFiscale, String nomePersona, String cognomePersona, LocalDate dataDiNascita, String luogoDiNascita, String indirizzo) {
+public Persona(String codiceFiscale,
+			   String nomePersona,
+			   String cognomePersona,
+			   LocalDate dataDiNascita,
+			   String luogoDiNascita,
+			   String indirizzo) {
 	setCodiceFiscale(codiceFiscale);
 	setNomePersona(nomePersona);
 	setCognomePersona(cognomePersona);

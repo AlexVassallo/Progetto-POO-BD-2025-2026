@@ -1,5 +1,10 @@
+package model;
+
 import java.time.*;
+
 public class Referto {
+
+//attributi
 private Paziente paziente;
 private Medico medicoAffidato;
 private LocalDateTime dataOraArrivo;
@@ -7,8 +12,15 @@ private LocalDateTime dataOraUscita;
 private String diagnosi;
 private String trattamentoEffettuato;
 private String esitoFinale;
-public Referto(Paziente paziente, Medico medicoAffidato, LocalDateTime dataOraArrivo,
-		       LocalDateTime dataOraUscita, String diagnosi, String trattamentoEffettuato, String esitoFinale) {
+
+//costruttore della classe referto
+public Referto(Paziente paziente,
+			   Medico medicoAffidato,
+			   LocalDateTime dataOraArrivo,
+		       LocalDateTime dataOraUscita,
+			   String diagnosi,
+			   String trattamentoEffettuato,
+			   String esitoFinale) {
 	setPaziente(paziente);
 	setMedicoAffidato(medicoAffidato);
 	setDataOraArrivo(dataOraArrivo);

@@ -1,3 +1,4 @@
+package model;
 import java.time.*;
 
 public class Medico extends Persona{
@@ -39,23 +40,19 @@ public Medico(String codiceFiscale,
 //setters
 public void setIdentificativoMedico(String identificativoMedico) {
 	this.identificativoMedico=identificativoMedico;
-	
 }
 public void setTipoMedico(String tipoMedico) {
 	this.tipoMedico=tipoMedico;
 }
-
 public void setRango(String rango) {
 	this.rango=rango;
 }
-
 public void setDataAnnoAssunzione(LocalDateTime dataAnnoAssunzione) {
 	this.dataAnnoAssunzione=dataAnnoAssunzione;
 }
 public void setSalaAssociata(SalaRicovero salaAssociata) {
 	this.salaAssociata=salaAssociata;
 }
-
 public void setIsAmministratore(boolean isAmministratore){
 	this.isAmministratore=isAmministratore;
 }

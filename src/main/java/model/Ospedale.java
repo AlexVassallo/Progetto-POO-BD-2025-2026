@@ -1,3 +1,5 @@
+package model;
+
 public class Ospedale {
 	//attributi
 protected String nomeOspedale;

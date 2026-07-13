@@ -1,17 +1,24 @@
+package model;
+
 import java.util.ArrayList;
+
+
 public class SalaOperatoria extends Ospedale {
+
+//attributi
 private String codiceSala;
 private ArrayList <Medico>mediciAssociati= new ArrayList<Medico>();
 private Paziente pazienteAssociato;
-
 private boolean isDisponibile=true;
+
+//costruttore della classe sala operatoria
 	public SalaOperatoria(String nomeOspedale, String codiceSala) {
 		super(nomeOspedale);
 		setCodiceSala(codiceSala);
 	}
 	
 	
-	
+//setters
 public void setCodiceSala(String codiceSala) {
 	this.codiceSala=codiceSala;
 }
@@ -24,6 +31,7 @@ public void setPazienteAssociato(Paziente pazienteAssociato) {
 public void setIsDisponibile(boolean isDisponibile) {
 	this.isDisponibile=isDisponibile;
 }
+
 
 public String getCodiceSala() {
 	return codiceSala;

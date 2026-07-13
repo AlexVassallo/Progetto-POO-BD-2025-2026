@@ -61,14 +61,6 @@
         </constraints>
         <properties/>
       </component>
-      <component id="44af6" class="javax.swing.JTextField" binding="textField6" default-binding="true">
-        <constraints>
-          <grid row="11" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
       <component id="b0234" class="javax.swing.JLabel">
         <constraints>
           <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -88,14 +80,6 @@
       <component id="e28ea" class="javax.swing.JTextField" binding="textField7" default-binding="true">
         <constraints>
           <grid row="15" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
-      <component id="1fe59" class="javax.swing.JTextField" binding="textField8" default-binding="true">
-        <constraints>
-          <grid row="17" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -172,6 +156,22 @@
         <properties>
           <text value="inserire la sala in cui il paziente e associato"/>
         </properties>
+      </component>
+      <component id="44af6" class="javax.swing.JTextField" binding="textField6" default-binding="true">
+        <constraints>
+          <grid row="11" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="1fe59" class="javax.swing.JTextField" binding="textField8" default-binding="true">
+        <constraints>
+          <grid row="17" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
       </component>
     </children>
   </grid>
