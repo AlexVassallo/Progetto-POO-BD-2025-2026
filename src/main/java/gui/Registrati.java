@@ -11,6 +11,16 @@ public class Registrati {
     private JPasswordField passwordField1;
     private JButton registratiButton;
     private JButton resettaButton;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField4;
+    private JTextField textField5;
+    private JTextField textField6;
+    private JTextField textField7;
+    private JTextField textField8;
+    private JTextField textField9;
+    private JTextField textField10;
+    private JCheckBox siCheckBox;
 
     public Registrati() {
         frame = new JFrame("registrati");

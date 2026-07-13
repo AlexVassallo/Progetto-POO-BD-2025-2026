@@ -11,9 +11,19 @@ public class Medico extends Persona{
 	String password;
 
 //costruttore
-public Medico(String codiceFiscale, String nomePersona, String cognomePersona, LocalDate dataDiNascita, 
-		      String luogoDiNascita, String indirizzo, String identificativoMedico, String tipoMedico, 
-		      String rango, LocalDateTime dataAnnoAssunzione, SalaRicovero salaAssociata, boolean isAmministratore, String password)
+public Medico(String codiceFiscale,
+			  String nomePersona,
+			  String cognomePersona,
+			  LocalDate dataDiNascita,
+		      String luogoDiNascita,
+			  String indirizzo,
+			  String identificativoMedico,
+			  String tipoMedico,
+		      String rango,
+			  LocalDateTime dataAnnoAssunzione,
+			  SalaRicovero salaAssociata,
+			  boolean isAmministratore,
+			  String password)
 {
 	super(codiceFiscale, nomePersona, cognomePersona, dataDiNascita, luogoDiNascita, indirizzo);
 	setIdentificativoMedico(identificativoMedico);
