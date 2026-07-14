@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.*;
 public class InserirePaziente {
@@ -20,11 +22,12 @@ public class InserirePaziente {
 
 
     //costruttore
-    public InserirePaziente(){
+    public InserirePaziente(JFrame frameChiamante,Controller controller){
         frame=new JFrame("inserire paziente");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
+        frameChiamante.setVisible(false);
         frame.setVisible(true);
 
         confermaButton.addActionListener(new ActionListener() {
@@ -32,9 +35,11 @@ public class InserirePaziente {
             public void actionPerformed(ActionEvent e) {
                 //qua verranno aggiunti al database i dati
                 frame.setVisible(false);
-                new PaginaPrincipale();
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
+
         resettaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

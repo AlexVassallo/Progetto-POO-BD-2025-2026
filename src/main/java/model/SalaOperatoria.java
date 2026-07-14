@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 
-public class SalaOperatoria extends Ospedale {
+public class SalaOperatoria {
 
 //attributi
 private String codiceSala;
@@ -12,8 +12,7 @@ private Paziente pazienteAssociato;
 private boolean isDisponibile=true;
 
 //costruttore della classe sala operatoria
-	public SalaOperatoria(String nomeOspedale, String codiceSala) {
-		super(nomeOspedale);
+	public SalaOperatoria(String codiceSala) {
 		setCodiceSala(codiceSala);
 	}
 	
@@ -70,7 +69,18 @@ public void liberaSala() {
 		System.out.println("il paziente è uscito dalla sala operatoria, la stanza" + getCodiceSala() + " è libera");
 	}
 }
-public void aggiungiMedico(Medico medicoDaAggiungere) {
+
+	/**
+	 * Aggiunge un medico alla lista dei medici associati
+	 *
+	 * @param medicoDaAggiungere l'oggetto {@link Medico} da aggiungere alla lista di medici associati
+	 * @see Medico
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
+	public void aggiungiMedico(Medico medicoDaAggiungere) {
 	mediciAssociati.add(medicoDaAggiungere);
 }
 

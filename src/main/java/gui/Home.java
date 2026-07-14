@@ -27,7 +27,7 @@ public class Home {
                 qua ci sara la parte del codice che verificherà i dati inseriti
                  */
                 frame.setVisible(false);
-                PaginaPrincipale paginaPrincipale=new PaginaPrincipale(controller);
+                PaginaPrincipale paginaPrincipale=new PaginaPrincipale(frame,controller);
             }
         });
         button2.addActionListener(new ActionListener() {

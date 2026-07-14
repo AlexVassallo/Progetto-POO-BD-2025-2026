@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,18 +22,20 @@ public class CreaReferto {
     private JButton resettaButton;
 
     //costruttore
-    public CreaReferto(){
+    public CreaReferto(JFrame frameChiamante, Controller controller){
         frame=new JFrame("crea referto");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
+        frameChiamante.setVisible(false);
         frame.setVisible(true);
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qua verra aggiunto i dati al database
-                frame.setVisible(false);
-                new PaginaPrincipale();
+                frameChiamante.setVisible(true);
+                frame.dispose();
+
             }
         });
         resettaButton.addActionListener(new ActionListener() {

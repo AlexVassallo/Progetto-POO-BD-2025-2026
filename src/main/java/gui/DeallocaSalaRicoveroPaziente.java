@@ -14,7 +14,7 @@ public class DeallocaSalaRicoveroPaziente {
     Controller controller;
 
     //costruttore
-    public DeallocaSalaRicoveroPaziente(){
+    public DeallocaSalaRicoveroPaziente(JFrame frameChiamante,Controller controller){
         //creazione della frame
         frame=new JFrame("dealloca paziente dalla sala ricovero");
         frame.setContentPane(this.mainPanel);
@@ -27,7 +27,8 @@ public class DeallocaSalaRicoveroPaziente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qui verra fatta l'operazione dove deallocherà il paziente
-                new PaginaPrincipale(controller);
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
 

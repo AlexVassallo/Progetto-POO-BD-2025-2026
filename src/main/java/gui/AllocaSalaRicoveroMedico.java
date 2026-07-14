@@ -15,7 +15,7 @@ public class AllocaSalaRicoveroMedico {
     Controller controller;
 
     //costruttore
-    public AllocaSalaRicoveroMedico {
+    public AllocaSalaRicoveroMedico(JFrame frameChiamante, Controller controller) {
 
         //creazione della frame
         frame= new JFrame("alloca medico alla sala ricovero");
@@ -29,7 +29,8 @@ public class AllocaSalaRicoveroMedico {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qui verrà fatto l'operazione di allocazione
-                new PaginaPrincipale(controller);
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
 

@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -13,7 +15,7 @@ public class VisualizzaDisponibilita {
     private JTextField textField1;
 
     //costruttore
-    public VisualizzaDisponibilita(){
+    public VisualizzaDisponibilita(JFrame frameChiamante, Controller controller){
 
         //creazione della frame
         frame=new JFrame("visualizza disponibilità ospedale");
@@ -27,21 +29,21 @@ public class VisualizzaDisponibilita {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                new VisualizzaDisponibilitaMedici();
+                new VisualizzaDisponibilitaMedici(frame,controller);
             }
         });
         saleOperatorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                new VisualizzaDisponibilitaSalaOperatoria();
+                new VisualizzaDisponibilitaSalaOperatoria(frame,controller);
             }
         });
         saleRicoveratorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                new VisualizzaDisponibilitaSalaRicovero();
+                new VisualizzaDisponibilitaSalaRicovero(frame,controller);
             }
         });
     }

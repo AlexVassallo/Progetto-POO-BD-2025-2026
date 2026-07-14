@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 
 public class VisualizzaDisponibilitaSalaOperatoria {
@@ -10,13 +12,14 @@ public class VisualizzaDisponibilitaSalaOperatoria {
     private JList list1;
 
     //costruttore
-    public VisualizzaDisponibilitaSalaOperatoria(){
+    public VisualizzaDisponibilitaSalaOperatoria(JFrame frameChimante, Controller controller){
 
         //creazione della frame
         frame=new JFrame("disponibilita delle sale operatorie");
         frame.setContentPane(this.panel1);
         frame.pack();
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+        frameChimante.setVisible(false);
         frame.setVisible(true);
 
         //crea e stampa la lista delle sale operatorie disponibili

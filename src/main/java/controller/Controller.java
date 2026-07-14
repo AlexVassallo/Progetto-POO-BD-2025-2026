@@ -88,11 +88,15 @@ public class Controller {
     }
 
 
-    public void creaOspedale(String nomeOspedale) throws ParameterMissingException {
+    public void creaOspedale(String identidicativoOspedale,
+                             String nomeOspedale) throws ParameterMissingException {
+
         if (nomeOspedale.isBlank()) {
             throw new ParameterMissingException("nome ospedale mancante");
         }
-        Ospedale o = new Ospedale(nomeOspedale);
+
+        Ospedale o = new Ospedale(identidicativoOspedale, nomeOspedale);
+        ospedali.add(o);
     }
 
 
@@ -123,7 +127,7 @@ public class Controller {
         if (indirizzo.isBlank()) {
             throw new ParameterMissingException("indirizzo vuota");
         }
-        if (identificativoPaziente.isBlank() || esisteIdentificativo(identificativoPaziente)) {
+        if (identificativoPaziente.isBlank() || !esisteIdentificativo(identificativoPaziente)) {
             throw new ChiaveException("identificativo vuoto oppure gia esistente");
         }
         if (indirizzo.isBlank()) {
@@ -146,6 +150,7 @@ public class Controller {
                 triagePaziente,
                 salaAssociata);
 
+         pazienti.add(p);
     }
 
     public boolean esisteIdentificativo(String identificativoPaziente) {
@@ -156,4 +161,75 @@ public class Controller {
         }
         return false;
     }
+
+    public void creaReferto(Paziente paziente,
+                            Medico medicoAffidato,
+                            LocalDateTime dataOraArrivo,
+                            LocalDateTime dataOraUscita,
+                            String diagnosi,
+                            String trattamentoEffettuato,
+                            String esitoFinale) throws ParameterMissingException, ChiaveException{
+        if(!esisteIdentificativo(paziente.getIdentificativoPaziente())){
+            throw new ChiaveException("identificativo inesistente o mancante");
+        }
+        if(medicoAffidato==null){
+            throw new ParameterMissingException("medico mancante");
+        }
+        if(dataOraArrivo==null){
+            throw new ParameterMissingException("data ora di arrivo vuoto");
+        }
+        if(dataOraUscita==null){
+            throw new ParameterMissingException("data ora di uscita vuoto");
+        }
+        if(diagnosi.isBlank()) {
+            throw new ParameterMissingException("diagnosi vuota");
+        }
+        if (trattamentoEffettuato.isBlank()){
+            throw new ParameterMissingException("trattamento inserito vuoto");
+        }
+        if (esitoFinale.isBlank()){
+            throw new ParameterMissingException("esito inserito vuoto");
+        }
+        Referto r= new Referto(paziente,
+                medicoAffidato,
+                dataOraArrivo,
+                dataOraUscita,
+                diagnosi,
+                trattamentoEffettuato,
+                esitoFinale);
+        referti.add(r);
+    }
+
+    public void creaSalaOperatoria(String identificativOspedale,
+                                   String codiceSala)throws ParameterMissingException, ChiaveException{
+        if(identificativOspedale.isBlank() || !esisteIdentificativo(identificativOspedale)){
+            throw new ChiaveException("nome ospedale non trovato oppure vuoto");
+        }
+        if (codiceSala.isBlank()){
+            throw new ParameterMissingException("codice sala vuoto");
+        }
+
+        for(Ospedale o : ospedali){
+            if(o.getIdentificativoOspedale().equals(identificativOspedale)){
+                    o.addSalaOperatoria(codiceSala);
+                }
+            }
+        }
+    public boolean esisteOspedale(String nomeOspedale) {
+        for (Ospedale o : ospedali) {
+            if (o.getNomeOspedale().equals(nomeOspedale)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void creaSalaRicovero() {
+
+    }
+    public List<String> getDisponibiliSaleRicovero(){
+
+        return new ArrayList<>();
+    }
+
 }

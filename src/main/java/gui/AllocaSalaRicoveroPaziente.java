@@ -29,7 +29,8 @@ public class AllocaSalaRicoveroPaziente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qui verrà fatto l'operazione di allocazione
-                new PaginaPrincipale(controller);
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
 

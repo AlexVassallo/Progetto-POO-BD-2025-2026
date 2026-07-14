@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +16,7 @@ public class CreaOspedale {
 
 
     //costruttore
-    public CreaOspedale(){
+    public CreaOspedale(JFrame frameChiamante, Controller controller){
         frame=new JFrame("crea ospedale");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
@@ -24,8 +26,8 @@ public class CreaOspedale {
             @Override
             public void actionPerformed(ActionEvent e) {
              //in qualche modo fara la query al database per aggiungere il nuovo ospedale
-             frame.setVisible(false);
-             PaginaPrincipale paginaPrincipale= new PaginaPrincipale();
+             frameChiamante.setVisible(true);
+             frame.dispose();
             }
         });
     }

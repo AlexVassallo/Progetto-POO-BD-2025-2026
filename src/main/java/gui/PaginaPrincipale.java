@@ -38,7 +38,7 @@ public class PaginaPrincipale {
     private Controller controller;
 
     //costruttore
-    public PaginaPrincipale(Controller controller){
+    public PaginaPrincipale(JFrame frameChiamante,Controller controller){
         this.controller = controller;
         //creazione frame
         frame= new JFrame("pagina principale");
@@ -52,8 +52,7 @@ public class PaginaPrincipale {
         creaOspedaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                CreaOspedale creaOspedale= new CreaOspedale();
+                new CreaOspedale(frame,controller);
             }
         });
 
@@ -63,23 +62,21 @@ public class PaginaPrincipale {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                CreaReferto referto=new CreaReferto();
+                CreaReferto referto=new CreaReferto(frame,controller);
             }
         });
 
         creaSalaOperatoriaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                CreaSalaOperatoria salaOperatoria=new CreaSalaOperatoria();
+                new CreaSalaOperatoria(frame,controller);
             }
         });
 
         creaSalaRicoveroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                CreaSalaRicovero salaRicovero= new CreaSalaRicovero();
+                new CreaSalaRicovero(frame, controller);
             }
         });
 
@@ -88,8 +85,8 @@ public class PaginaPrincipale {
         inserirePaziente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                InserirePaziente paziente= new InserirePaziente();
+
+                new InserirePaziente(frame,controller);
             }
         });
 
@@ -98,39 +95,35 @@ public class PaginaPrincipale {
         visualizzaMediciButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                VisualizzaMedici medici=new VisualizzaMedici();
+                new VisualizzaMedici(frame,controller);
             }
         });
 
         visualizzaPazientiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                VisualizzaPazienti pazienti=new VisualizzaPazienti();
+                new VisualizzaPazienti();
             }
         });
 
         visualizzaDisponibilitaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
+                new VisualizzaDisponibilita(frame, controller);
             }
         });
 
         visualizzaSalaRicoveroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                VisualizzaSalaRicovero salaRicovero= new VisualizzaSalaRicovero();
+                new VisualizzaSalaRicovero();
             }
         });
 
         visualizzaSalaOperatoriaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                VisualizzaSalaOperatoria salaOperatoria= new VisualizzaSalaOperatoria();
+                new VisualizzaSalaOperatoria();
             }
         });
 
@@ -139,17 +132,15 @@ public class PaginaPrincipale {
         gestioneOspedaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                GestioneOspedale ospedale=new GestioneOspedale();
+                new GestioneOspedale(frame,controller);
             }
         });
 
         logOutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                Home nuovoLogin= new Home();
-                nuovoLogin.creaFrame();
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
     }

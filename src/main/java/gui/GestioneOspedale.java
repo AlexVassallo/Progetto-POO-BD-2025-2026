@@ -18,10 +18,9 @@ public class GestioneOspedale {
     private JButton deallocaSalaRicoveroMedico;
     private JButton allocaSalaOperatoriaPaziente;
     private JButton tornaIndietroButton;
-    Controller controller=new Controller();
 
     //costruttore
-    public GestioneOspedale(){
+    public GestioneOspedale(JFrame frameChiamante, Controller controller){
         frame=new JFrame("gestione ospedale;");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
@@ -88,8 +87,8 @@ public class GestioneOspedale {
        tornaIndietroButton.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-               new PaginaPrincipale(controller);
-               frame.setVisible(false);
+               frameChiamante.setVisible(true);
+               frame.dispose();
            }
        });
     }

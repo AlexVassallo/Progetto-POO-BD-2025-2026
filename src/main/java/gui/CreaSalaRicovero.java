@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,19 +18,20 @@ public class CreaSalaRicovero {
     private JButton resettaButton;
 
     //costruttore
-    public CreaSalaRicovero(){
+    public CreaSalaRicovero(JFrame frameChimante, Controller controller){
         frame=new JFrame("Crea sala ricovero");
         frame.setContentPane(this.mainPanel);
         frame.pack();
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        frameChimante.setVisible(false);
 
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qua verra fatta la query al database
-                frame.setVisible(false);
-                new PaginaPrincipale();
+                frameChimante.setVisible(true);
+                frame.dispose();
             }
         });
         resettaButton.addActionListener(new ActionListener() {

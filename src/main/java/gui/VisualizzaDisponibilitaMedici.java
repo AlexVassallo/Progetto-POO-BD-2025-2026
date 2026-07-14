@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 
 public class VisualizzaDisponibilitaMedici {
@@ -10,7 +12,7 @@ public class VisualizzaDisponibilitaMedici {
     private JList list1;
 
     //costruttore
-    public VisualizzaDisponibilitaMedici(){
+    public VisualizzaDisponibilitaMedici(JFrame frameChiamante, Controller controller){
 
         //creazione della frame
         frame=new JFrame("disponibilita dei medici");
@@ -18,6 +20,7 @@ public class VisualizzaDisponibilitaMedici {
         frame.pack();
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        frameChiamante.setVisible(false);
 
         //crea e stampa la lista dei medici disponibili
         DefaultListModel<String> listasale = new DefaultListModel<>();

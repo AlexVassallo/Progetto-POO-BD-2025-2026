@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +17,7 @@ public class CreaSalaOperatoria {
 
 
     //costruttore
-    public CreaSalaOperatoria(){
+    public CreaSalaOperatoria(JFrame frameChiamante, Controller controller){
         frame=new JFrame("crea sala operatoria");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
@@ -26,8 +28,8 @@ public class CreaSalaOperatoria {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qua verrà aggiornato il dababase con la nuova sala
-                frame.setVisible(false);
-                new PaginaPrincipale();
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
 

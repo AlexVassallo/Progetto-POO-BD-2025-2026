@@ -16,7 +16,7 @@ public class DeallocaSalaOperatoriaPaziente {
     Controller controller;
 
     //costruttore
-    public DeallocaSalaRicoveroPaziente(){
+    public DeallocaSalaOperatoriaPaziente(){
 
         //creazione della frame
         frame= new JFrame("dealloca paziente dalla sala operatoria");

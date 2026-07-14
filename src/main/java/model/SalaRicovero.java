@@ -1,6 +1,6 @@
 package model;
 
-public class SalaRicovero extends Ospedale {
+public class SalaRicovero{
 
 //attributi
 private String codiceSala;
@@ -9,8 +9,9 @@ private int numeroLetti;
 private int lettiLiberi;
 
 //costruttore della sala ricovero
-public SalaRicovero(String nomeOspedale, String codiceSala, String tipoSala, int numeroLetti) {
-	super(nomeOspedale);
+public SalaRicovero(String codiceSala,
+					String tipoSala,
+					int numeroLetti) {
 	setCodiceSala(codiceSala);
 	setTipoSala(tipoSala);
 	setNumeroLetti(numeroLetti);

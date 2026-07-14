@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -19,11 +21,12 @@ public class VisualizzaMedici {
     private JButton tornaAllaPaginaPrincipaleButton;
 
     //costruttore
-    public VisualizzaMedici(){
+    public VisualizzaMedici(JFrame frameChiamante, Controller controller){
         frame= new JFrame("Visualizza medici");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
+        frameChiamante.setVisible(false);
         frame.setVisible(true);
 
         resettaButton.addActionListener(new ActionListener() {
@@ -47,8 +50,8 @@ public class VisualizzaMedici {
         tornaAllaPaginaPrincipaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                new PaginaPrincipale();
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
     }
