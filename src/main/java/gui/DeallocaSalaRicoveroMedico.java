@@ -16,20 +16,21 @@ public class DeallocaSalaRicoveroMedico {
     private JButton resettaButton;
     Controller controller;
 
-    public DeallocaSalaRicoveroMedico(){
+    public DeallocaSalaRicoveroMedico(JFrame frameChiamante, Controller controller){
         //creazione della frame
         frame= new JFrame("dealloca medico dalla sala ricovero");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-
+        frameChiamante.setVisible(false);
         //listener
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qui verrà fatto l'operazione di deallocazione
-                new PaginaPrincipale(controller);
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
 

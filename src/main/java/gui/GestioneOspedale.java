@@ -26,6 +26,7 @@ public class GestioneOspedale {
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frameChiamante.setVisible(false);
 
        //listener
        allocaSalaOperatoriaPaziente.addActionListener(new ActionListener() {

@@ -15,7 +15,7 @@ public class AllocaSalaOperatoriaPaziente {
     Controller controller;
 
     //costruttore
-    public AllocaSalaOperatoriaPaziente(){
+    public AllocaSalaOperatoriaPaziente(JFrame frameChiamante,Controller controller){
         //creazione della frame
         frame= new JFrame("alloca paziente alla sala operatoria");
         frame.setContentPane(this.mainPanel);
@@ -28,7 +28,8 @@ public class AllocaSalaOperatoriaPaziente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qui verrà fatto l'operazione di allocazione
-                new PaginaPrincipale(controller);
+                frameChiamante.setVisible(true);
+                frame.dispose();
             }
         });
 

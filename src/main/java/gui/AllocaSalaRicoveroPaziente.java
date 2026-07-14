@@ -15,7 +15,7 @@ public class AllocaSalaRicoveroPaziente {
     private Controller controller;
 
     //costruttore
-    public AllocaSalaRicoveroPaziente(){
+    public AllocaSalaRicoveroPaziente(JFrame frameChiamante,Controller controller){
 
         //creazione della frame
         frame= new JFrame("alloca paziente alla sala ricovero");
