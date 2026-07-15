@@ -2,6 +2,7 @@ package gui;
 
 import controller.Controller;
 import exceptions.ChiaveException;
+import exceptions.ParameterMissingException;
 
 import javax.naming.AuthenticationException;
 import javax.swing.*;
@@ -71,7 +72,7 @@ public class Registrati {
                     frame.dispose();
                     Home.creaFrame();
                 }
-                catch (InvalidParameterException | ChiaveException | AuthenticationException ex){
+                catch (ParameterMissingException | ChiaveException | AuthenticationException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
                 catch (DateTimeParseException ex){
