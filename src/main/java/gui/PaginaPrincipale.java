@@ -102,7 +102,7 @@ public class PaginaPrincipale {
         visualizzaPazientiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new VisualizzaPazienti();
+                new VisualizzaPazienti(frame, controller);
             }
         });
 
@@ -116,14 +116,14 @@ public class PaginaPrincipale {
         visualizzaSalaRicoveroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new VisualizzaSalaRicovero();
+                new VisualizzaSalaRicovero(frame, controller);
             }
         });
 
         visualizzaSalaOperatoriaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new VisualizzaSalaOperatoria();
+                new VisualizzaSalaOperatoria(frame, controller);
             }
         });
 

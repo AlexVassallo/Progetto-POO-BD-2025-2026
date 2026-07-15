@@ -16,21 +16,22 @@ public class CreaSalaRicovero {
     private JTextField textField4;
     private JButton confermaButton;
     private JButton resettaButton;
+    private JButton tornaIndietroButton;
 
     //costruttore
-    public CreaSalaRicovero(JFrame frameChimante, Controller controller){
+    public CreaSalaRicovero(JFrame frameChiamante, Controller controller){
         frame=new JFrame("Crea sala ricovero");
         frame.setContentPane(this.mainPanel);
         frame.pack();
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        frameChimante.setVisible(false);
+        frameChiamante.setVisible(false);
 
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //qua verra fatta la query al database
-                frameChimante.setVisible(true);
+                frameChiamante.setVisible(true);
                 frame.dispose();
             }
         });
@@ -41,6 +42,14 @@ public class CreaSalaRicovero {
                 textField2.setText("");
                 textField3.setText("");
                 textField4.setText("");
+            }
+        });
+
+        tornaIndietroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                frameChiamante.setVisible(true);
             }
         });
     }

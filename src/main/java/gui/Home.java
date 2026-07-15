@@ -26,7 +26,7 @@ public class Home {
                 /*
                 qua ci sara la parte del codice che verificherà i dati inseriti
                  */
-                frame.setVisible(false);
+                frame.dispose();
                 PaginaPrincipale paginaPrincipale=new PaginaPrincipale(frame,controller);
             }
         });
@@ -34,7 +34,7 @@ public class Home {
 @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                Registrati registrati=new Registrati();
+                Registrati registrati=new Registrati(frame, controller);
             }
         });
     }

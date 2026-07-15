@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -18,16 +20,18 @@ public class VisualizzaPazienti {
     private JLabel luogoDiNascita;
     private JLabel triage;
     private JLabel salaAssociata;
+    private JButton tornaIndietroButton;
 
 
     //costruttore
-    public VisualizzaPazienti(){
+    public VisualizzaPazienti(JFrame frameChiamante, Controller controller){
         //creazione della frame
         frame= new JFrame("Visualizza pazienti");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frameChiamante.setVisible(false);
 
 
         //listener
@@ -51,5 +55,14 @@ public class VisualizzaPazienti {
                 salaAssociata.setText(".");
             }
         });
+
+        tornaIndietroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                frameChiamante.setVisible(true);
+            }
+        });
+
     }
 }

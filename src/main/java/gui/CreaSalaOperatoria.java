@@ -14,6 +14,7 @@ public class CreaSalaOperatoria {
     private JTextField textField2;
     private JButton resettaButton;
     private JButton confermaButton;
+    private JButton tornaIndietroButton;
 
 
     //costruttore
@@ -23,6 +24,7 @@ public class CreaSalaOperatoria {
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frameChiamante.setVisible(false);
 
         confermaButton.addActionListener(new ActionListener() {
             @Override
@@ -38,6 +40,14 @@ public class CreaSalaOperatoria {
             public void actionPerformed(ActionEvent e) {
                 textField1.setText("");
                 textField2.setText("");
+            }
+        });
+
+        tornaIndietroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                frameChiamante.setVisible(true);
             }
         });
     }

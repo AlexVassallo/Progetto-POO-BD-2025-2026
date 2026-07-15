@@ -32,6 +32,8 @@ public class GestioneOspedale {
        allocaSalaOperatoriaPaziente.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
+               frame.setVisible(false);
+               new AllocaSalaOperatoriaPaziente(frame, controller);
 
            }
        });
@@ -39,49 +41,56 @@ public class GestioneOspedale {
        allocaSalaOperatoriaMedico.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-
+               frame.setVisible(false);
+               new AllocaSalaOperatoriaMedico(frame, controller);
            }
        });
 
        allocaSalaRicoveroPaziente.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-
+               frame.setVisible(false);
+               new AllocaSalaRicoveroPaziente(frame, controller);
            }
         });
 
        allocaSalaRicoveroMedico.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-
+               frame.setVisible(false);
+               new AllocaSalaRicoveroMedico(frame, controller);
            }
        });
 
        deallocaSalaOperatoriaPaziente.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-
+               frame.setVisible(false);
+               new DeallocaSalaOperatoriaPaziente(frame, controller);
            }
         });
 
        deallocaSalaOperatoriaMedico.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-
+               frame.setVisible(false);
+               new DeallocaSalaOperatoriaMedico(frame, controller);
            }
        });
 
        deallocaSalaRicoveroPaziente.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-
+               frame.setVisible(false);
+               new DeallocaSalaRicoveroPaziente(frame, controller);
            }
        });
 
        deallocaSalaRicoveroMedico.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-
+               frame.setVisible(false);
+               new DeallocaSalaRicoveroMedico(frame, controller);
            }
        });
 

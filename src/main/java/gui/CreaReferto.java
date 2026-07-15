@@ -20,6 +20,7 @@ public class CreaReferto {
     private JTextField textField7;
     private JButton confermaButton;
     private JButton resettaButton;
+    private JButton tornaIndietroButton;
 
     //costruttore
     public CreaReferto(JFrame frameChiamante, Controller controller){
@@ -48,6 +49,14 @@ public class CreaReferto {
                 textField5.setText("");
                 textField6.setText("");
                 textField7.setText("");
+            }
+        });
+
+        tornaIndietroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                frameChiamante.setVisible(true);
             }
         });
     }

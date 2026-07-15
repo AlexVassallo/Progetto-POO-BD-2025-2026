@@ -3,6 +3,8 @@ package gui;
 import controller.Controller;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class VisualizzaDisponibilitaSalaRicovero {
 
@@ -10,6 +12,7 @@ public class VisualizzaDisponibilitaSalaRicovero {
     private static JFrame frame;
     private JPanel panel1;
     private JList list1;
+    private JButton tornaIndietroButton;
 
     //costruttore
     public VisualizzaDisponibilitaSalaRicovero(JFrame frameChiamante,Controller controller){
@@ -26,6 +29,14 @@ public class VisualizzaDisponibilitaSalaRicovero {
         DefaultListModel<String> listasale = new DefaultListModel<>();
         listasale.addAll(controller.getDisponibiliSaleRicovero());
         list1.setModel(listasale);
+
+        tornaIndietroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                frameChiamante.setVisible(true);
+            }
+        });
 
 
     }

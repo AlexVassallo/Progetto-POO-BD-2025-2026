@@ -13,6 +13,7 @@ public class VisualizzaDisponibilita {
     private JButton saleOperatorieButton;
     private JButton saleRicoveratorieButton;
     private JTextField textField1;
+    private JButton tornaIndietroButton;
 
     //costruttore
     public VisualizzaDisponibilita(JFrame frameChiamante, Controller controller){
@@ -23,6 +24,7 @@ public class VisualizzaDisponibilita {
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frameChiamante.setVisible(false);
 
         //listener
         mediciButton.addActionListener(new ActionListener() {
@@ -32,6 +34,7 @@ public class VisualizzaDisponibilita {
                 new VisualizzaDisponibilitaMedici(frame,controller);
             }
         });
+
         saleOperatorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -39,11 +42,20 @@ public class VisualizzaDisponibilita {
                 new VisualizzaDisponibilitaSalaOperatoria(frame,controller);
             }
         });
+
         saleRicoveratorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
                 new VisualizzaDisponibilitaSalaRicovero(frame,controller);
+            }
+        });
+
+        tornaIndietroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                frameChiamante.setVisible(true);
             }
         });
     }

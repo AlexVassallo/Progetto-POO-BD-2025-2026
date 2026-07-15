@@ -11,6 +11,7 @@ public class DeallocaSalaRicoveroPaziente {
     private JTextField textField1;
     private JButton confermaButton1;
     private JButton resettaButton;
+    private JButton tornaIndietroButton;
     Controller controller;
 
     //costruttore
@@ -36,6 +37,14 @@ public class DeallocaSalaRicoveroPaziente {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField1.setText("");
+            }
+        });
+
+        tornaIndietroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                frameChiamante.setVisible(true);
             }
         });
     }

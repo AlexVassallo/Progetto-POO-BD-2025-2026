@@ -19,6 +19,7 @@ public class InserirePaziente {
     private JTextField textField9;
     private JButton confermaButton;
     private JButton resettaButton;
+    private JButton tornaIndietroButton;
 
 
     //costruttore
@@ -52,6 +53,14 @@ public class InserirePaziente {
                 textField7.setText("");
                 textField8.setText("");
                 textField9.setText("");
+            }
+        });
+
+        tornaIndietroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                frameChiamante.setVisible(true);
             }
         });
     }
