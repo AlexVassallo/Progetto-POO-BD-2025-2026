@@ -264,6 +264,7 @@ public class Controller {
                 break;
             }
             }
+
         if(medicoTrovato==null){
             throw new AuthenticationException("medico non trovato, prova a fare registrati");
         }
