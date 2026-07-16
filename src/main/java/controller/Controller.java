@@ -260,7 +260,7 @@ public class Controller {
         }
         for(Medico me: medici){
             if(me.getIdentificativoMedico().equals(identificativo)){
-                me=medicoTrovato;
+                medicoTrovato=me;
                 break;
             }
             }

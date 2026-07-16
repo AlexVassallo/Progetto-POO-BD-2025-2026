@@ -47,10 +47,7 @@ public class Registrati {
                 try {
                     java.time.format.DateTimeFormatter dateFormatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
                     String dataNascitaString = textField5.getText().trim();
-
                     LocalDate dataNascita = LocalDate.parse(dataNascitaString, dateFormatter);
-
-
                     String dataAssunzioneString = textField10.getText().trim();
                     LocalDate dataAssunzioneSoloData = LocalDate.parse(dataAssunzioneString, dateFormatter);
                     LocalDateTime dataAssunzione = dataAssunzioneSoloData.atStartOfDay();
@@ -69,7 +66,7 @@ public class Registrati {
                             null,
                             siCheckBox.isSelected());
                     frame.dispose();
-                    Home.creaFrame();
+                    frameChiamante.setVisible(true);
                 }
                 catch (ParameterMissingException | ChiaveException | AuthenticationException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);

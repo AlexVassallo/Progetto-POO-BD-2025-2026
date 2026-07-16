@@ -7,7 +7,7 @@ import exceptions.ParameterMissingException;
 import javax.naming.AuthenticationException;
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.Arrays;
+
 
 public class Home {
     //attributi
@@ -20,7 +20,7 @@ public class Home {
     JPasswordField inserirePasswordPasswordField;
     private JTextField textField1;
     JLabel label2;
-    Controller controller = new Controller();
+    Controller controller=new Controller();
     //costruttore
     public Home() {
         button1.addActionListener(new ActionListener() {
@@ -40,7 +40,7 @@ public class Home {
             }
         });
         button2.addActionListener(new ActionListener() {
-@Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
                 Registrati registrati=new Registrati(frame, controller);
@@ -55,8 +55,10 @@ public class Home {
         frame.pack();
         frame.setVisible(true);
     }
+
+
         public static void main (String[]args){
-            creaFrame();
+        creaFrame();
         }
 
     }
