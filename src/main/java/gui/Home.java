@@ -1,9 +1,13 @@
 package gui;
 
 import controller.Controller;
+import exceptions.ChiaveException;
+import exceptions.ParameterMissingException;
 
+import javax.naming.AuthenticationException;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.Arrays;
 
 public class Home {
     //attributi
@@ -23,11 +27,16 @@ public class Home {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                /*
-                qua ci sara la parte del codice che verificherà i dati inseriti
-                 */
-                frame.dispose();
-                PaginaPrincipale paginaPrincipale=new PaginaPrincipale(frame,controller);
+                try{
+                    controller.login(textField1.getText(), new String(inserirePasswordPasswordField.getPassword()));
+                    frame.dispose();
+                    PaginaPrincipale paginaPrincipale=new PaginaPrincipale(frame,controller);
+                }
+                catch (AuthenticationException | ParameterMissingException | ChiaveException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+
+                }
+
             }
         });
         button2.addActionListener(new ActionListener() {

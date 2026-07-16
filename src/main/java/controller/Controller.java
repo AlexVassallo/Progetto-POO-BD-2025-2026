@@ -20,8 +20,7 @@ public class Controller {
     private ArrayList<Ospedale> ospedali = new ArrayList<Ospedale>();
     private ArrayList<Paziente> pazienti = new ArrayList<Paziente>();
     private ArrayList<Referto> referti = new ArrayList<Referto>();
-    private ArrayList<SalaOperatoria> saleOperatorie = new ArrayList<SalaOperatoria>();
-    private ArrayList<SalaRicovero> saleRicovero = new ArrayList<SalaRicovero>();
+
 
 
     //metodo che crea il medico
@@ -150,7 +149,7 @@ public class Controller {
                 triagePaziente,
                 salaAssociata);
 
-         pazienti.add(p);
+        pazienti.add(p);
     }
 
     public boolean esisteIdentificativo(String identificativoPaziente) {
@@ -211,10 +210,10 @@ public class Controller {
 
         for(Ospedale o : ospedali){
             if(o.getIdentificativoOspedale().equals(identificativOspedale)){
-                    o.addSalaOperatoria(codiceSala);
-                }
+                o.addSalaOperatoria(codiceSala);
             }
         }
+    }
     public boolean esisteOspedale(String nomeOspedale) {
         for (Ospedale o : ospedali) {
             if (o.getNomeOspedale().equals(nomeOspedale)) {
@@ -223,13 +222,62 @@ public class Controller {
         }
         return false;
     }
+    public void creaSalaRicovero(String identificativoOspedale,
+                                 String codiceSala,
+                                 String tipoSala,
+                                 int numeroLetti)throws ParameterMissingException, ChiaveException {
 
-    public void creaSalaRicovero() {
-
+        if(identificativoOspedale.isBlank() || !esisteOspedale(identificativoOspedale)){
+            throw new ChiaveException("identificativo ospedale ");
+        }
+        if(codiceSala.isBlank()){
+            throw new ChiaveException("codice sala vuoto");
+        }
+        if (tipoSala.isBlank()){
+            throw new ParameterMissingException("tipo sala vuoto");
+        }
+        if(numeroLetti<1){
+            throw new ParameterMissingException("campo numero letti vuoto, oppure minore di 1");
+        }
+        //da verificare il funzionamento
+        for (Ospedale o : ospedali) {
+            if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
+                o.addSalaRicovero(codiceSala, tipoSala, numeroLetti);
+            }
+        }
     }
+
+    public boolean login(String identificativo,
+                      String password)throws ChiaveException, AuthenticationException, InvalidParameterException{
+
+        Medico medicoTrovato=null;
+
+        if(identificativo.isBlank()){
+            throw new ChiaveException("identificativo vuoto");
+        }
+        if(password.isBlank()){
+            throw new ChiaveException("password vuota");
+        }
+        for(Medico me: medici){
+            if(me.getIdentificativoMedico().equals(identificativo)){
+                me=medicoTrovato;
+                break;
+            }
+            }
+        if(medicoTrovato==null){
+            throw new AuthenticationException("medico non trovato, prova a fare registrati");
+        }
+
+        if(!medicoTrovato.getPassword().equals(password)){
+            throw new AuthenticationException("password incorretta");
+        }
+        return true;
+        }
+
+
     public List<String> getDisponibiliSaleRicovero(){
 
         return new ArrayList<>();
     }
+    }
 
-}
