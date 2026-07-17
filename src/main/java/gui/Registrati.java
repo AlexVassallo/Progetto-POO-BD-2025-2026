@@ -63,7 +63,6 @@ public class Registrati {
                             textField8.getText(),
                             textField9.getText(),
                             dataAssunzione,
-                            null,
                             siCheckBox.isSelected());
                     frame.dispose();
                     frameChiamante.setVisible(true);

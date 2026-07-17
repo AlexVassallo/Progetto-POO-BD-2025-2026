@@ -66,6 +66,7 @@ public class Ospedale {
 	public List<SalaRicovero> getSaleRicovero(){
 		return saleRicovero;
 	}
+
 	public SalaRicovero getSalaRicovero(String codiceSala) throws ChiaveException{
 		for(SalaRicovero s : saleRicovero){
 			if(s.getCodiceSala().equals(codiceSala)){

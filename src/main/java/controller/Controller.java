@@ -11,7 +11,6 @@ import exceptions.ChiaveException;
 import exceptions.ParameterMissingException;
 import javax.naming.AuthenticationException;
 import java.security.InvalidParameterException;
-import javax.naming.AuthenticationException;
 
 
 
@@ -44,7 +43,6 @@ public class Controller {
                            String tipoMedico,
                            String rango,
                            LocalDateTime dataAnnoAssunzione,
-                           SalaRicovero salaAssociata,
                            boolean isAmministratore) throws ParameterMissingException, AuthenticationException, ChiaveException {
         if (identificativoMedico.isBlank()) {
             throw new ChiaveException("identificativo mancante");
@@ -116,7 +114,7 @@ public class Controller {
                              String indirizzo,
                              String identificativoPaziente,
                              String triagePaziente,
-                             SalaRicovero salaAssociata) throws ParameterMissingException, ChiaveException {
+                             String idSalaAssociata) throws ParameterMissingException, ChiaveException {
         if (codiceFiscale.length() < 16) {
             throw new ParameterMissingException("codice fiscale vuoto");
         }
@@ -135,7 +133,7 @@ public class Controller {
         if (indirizzo.isBlank()) {
             throw new ParameterMissingException("indirizzo vuota");
         }
-        if (identificativoPaziente.isBlank() || !esisteIdentificativo(identificativoPaziente)) {
+        if (identificativoPaziente.isBlank() || esisteIdentificativo(identificativoPaziente)) {
             throw new ChiaveException("identificativo vuoto oppure gia esistente");
         }
         if (indirizzo.isBlank()) {
@@ -144,10 +142,29 @@ public class Controller {
         if (triagePaziente.isBlank()) {
             throw new ParameterMissingException("triage paziente vuota");
         }
-        if (salaAssociata == null) {
-            throw new ParameterMissingException("sala associata inesistente");
+
+        if (idSalaAssociata.isBlank()) {
+            throw new ParameterMissingException("campo id sala associata vuota");
         }
-        //da vedere come trovare effetivamente l'oggetto sala
+
+        SalaRicovero salaRicovero=null;
+        boolean salaTrovata=false;
+
+        for(Ospedale o: ospedali){
+           List<SalaRicovero> listaSale= o.getSaleRicovero();
+           for(SalaRicovero sr:listaSale){
+               if(sr.getCodiceSala().equals(idSalaAssociata)){
+                   salaRicovero=sr;
+                   salaTrovata=true;
+                   break;
+               }
+           }
+        }
+
+        if(!salaTrovata){
+            throw new ChiaveException("id sala non trovata");
+        }
+
         Paziente p = new Paziente(codiceFiscale,
                 nomePersona,
                 cognomePersona,
@@ -156,7 +173,7 @@ public class Controller {
                 indirizzo,
                 identificativoPaziente,
                 triagePaziente,
-                salaAssociata);
+                salaRicovero);
 
         pazienti.add(p);
     }

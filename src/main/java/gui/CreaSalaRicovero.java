@@ -1,6 +1,8 @@
 package gui;
 
 import controller.Controller;
+import exceptions.ChiaveException;
+import exceptions.ParameterMissingException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -30,9 +32,21 @@ public class CreaSalaRicovero {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //qua verra fatta la query al database
-                frameChiamante.setVisible(true);
-                frame.dispose();
+
+                try {
+                    controller.creaSalaRicovero(textField1.getText(), textField2.getText(),
+                            textField3.getText(), Integer.parseInt(textField4.getText()));
+                    frameChiamante.setVisible(true);
+                    frame.dispose();
+
+                }
+                catch (ParameterMissingException | ChiaveException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE );
+                }
+                catch (NumberFormatException ex){
+                    JOptionPane.showMessageDialog(frame, "inserire un numero valido", "errore", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
         });
         resettaButton.addActionListener(new ActionListener() {
