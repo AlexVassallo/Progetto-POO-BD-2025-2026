@@ -1,6 +1,8 @@
 package gui;
 
 import controller.Controller;
+import exceptions.ChiaveException;
+import exceptions.ParameterMissingException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -29,9 +31,16 @@ public class CreaSalaOperatoria {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //qua verrà aggiornato il dababase con la nuova sala
-                frameChiamante.setVisible(true);
-                frame.dispose();
+
+                try{
+                    controller.creaSalaOperatoria(textField1.getText(), textField2.getText());
+                    frameChiamante.setVisible(true);
+                    frame.dispose();
+                }
+                catch (ParameterMissingException | ChiaveException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
         });
 

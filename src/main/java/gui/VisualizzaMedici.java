@@ -19,6 +19,12 @@ public class VisualizzaMedici {
     private JButton resettaButton;
     private JButton confermaButton;
     private JButton tornaAllaPaginaPrincipaleButton;
+    private JLabel codiceFiscale;
+    private JLabel dataDiNascita;
+    private JLabel luogoDiNascita;
+    private JLabel indirizzo;
+    private JLabel identificativo;
+    private JLabel rangoMedico;
 
     //costruttore
     public VisualizzaMedici(JFrame frameChiamante, Controller controller){
@@ -39,12 +45,27 @@ public class VisualizzaMedici {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //al momento preparo solo il funzionamento del tasto, ma verra a prendere i dati nel database e li setta
-                nomeMedico.setText(".");
-                cognomeMedico.setText(".");
-                tipologiaMedico.setText(".");
-                dataAnnoAssunzione.setText(".");
-                isAmministratore.setText(".");
-                salaAssociata.setText(".");
+                String idmedico = textField1.getText();
+                String[] medico;
+                try {
+                    medico = controller.getMedico(idmedico);
+                }catch (Exception ex){
+                    JOptionPane.showMessageDialog(frame,ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                codiceFiscale.setText(medico[0]);
+                nomeMedico.setText(medico[1]);
+                cognomeMedico.setText(medico[2]);
+                dataDiNascita.setText(medico[3]);
+                luogoDiNascita.setText(medico[4]);
+                indirizzo.setText(medico[5]);
+                identificativo.setText(medico[6]);
+                tipologiaMedico.setText(medico[7]);
+                rangoMedico.setText(medico[8]);
+                dataAnnoAssunzione.setText(medico[9]);
+                salaAssociata.setText(medico[10]);
+                isAmministratore.setText(medico[11]);
+
             }
         });
         tornaAllaPaginaPrincipaleButton.addActionListener(new ActionListener() {

@@ -77,7 +77,9 @@ public String getRango() {
 public LocalDateTime getDataAnnoAssunzione() {
 	return dataAnnoAssunzione;
 }
-public SalaRicovero getSalaAssociata() {
+public SalaRicovero getSalaAssociata() throws Exception {
+	if(salaAssociata == null)
+		throw new Exception("NON ESISTE UNA SALA ASSOCIATA");
 	return salaAssociata;
 }
 

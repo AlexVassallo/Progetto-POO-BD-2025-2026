@@ -196,6 +196,15 @@ public class Controller {
         return false;
     }
 
+    public boolean esisteIdentificativoOspedale(String identificativoOspedale){
+        for(Ospedale o: ospedali){
+            if(o.getIdentificativoOspedale().equals(identificativoOspedale)){
+                return  true;
+            }
+        }
+        return false;
+    }
+
     public void creaReferto(String idPaziente,
                             String idMedico,
                             LocalDateTime dataOraArrivo,
@@ -269,7 +278,7 @@ public class Controller {
 
     public void creaSalaOperatoria(String identificativOspedale,
                                    String codiceSala) throws ParameterMissingException, ChiaveException {
-        if (identificativOspedale.isBlank() || !esisteIdentificativo(identificativOspedale)) {
+        if (identificativOspedale.isBlank() || !esisteIdentificativoOspedale(identificativOspedale)) {
             throw new ChiaveException("nome ospedale non trovato oppure vuoto");
         }
         if (codiceSala.isBlank()) {
@@ -354,8 +363,8 @@ public class Controller {
     }
 
     public String[] getMedico(String idMedico) throws ChiaveException {
-        for(Medico me : medici){
-            if(me.getIdentificativoMedico().equals(idMedico)){
+        for (Medico me : medici) {
+            if (me.getIdentificativoMedico().equals(idMedico)) {
                 String[] medico = new String[13];
                 medico[0] = me.getCodiceFiscale();
                 medico[1] = me.getNomePersona();
@@ -367,14 +376,19 @@ public class Controller {
                 medico[7] = me.getTipoMedico();
                 medico[8] = me.getRango();
                 medico[9] = me.getDataAnnoAssunzione().toString();
-                medico[10] = me.getSalaAssociata().toString();
+                try {
+                    medico[10] = me.getSalaAssociata().getCodiceSala();
+                }catch (Exception e){
+                    medico[10] = "Nessuna sala";
+                }
                 medico[11] = Boolean.valueOf(me.getIsAmministratore()).toString();
-                medico[12]= me.getPassword();
+                medico[12] = me.getPassword();
 
                 return medico;
             }
         }
         throw new ChiaveException("id medico non trovato");
     }
+
 
 }
