@@ -1,10 +1,15 @@
 package gui;
 
 import controller.Controller;
+import exceptions.ChiaveException;
+import exceptions.ParameterMissingException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class CreaReferto {
     //attributi
@@ -33,9 +38,28 @@ public class CreaReferto {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //qua verra aggiunto i dati al database
-                frameChiamante.setVisible(true);
-                frame.dispose();
+
+                try{
+                    java.time.format.DateTimeFormatter dateFormatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+                    String dataOraArrivoString = textField2.getText().trim();
+                    LocalDateTime dataOraArrivo = LocalDateTime.parse(dataOraArrivoString, dateFormatter);
+                    String dataOraUscitaString = textField3.getText().trim();
+                    LocalDateTime dataOraUscita= LocalDateTime.parse(dataOraUscitaString, dateFormatter);
+
+
+
+                    controller.creaReferto(textField1.getText(), textField2.getText(), dataOraArrivo,
+                            dataOraUscita, textField5.getText(), textField6.getText(), textField7.getText());
+                    frameChiamante.setVisible(true);
+                    frame.dispose();
+                }
+                catch (ChiaveException | ParameterMissingException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                 }
+                catch (DateTimeException ex){
+                    JOptionPane.showMessageDialog(frame, "data e ora non valido", "errore", JOptionPane.ERROR_MESSAGE);
+                }
 
             }
         });
