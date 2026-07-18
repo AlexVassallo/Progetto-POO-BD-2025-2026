@@ -45,7 +45,7 @@ public String getIdentificativoPaziente() {
 public String getTriagePaziente() {
 	return triagePaziente;
 }
-public SalaRicovero setSalaAssociata() {
+public SalaRicovero getSalaAssociata() {
 	return salaAssociata;
 }
 

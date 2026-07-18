@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import exceptions.ChiaveException;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -44,12 +45,12 @@ public class VisualizzaMedici {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //al momento preparo solo il funzionamento del tasto, ma verra a prendere i dati nel database e li setta
+
                 String idmedico = textField1.getText();
                 String[] medico;
                 try {
                     medico = controller.getMedico(idmedico);
-                }catch (Exception ex){
+                }catch (ChiaveException ex){
                     JOptionPane.showMessageDialog(frame,ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                     return;
                 }

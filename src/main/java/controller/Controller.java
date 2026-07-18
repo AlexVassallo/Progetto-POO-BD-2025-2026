@@ -95,7 +95,15 @@ public class Controller {
 
 
     public void creaOspedale(String identidicativoOspedale,
-                             String nomeOspedale) throws ParameterMissingException {
+                             String nomeOspedale) throws ParameterMissingException, ChiaveException {
+
+        if(identidicativoOspedale.isBlank()){
+            throw  new ChiaveException("identificativo mancante");
+        }
+
+        if(esisteIdentificativoOspedale(identidicativoOspedale)){
+            throw new ChiaveException("ospedale gia esistente");
+        }
 
         if (nomeOspedale.isBlank()) {
             throw new ParameterMissingException("nome ospedale mancante");
@@ -292,9 +300,9 @@ public class Controller {
         }
     }
 
-    public boolean esisteOspedale(String nomeOspedale) {
+    public boolean esisteOspedale(String identificativoOspedale) {
         for (Ospedale o : ospedali) {
-            if (o.getNomeOspedale().equals(nomeOspedale)) {
+            if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
                 return true;
             }
         }
@@ -307,7 +315,7 @@ public class Controller {
                                  int numeroLetti) throws ParameterMissingException, ChiaveException {
 
         if (identificativoOspedale.isBlank() || !esisteOspedale(identificativoOspedale)) {
-            throw new ChiaveException("identificativo ospedale ");
+            throw new ChiaveException("identificativo ospedale inesistente oppure vuoto");
         }
         if (codiceSala.isBlank()) {
             throw new ChiaveException("codice sala vuoto");
@@ -318,7 +326,7 @@ public class Controller {
         if (numeroLetti < 1) {
             throw new ParameterMissingException("campo numero letti vuoto, oppure minore di 1");
         }
-        //da verificare il funzionamento
+
         for (Ospedale o : ospedali) {
             if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
                 o.addSalaRicovero(codiceSala, tipoSala, numeroLetti);
@@ -388,6 +396,25 @@ public class Controller {
             }
         }
         throw new ChiaveException("id medico non trovato");
+    }
+    public String[] getPaziente(String idPaziente) throws ChiaveException{
+        for(Paziente pa: pazienti){
+            if(pa.getIdentificativoPaziente().equals(idPaziente)){
+                String[] paziente = new String[9];
+                paziente[0] = pa.getCodiceFiscale();
+                paziente[1] = pa.getNomePersona();
+                paziente[2] = pa.getCognomePersona();
+                paziente[3] = pa.getDataDiNascita().toString();
+                paziente[4] = pa.getLuogoDiNascita();
+                paziente[5] = pa.getIndirizzo();
+                paziente[6] = pa.getIdentificativoPaziente();
+                paziente[7] = pa.getTriagePaziente();
+                paziente[8] = pa.getSalaAssociata().getCodiceSala();
+
+                return paziente;
+            }
+        }
+        throw new ChiaveException("paziente non trovato");
     }
 
 

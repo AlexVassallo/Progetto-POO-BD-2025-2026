@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import exceptions.ChiaveException;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -21,6 +22,8 @@ public class VisualizzaPazienti {
     private JLabel triage;
     private JLabel salaAssociata;
     private JButton tornaIndietroButton;
+    private JLabel identificativo;
+    private JLabel indirizzo;
 
 
     //costruttore
@@ -45,14 +48,27 @@ public class VisualizzaPazienti {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //al momento preparo solo il funzionamento del tasto, ma verra a prendere i dati nel database e li setta
-                codiceFiscale.setText(".");
-                nome.setText(".");
-                cognome.setText(".");
-                dataDiNascita.setText(".");
-                luogoDiNascita.setText(".");
-                triage.setText(".");
-                salaAssociata.setText(".");
+
+                String idPaziente=textField1.getText();
+                String[] paziente;
+
+                try {
+                    paziente = controller.getPaziente(idPaziente);
+                }
+                catch (ChiaveException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                codiceFiscale.setText(paziente[0]);
+                nome.setText(paziente[1]);
+                cognome.setText(paziente[2]);
+                dataDiNascita.setText(paziente[3]);
+                luogoDiNascita.setText(paziente[4]);
+                indirizzo.setText(paziente[5]);
+                identificativo.setText(paziente[6]);
+                triage.setText(paziente[7]);
+                salaAssociata.setText(paziente[8]);
             }
         });
 
