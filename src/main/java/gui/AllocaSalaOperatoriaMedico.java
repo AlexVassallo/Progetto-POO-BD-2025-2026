@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 import java.awt.event.*;
 import controller.Controller;
+import exceptions.ChiaveException;
 
 public class AllocaSalaOperatoriaMedico {
 
@@ -13,7 +14,8 @@ public class AllocaSalaOperatoriaMedico {
     private JButton confermaButton;
     private JButton resettaButton;
     private JButton tornaIndietroButton;
-    Controller controller;
+    private JTextField textField2;
+
 
     //costruttore
     public AllocaSalaOperatoriaMedico(JFrame frameChiamante,Controller controller){
@@ -28,9 +30,14 @@ public class AllocaSalaOperatoriaMedico {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //qui verrà fatto l'operazione di allocazione
-                frameChiamante.setVisible(true);
-                frame.dispose();
+                try{
+                    controller.allocaMedicoSalaOperatoria(textField1.getText(), textField2.getText());
+                    frameChiamante.setVisible(true);
+                    frame.dispose();
+                }
+                catch (ChiaveException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -38,6 +45,7 @@ public class AllocaSalaOperatoriaMedico {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField1.setText("");
+                textField2.setText("");
             }
         });
 

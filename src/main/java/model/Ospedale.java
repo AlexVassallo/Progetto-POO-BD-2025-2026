@@ -54,6 +54,7 @@ public class Ospedale {
 	public List<SalaOperatoria> getSaleOperatorie(){
 		return saleOperatorie;
 	}
+
 	public SalaOperatoria getSalaOperatoria(String codiceSala) throws ChiaveException{
 		for(SalaOperatoria so : saleOperatorie){
 			if(so.getCodiceSala().equals(codiceSala)){

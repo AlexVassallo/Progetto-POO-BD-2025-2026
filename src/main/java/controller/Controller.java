@@ -417,5 +417,42 @@ public class Controller {
         throw new ChiaveException("paziente non trovato");
     }
 
+    public void allocaMedicoSalaOperatoria(String idMedico, String idSalaOperatoria) throws ChiaveException{
+        boolean medicoTrovato=false;
+        for(Medico me: medici){
+            if(me.getIdentificativoMedico().equals(idMedico)){
+                boolean salaTrovata=false;
+
+                for(Ospedale o: ospedali){
+                    List<SalaOperatoria> listaSale= o.getSaleOperatorie();
+                    for(SalaOperatoria so:listaSale){
+                        if(so.getCodiceSala().equals(idSalaOperatoria)){
+                            so.aggiungiMedico(me);
+                            salaTrovata=true;
+                            break;
+                        }
+                    }
+                }
+                if(!salaTrovata){
+                    throw new ChiaveException("sala non trovata");
+                }
+              medicoTrovato=true;
+              break;
+            }
+        }
+        if(!medicoTrovato){
+            throw new ChiaveException("medico non trovato");
+        }
+    }
+
+
+
+    /*public String[] getSalaRicovero(String idSalaRicovero) throws ChiaveException{
+
+        for(Ospedale o: ospedali){
+            for(SalaRicovero sr: o.getSaleRicovero())
+        }
+    }
+    */
 
 }
