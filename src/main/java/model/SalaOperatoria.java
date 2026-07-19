@@ -1,13 +1,16 @@
 package model;
 
+import exceptions.ChiaveException;
+
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class SalaOperatoria {
 
 //attributi
 private String codiceSala;
-private ArrayList <Medico>mediciAssociati= new ArrayList<Medico>();
+private List<Medico> mediciAssociati= new ArrayList<Medico>();
 private Paziente pazienteAssociato;
 private boolean isDisponibile=true;
 
@@ -36,12 +39,24 @@ public String getCodiceSala() {
 	return codiceSala;
 }
 
-public void StampaMediciAssociati() {
+public void stampaMediciAssociati() {
 	for(int i=0; i<mediciAssociati.size(); i++) {
 	mediciAssociati.get(i);	
 	}
 	}
-public Paziente getPazienteAssociati() {
+
+	public List<Medico> getMediciAssociati(){
+		return mediciAssociati;
+	}
+	public Medico getMedico(String codiceMedico) throws ChiaveException {
+		for(Medico me : mediciAssociati){
+			if(me.getIdentificativoMedico().equals(codiceMedico)){
+				return me;
+			}
+		}
+		throw new ChiaveException("Medico " + codiceMedico + " non trovata");
+	}
+public Paziente getPazienteAssociato() {
 	return pazienteAssociato;
 }
 public boolean getIsDisponibile() {

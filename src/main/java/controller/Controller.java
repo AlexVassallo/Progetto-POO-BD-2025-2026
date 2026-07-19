@@ -97,11 +97,11 @@ public class Controller {
     public void creaOspedale(String identidicativoOspedale,
                              String nomeOspedale) throws ParameterMissingException, ChiaveException {
 
-        if(identidicativoOspedale.isBlank()){
-            throw  new ChiaveException("identificativo mancante");
+        if (identidicativoOspedale.isBlank()) {
+            throw new ChiaveException("identificativo mancante");
         }
 
-        if(esisteIdentificativoOspedale(identidicativoOspedale)){
+        if (esisteIdentificativoOspedale(identidicativoOspedale)) {
             throw new ChiaveException("ospedale gia esistente");
         }
 
@@ -155,21 +155,21 @@ public class Controller {
             throw new ParameterMissingException("campo id sala associata vuota");
         }
 
-        SalaRicovero salaRicovero=null;
-        boolean salaTrovata=false;
+        SalaRicovero salaRicovero = null;
+        boolean salaTrovata = false;
 
-        for(Ospedale o: ospedali){
-           List<SalaRicovero> listaSale= o.getSaleRicovero();
-           for(SalaRicovero sr:listaSale){
-               if(sr.getCodiceSala().equals(idSalaAssociata)){
-                   salaRicovero=sr;
-                   salaTrovata=true;
-                   break;
-               }
-           }
+        for (Ospedale o : ospedali) {
+            List<SalaRicovero> listaSale = o.getSaleRicovero();
+            for (SalaRicovero sr : listaSale) {
+                if (sr.getCodiceSala().equals(idSalaAssociata)) {
+                    salaRicovero = sr;
+                    salaTrovata = true;
+                    break;
+                }
+            }
         }
 
-        if(!salaTrovata){
+        if (!salaTrovata) {
             throw new ChiaveException("id sala non trovata");
         }
 
@@ -204,10 +204,10 @@ public class Controller {
         return false;
     }
 
-    public boolean esisteIdentificativoOspedale(String identificativoOspedale){
-        for(Ospedale o: ospedali){
-            if(o.getIdentificativoOspedale().equals(identificativoOspedale)){
-                return  true;
+    public boolean esisteIdentificativoOspedale(String identificativoOspedale) {
+        for (Ospedale o : ospedali) {
+            if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
+                return true;
             }
         }
         return false;
@@ -227,34 +227,34 @@ public class Controller {
             throw new ChiaveException("identificativo mancante");
         }
         boolean pazienteTrovato = false;
-        for(Paziente p : pazienti){
-            if(p.getIdentificativoPaziente().equals(idPaziente)){
+        for (Paziente p : pazienti) {
+            if (p.getIdentificativoPaziente().equals(idPaziente)) {
                 paziente = p;
                 pazienteTrovato = true;
                 break;
             }
         }
-        if(!pazienteTrovato){
-            throw  new ChiaveException("Paziente mancante");
+        if (!pazienteTrovato) {
+            throw new ChiaveException("Paziente mancante");
         }
 
 
-        Medico medico= null;
-        boolean medicoTrovato=false;
+        Medico medico = null;
+        boolean medicoTrovato = false;
 
         if (idMedico.isBlank()) {
             throw new ParameterMissingException("medico mancante");
         }
 
-        for(Medico me: medici) {
-            if(me.getIdentificativoMedico().equals(idMedico)){
-                medico=me;
-                medicoTrovato=true;
+        for (Medico me : medici) {
+            if (me.getIdentificativoMedico().equals(idMedico)) {
+                medico = me;
+                medicoTrovato = true;
                 break;
             }
         }
 
-        if(!medicoTrovato){
+        if (!medicoTrovato) {
             throw new ChiaveException("medico mancante");
         }
 
@@ -386,7 +386,7 @@ public class Controller {
                 medico[9] = me.getDataAnnoAssunzione().toString();
                 try {
                     medico[10] = me.getSalaAssociata().getCodiceSala();
-                }catch (Exception e){
+                } catch (Exception e) {
                     medico[10] = "Nessuna sala";
                 }
                 medico[11] = Boolean.valueOf(me.getIsAmministratore()).toString();
@@ -397,9 +397,10 @@ public class Controller {
         }
         throw new ChiaveException("id medico non trovato");
     }
-    public String[] getPaziente(String idPaziente) throws ChiaveException{
-        for(Paziente pa: pazienti){
-            if(pa.getIdentificativoPaziente().equals(idPaziente)){
+
+    public String[] getPaziente(String idPaziente) throws ChiaveException {
+        for (Paziente pa : pazienti) {
+            if (pa.getIdentificativoPaziente().equals(idPaziente)) {
                 String[] paziente = new String[9];
                 paziente[0] = pa.getCodiceFiscale();
                 paziente[1] = pa.getNomePersona();
@@ -417,17 +418,98 @@ public class Controller {
         throw new ChiaveException("paziente non trovato");
     }
 
-    public void allocaMedicoSalaOperatoria(String idMedico, String idSalaOperatoria) throws ChiaveException{
-        boolean medicoTrovato=false;
-        for(Medico me: medici){
-            if(me.getIdentificativoMedico().equals(idMedico)){
+    public boolean eGiaAllocatoMedSalOp(String identificativoMedico) {
+        for (Ospedale o : ospedali) {
+            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
+            for (SalaOperatoria so : listaSale) {
+                List<Medico> listaMedici = so.getMediciAssociati();
+                for (Medico me : listaMedici) {
+                    if (me.getIdentificativoMedico().equals(identificativoMedico)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public void allocaMedicoSalaOperatoria(String idMedico, String idSalaOperatoria) throws ChiaveException, IllegalStateException {
+        Medico medicoDaAllocare = null;
+        for (Medico me : medici) {
+            if (me.getIdentificativoMedico().equals(idMedico)) {
+                medicoDaAllocare = me;
+                break;
+            }
+        }
+
+        if (medicoDaAllocare == null) {
+            throw new ChiaveException("medico non trovato");
+        }
+
+        if (eGiaAllocatoMedSalOp(idMedico)) {
+            throw new IllegalStateException("il medico esiste già in un altra sala operatoria");
+        }
+        boolean salaTrovata = false;
+
+        for (Ospedale o : ospedali) {
+            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
+            for (SalaOperatoria so : listaSale) {
+                if (so.getCodiceSala().equals(idSalaOperatoria)) {
+                    so.aggiungiMedico(medicoDaAllocare);
+                    medicoDaAllocare.setSalaAssociata(null);
+                    salaTrovata = true;
+                }
+            }
+        }
+        if (!salaTrovata) {
+            throw new ChiaveException("sala operatoria non trovata");
+        }
+    }
+
+    public void allocaMedicoSalaRicovero(String idMedico, String idSalaRicovero) throws ChiaveException, IllegalStateException {
+        Medico medicoDaAllocare = null;
+        for (Medico me : medici) {
+            if (me.getIdentificativoMedico().equals(idMedico)) {
+                medicoDaAllocare = me;
+                break;
+            }
+        }
+
+        if (medicoDaAllocare == null) {
+            throw new ChiaveException("medico non trovato");
+        }
+
+            boolean salaTrovata = false;
+
+            for (Ospedale o : ospedali) {
+                List<SalaRicovero> listaSale = o.getSaleRicovero();
+                for (SalaRicovero sr : listaSale) {
+                    if (sr.getCodiceSala().equals(idSalaRicovero)) {
+                        medicoDaAllocare.setSalaAssociata(sr);
+                        salaTrovata = true;
+                        break;
+                    }
+                }
+            }
+            if (!salaTrovata) {
+                throw new ChiaveException("sala non trovata");
+            }
+
+        }
+
+
+
+    public void allocaPazienteSalaRicovero(String idPaziente, String idSalaRicovero) throws ChiaveException, IllegalStateException{
+        boolean pazienteTrovato=false;
+        for(Paziente pa: pazienti){
+            if(pa.getIdentificativoPaziente().equals(idPaziente)){
                 boolean salaTrovata=false;
 
                 for(Ospedale o: ospedali){
-                    List<SalaOperatoria> listaSale= o.getSaleOperatorie();
-                    for(SalaOperatoria so:listaSale){
-                        if(so.getCodiceSala().equals(idSalaOperatoria)){
-                            so.aggiungiMedico(me);
+                    List<SalaRicovero> listaSale= o.getSaleRicovero();
+                    for(SalaRicovero sr:listaSale){
+                        if(sr.getCodiceSala().equals(idSalaRicovero)){
+                            pa.setSalaAssociata(sr);
                             salaTrovata=true;
                             break;
                         }
@@ -436,15 +518,14 @@ public class Controller {
                 if(!salaTrovata){
                     throw new ChiaveException("sala non trovata");
                 }
-              medicoTrovato=true;
-              break;
+                pazienteTrovato=true;
+                break;
             }
         }
-        if(!medicoTrovato){
+        if(!pazienteTrovato){
             throw new ChiaveException("medico non trovato");
         }
     }
-
 
 
     /*public String[] getSalaRicovero(String idSalaRicovero) throws ChiaveException{
