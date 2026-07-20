@@ -47,28 +47,25 @@ public int getLettiLiberi() {
 }
 
 //metodi
-public void occupaLetto() {
-	if(isDisponibile()) {
-		lettiLiberi--;
+public void occupaLetto()throws  IllegalStateException {
+	if(!isDisponibile()) {
+		throw new IllegalStateException("la sala ricovero" + getCodiceSala() + "è piena");
 	}
-	else {
-		System.err.println("spiacente, questa sala è piena");
-	}
+	lettiLiberi--;
 }
-public void liberaLetto() {
+
+public void liberaLetto() throws IllegalStateException {
 	if(lettiLiberi<numeroLetti) {
 		lettiLiberi++;
 	}
-	else {
-		System.err.println("spiacente, ma in questa sala tutti i letti solo liberi oppure già stati liberati, forse volevi liberare i letti di un altra stanza?");
-	}
+
+	throw new IllegalStateException("i letti occupati sono vuoti, forse volevi liberare i letti di un altra sala?");
 }
+
 public boolean isDisponibile() {
 	if(lettiLiberi==0) {
 		return false;
 	}
-	else {
-		return true;
-	}
+	return true;
 }
 }

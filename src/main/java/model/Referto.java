@@ -24,6 +24,7 @@ public Referto(Paziente paziente,
 	setPaziente(paziente);
 	setMedicoAffidato(medicoAffidato);
 	setDataOraArrivo(dataOraArrivo);
+	setDataOraUscita(dataOraUscita);
 	setDiagnosi(diagnosi);
 	setTrattamentoEffettuato(trattamentoEffettuato);
 	setEstitofinale(esitoFinale);

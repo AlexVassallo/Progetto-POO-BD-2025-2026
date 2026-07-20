@@ -63,16 +63,13 @@ public boolean getIsDisponibile() {
 	return isDisponibile;
 }
 
-public void occupaSala(Paziente pazienteCheOccupa) {
+public void occupaSala(Paziente pazienteCheOccupa)throws IllegalStateException {
 	if(pazienteAssociato==null) {
 		setPazienteAssociato(pazienteCheOccupa);
 		setIsDisponibile(false);
 		System.out.println("il paziente è entrato in sala operatoria, la stanza" + getCodiceSala() + " è occupata");
 	}
-	else
-	{
-		System.err.println("la stanza " + getCodiceSala() + "è al momento occupata, alloca il paziente in un altra sala disponibile");
-	}
+	throw new IllegalStateException("la sala operatoria" + getCodiceSala() +  "è gia occupata");
 }
 public void liberaSala() {
 	if(pazienteAssociato==null) {

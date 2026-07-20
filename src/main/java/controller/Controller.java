@@ -567,6 +567,11 @@ public class Controller {
             List<SalaRicovero> listaSale = o.getSaleRicovero();
             for (SalaRicovero sr : listaSale) {
                 if (sr.getCodiceSala().equals(idSalaRicovero)) {
+                    try {
+                        sr.occupaLetto();
+                    } catch (IllegalStateException e) {
+                        throw new IllegalStateException("la sala ricovero è piena");
+                    }
                     pazienteDaAllocare.setSalaAssociata(sr);
                     salaTrovata = true;
                     break;
@@ -580,6 +585,7 @@ public class Controller {
     }
 
     public void allocaPazienteSalaOperatoria(String idPaziente, String idSalaOperatoria) throws ChiaveException, IllegalStateException {
+
         if(idPaziente.isBlank()){
             throw new ChiaveException("campo id paziente vuoto");
         }
@@ -588,8 +594,9 @@ public class Controller {
         }
 
         Paziente pazienteDaAllocare = getPazienteDaAllocare(idPaziente);
+
         if(eGiaAllocatoPazSalOp(idPaziente)){
-            throw new IllegalStateException("il paziente è gia in una sala operatoria");
+            throw new IllegalStateException("il paziente è gia allocato in una sala operatoria");
         }
 
 
@@ -599,6 +606,9 @@ public class Controller {
             List<SalaOperatoria> listaSale = o.getSaleOperatorie();
             for (SalaOperatoria so : listaSale) {
                 if (so.getCodiceSala().equals(idSalaOperatoria)) {
+                    if(!so.getIsDisponibile()){
+                        throw new IllegalStateException("la sala è già occupata da un altro paziente");
+                    }
                     so.occupaSala(pazienteDaAllocare);
                     salaTrovata = true;
                     break;
