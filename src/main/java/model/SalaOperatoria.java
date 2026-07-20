@@ -71,9 +71,9 @@ public void occupaSala(Paziente pazienteCheOccupa)throws IllegalStateException {
 	}
 	throw new IllegalStateException("la sala operatoria" + getCodiceSala() +  "è gia occupata");
 }
-public void liberaSala() {
+public void liberaSala() throws IllegalStateException{
 	if(pazienteAssociato==null) {
-		System.err.println("questa sala è vuota, volevi forse liberare un'altra sala?");
+		throw new IllegalStateException("la sala è gia vuota");
 	}
 	else {
 		setPazienteAssociato(null);
@@ -96,12 +96,12 @@ public void liberaSala() {
 	mediciAssociati.add(medicoDaAggiungere);
 }
 
-public void rimuoviMedico(Medico medicoDaRimuovere) {
+public void rimuoviMedico(Medico medicoDaRimuovere)throws IllegalStateException{
 	if(medicoDaRimuovere!=null) {
 	mediciAssociati.remove(medicoDaRimuovere);
 	}
 	else {
-		System.err.println("non esiste quel medico registrato nel database");
+		 throw new IllegalStateException("non esiste quel medico registrato nel database");
 		}
 	}
 }

@@ -35,7 +35,7 @@ public class AllocaSalaOperatoriaMedico {
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }
-                catch (ChiaveException ex){
+                catch (IllegalStateException | ChiaveException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }

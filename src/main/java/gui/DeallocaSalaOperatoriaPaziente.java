@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 import java.awt.event.*;
 import controller.Controller;
+import exceptions.ChiaveException;
 
 
 public class DeallocaSalaOperatoriaPaziente {
@@ -30,9 +31,14 @@ public class DeallocaSalaOperatoriaPaziente {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //qui verrà fatto l'operazione di deallocazione
-                frameChiamante.setVisible(true);
-                frame.dispose();
+                try{
+                    controller.deallocaPazienteSalaOperatoria(textField1.getText());
+                    frameChiamante.setVisible(true);
+                    frame.dispose();
+                }
+                catch (IllegalStateException | ChiaveException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 

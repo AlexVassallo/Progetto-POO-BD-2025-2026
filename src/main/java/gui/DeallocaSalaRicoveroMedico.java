@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import controller.Controller;
+import exceptions.ChiaveException;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,9 +30,14 @@ public class DeallocaSalaRicoveroMedico {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //qui verrà fatto l'operazione di deallocazione
-                frameChiamante.setVisible(true);
-                frame.dispose();
+                try{
+                    controller.deallocaMedicoSalaRicovero(textField1.getText());
+                    frameChiamante.setVisible(true);
+                    frame.dispose();
+                }
+                catch (IllegalStateException | ChiaveException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
