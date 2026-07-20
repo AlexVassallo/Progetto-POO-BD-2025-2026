@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 import java.awt.event.*;
 import controller.Controller;
+import exceptions.ChiaveException;
 
 public class AllocaSalaRicoveroPaziente {
 
@@ -13,6 +14,7 @@ public class AllocaSalaRicoveroPaziente {
     private JButton confermaButton;
     private JButton resettaButton;
     private JButton tornaIndietroButton;
+    private JTextField textField2;
     private Controller controller;
 
     //costruttore
@@ -29,9 +31,15 @@ public class AllocaSalaRicoveroPaziente {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //qui verrà fatto l'operazione di allocazione
+
+                try{
+                controller.allocaPazienteSalaRicovero(textField1.getText(), textField2.getText());
                 frameChiamante.setVisible(true);
                 frame.dispose();
+            }
+            catch (IllegalStateException | ChiaveException ex){
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+            }
             }
         });
 
