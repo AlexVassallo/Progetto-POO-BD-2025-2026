@@ -13,6 +13,7 @@ public class VisualizzaDisponibilitaMedici {
     private JPanel mainPanel;
     private JList list1;
     private JButton tornaIndietroButton;
+    private JTextArea textArea1;
 
     //costruttore
     public VisualizzaDisponibilitaMedici(JFrame frameChiamante, Controller controller){
@@ -20,15 +21,20 @@ public class VisualizzaDisponibilitaMedici {
         //creazione della frame
         frame=new JFrame("disponibilita dei medici");
         frame.setContentPane(this.mainPanel);
-        frame.pack();
+        frame.setSize(500, 500);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frameChiamante.setVisible(false);
 
         //crea e stampa la lista dei medici disponibili
-        DefaultListModel<String> listasale = new DefaultListModel<>();
-        listasale.addAll(controller.getDisponibiliSaleRicovero());
-        list1.setModel(listasale);
+        textArea1.setEditable(false);
+
+        StringBuilder sb = new StringBuilder();
+        for (String medico : controller.getDisponibilitaMedici()) {
+            sb.append(medico).append("\n-----------------------------------\n");
+        }
+
+        textArea1.setText(sb.toString());
 
         tornaIndietroButton.addActionListener(new ActionListener() {
             @Override

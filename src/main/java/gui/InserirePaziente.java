@@ -52,7 +52,7 @@ public class InserirePaziente {
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }
-                catch (ParameterMissingException | ChiaveException ex){
+                catch (ParameterMissingException | ChiaveException | IllegalStateException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
                 catch (DateTimeException ex){

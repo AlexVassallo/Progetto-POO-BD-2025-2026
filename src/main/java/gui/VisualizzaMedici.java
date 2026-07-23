@@ -50,7 +50,8 @@ public class VisualizzaMedici {
                 String[] medico;
                 try {
                     medico = controller.getMedico(idmedico);
-                }catch (ChiaveException ex){
+                }
+                catch (ChiaveException ex){
                     JOptionPane.showMessageDialog(frame,ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                     return;
                 }

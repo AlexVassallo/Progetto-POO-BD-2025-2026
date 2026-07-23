@@ -1,10 +1,13 @@
 package gui;
 
 import controller.Controller;
+import exceptions.ChiaveException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VisualizzaSalaOperatoria {
 
@@ -41,10 +44,26 @@ public class VisualizzaSalaOperatoria {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //al momento preparo solo il funzionamento del tasto, ma verra a prendere i dati nel database e li setta
-                list1.setToolTipText(".");
-                pazienteAssociato.setText(".");
-                eDisponibile.setText(".");
+                String idSalaOperatoria=textField1.getText();
+                String[] salaOperatoria;
+                DefaultListModel<String> modello;
+                modello=new DefaultListModel<String>();
+
+
+                try {
+                    salaOperatoria = controller.getSalaOperatoria(idSalaOperatoria);
+                    modello.addAll(controller.getIdMediciSalaOperatoria(idSalaOperatoria));
+                    list1.setModel(modello);
+                }
+                catch (ChiaveException | IllegalArgumentException ex){
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+
+
+                pazienteAssociato.setText(salaOperatoria[0]);
+                eDisponibile.setText(salaOperatoria[1]);
 
             }
         });

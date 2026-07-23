@@ -58,8 +58,9 @@ public void liberaLetto() throws IllegalStateException {
 	if(lettiLiberi<numeroLetti) {
 		lettiLiberi++;
 	}
-
-	throw new IllegalStateException("i letti occupati sono vuoti, forse volevi liberare i letti di un altra sala?");
+    else {
+		throw new IllegalStateException("i letti occupati sono vuoti, forse volevi liberare i letti di un altra sala?");
+	     }
 }
 
 public boolean isDisponibile() {

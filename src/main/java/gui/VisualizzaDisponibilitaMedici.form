@@ -15,7 +15,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="e7269" class="javax.swing.JList" binding="list1" default-binding="true">
+          <component id="4a076" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
             <constraints/>
             <properties/>
           </component>
@@ -29,6 +29,16 @@
           <text value="torna indietro"/>
         </properties>
       </component>
+      <vspacer id="76bfa">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <hspacer id="4f3cf">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
     </children>
   </grid>
 </form>

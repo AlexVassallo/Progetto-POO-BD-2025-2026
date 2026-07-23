@@ -30,24 +30,33 @@ public class VisualizzaDisponibilita {
         mediciButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                new VisualizzaDisponibilitaMedici(frame,controller);
+                    frame.setVisible(false);
+                    new VisualizzaDisponibilitaMedici(frame,controller);
             }
         });
 
         saleOperatorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                new VisualizzaDisponibilitaSalaOperatoria(frame,controller);
+                if (controller.esisteIdentificativoOspedale(textField1.getText())) {
+                    frame.setVisible(false);
+                    new VisualizzaDisponibilitaSalaOperatoria(frame, controller, textField1.getText());
+                } else {
+                    JOptionPane.showMessageDialog(frame, "ospedale non trovato", "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
         saleRicoveratorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                new VisualizzaDisponibilitaSalaRicovero(frame,controller);
+                if(controller.esisteIdentificativoOspedale(textField1.getText())){
+                    frame.setVisible(false);
+                    new VisualizzaDisponibilitaSalaRicovero(frame,controller, textField1.getText());
+                }
+                else {
+                    JOptionPane.showMessageDialog(frame, "ospedale non trovato", "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 

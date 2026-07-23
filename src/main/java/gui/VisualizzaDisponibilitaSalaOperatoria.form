@@ -15,7 +15,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="ea575" class="javax.swing.JList" binding="list1" default-binding="true">
+          <component id="575b5" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
             <constraints/>
             <properties/>
           </component>

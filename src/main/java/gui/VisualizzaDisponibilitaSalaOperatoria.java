@@ -13,22 +13,29 @@ public class VisualizzaDisponibilitaSalaOperatoria {
     private JPanel panel1;
     private JList list1;
     private JButton tornaIndietroButton;
+    private JTextArea textArea1;
 
     //costruttore
-    public VisualizzaDisponibilitaSalaOperatoria(JFrame frameChiamante, Controller controller){
+    public VisualizzaDisponibilitaSalaOperatoria(JFrame frameChiamante, Controller controller, String identificativoOspedale){
 
         //creazione della frame
         frame=new JFrame("disponibilita delle sale operatorie");
         frame.setContentPane(this.panel1);
-        frame.pack();
+        frame.setSize(500, 500);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frameChiamante.setVisible(false);
 
         //crea e stampa la lista delle sale operatorie disponibili
-        DefaultListModel<String> listasale = new DefaultListModel<>();
-        listasale.addAll(controller.getDisponibiliSaleRicovero());
-        list1.setModel(listasale);
+        textArea1.setEditable(false);
+
+        StringBuilder sb = new StringBuilder();
+        for (String medico : controller.getDisponibilitaSalaOperatoria(identificativoOspedale)) {
+            sb.append(medico).append("\n-----------------------------------\n");
+        }
+
+        textArea1.setText(sb.toString());
+
 
         tornaIndietroButton.addActionListener(new ActionListener() {
             @Override

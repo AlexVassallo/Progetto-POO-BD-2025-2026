@@ -1,6 +1,8 @@
 package gui;
 
 import controller.Controller;
+import exceptions.ChiaveException;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +19,7 @@ public class VisualizzaSalaRicovero {
     private JLabel tipoSala;
     private JLabel lettiLiberi;
     private JLabel numeroLetti;
+    private JLabel codiceSala;
 
     //costruttore
     public VisualizzaSalaRicovero(JFrame frameChiamante, Controller controller){
@@ -38,10 +41,20 @@ public class VisualizzaSalaRicovero {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //al momento preparo solo il funzionamento del tasto, ma verra a prendere i dati nel database e li setta
-                tipoSala.setText(".");
-                numeroLetti.setText(".");
-                lettiLiberi.setText(".");
+                String idSalaRicovero= textField1.getText();
+                String[] salaRicovero;
+                try{
+                    salaRicovero = controller.getSalaRicovero(idSalaRicovero);
+                }
+                catch (ChiaveException ex){
+                    JOptionPane.showMessageDialog(frame,ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                tipoSala.setText(salaRicovero[0]);
+                numeroLetti.setText(salaRicovero[1]);
+                lettiLiberi.setText(salaRicovero[2]);
+                codiceSala.setText(salaRicovero[3]);
             }
         });
 
