@@ -51,10 +51,11 @@ public class VisualizzaSalaRicovero {
                     return;
                 }
 
-                tipoSala.setText(salaRicovero[0]);
-                numeroLetti.setText(salaRicovero[1]);
-                lettiLiberi.setText(salaRicovero[2]);
-                codiceSala.setText(salaRicovero[3]);
+                codiceSala.setText(salaRicovero[0]);
+                tipoSala.setText(salaRicovero[1]);
+                numeroLetti.setText(salaRicovero[2]);
+                lettiLiberi.setText(salaRicovero[3]);
+
             }
         });
 

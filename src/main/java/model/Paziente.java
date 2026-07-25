@@ -45,7 +45,12 @@ public String getIdentificativoPaziente() {
 public String getTriagePaziente() {
 	return triagePaziente;
 }
-public SalaRicovero getSalaAssociata() {
+
+public SalaRicovero getSalaAssociata() throws Exception {
+		if(salaAssociata==null){
+			throw new Exception("sala non trovata");
+		}
+
 	return salaAssociata;
 }
 
