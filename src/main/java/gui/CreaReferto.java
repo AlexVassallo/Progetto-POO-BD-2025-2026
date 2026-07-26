@@ -54,7 +54,7 @@ public class CreaReferto {
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }
-                catch (ChiaveException | ParameterMissingException ex){
+                catch (ChiaveException | ParameterMissingException | IllegalStateException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                  }
                 catch (DateTimeException ex){

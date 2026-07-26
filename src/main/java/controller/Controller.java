@@ -919,4 +919,86 @@ public class Controller {
 
         return saleDisponibili;
     }
+
+    public void rimuoviMedico(String idMedico)throws IllegalStateException, ChiaveException{
+        if(idMedico.isBlank()){
+            throw new IllegalStateException("id medico vuoto");
+        }
+        Medico medicoTrovato=null;
+
+        for(Medico m: medici){
+            if(m.getIdentificativoMedico().equals(idMedico)){
+                medicoTrovato=m;
+                break;
+            }
+        }
+        if(medicoTrovato==null){
+            throw new ChiaveException("medico non trovato");
+        }
+
+
+        if(eGiaAllocatoMedSalOp(medicoTrovato.getIdentificativoMedico())){
+            throw new IllegalStateException("il medico si trova in una sala operatoria, impossibile rimuoverlo");
+        }
+        SalaRicovero sala=null;
+        try{
+            sala=medicoTrovato.getSalaAssociata();
+        }
+        catch (Exception e){
+            medici.remove(medicoTrovato);
+        }
+        if(sala!=null){
+            throw new IllegalStateException("il medico si trova in una sala ricovero, impossibile rimuoverlo");
+        }
+    }
+
+    public void rimuoviOspedale(String idOspedale) throws ChiaveException, IllegalStateException{
+        if(idOspedale.isBlank()){
+            throw new ChiaveException("id ospedale vuoto");
+        }
+
+        Ospedale ospedaleTrovato=null;
+        for(Ospedale o: ospedali){
+            if(o.getIdentificativoOspedale().equals(idOspedale)){
+                ospedaleTrovato=o;
+                break;
+            }
+        }
+        if(ospedaleTrovato==null){
+            throw new ChiaveException("ospedale non trovato");
+        }
+
+        List<SalaRicovero> listaSaleRicovero = ospedaleTrovato.getSaleRicovero();
+        for(SalaRicovero sr: listaSaleRicovero){
+            if(sr.getNumeroLetti()!=sr.getLettiLiberi()){
+                throw new IllegalStateException("la sala ricovero " + sr.getCodiceSala() + " non è vuota");
+            }
+
+            SalaRicovero sala=null;
+            for(Medico m: medici){
+                try{
+                    sala= m.getSalaAssociata();
+                }
+                catch (Exception e){
+                    continue;
+                }
+                if(sala.getCodiceSala().equals(sr.getCodiceSala())){
+                    throw new IllegalStateException("il medico " + m.getIdentificativoMedico() +
+                            " è gia presente in una sala ricovero di questo ospedale");
+                }
+            }
+        }
+        List<SalaOperatoria> listaSaleOperatorie= ospedaleTrovato.getSaleOperatorie();
+        for(SalaOperatoria so:listaSaleOperatorie){
+            if(so.getPazienteAssociato()!=null){
+                throw new IllegalStateException("il paziente " + so.getPazienteAssociato().getIdentificativoPaziente() +
+                        " si trova nella sala operatoria " + so.getCodiceSala());
+            }
+            if(!so.getMediciAssociati().isEmpty()){
+                throw new IllegalStateException("nella sala operatoria " + so.getCodiceSala() +
+                        " si trovano ancora dei medici");
+            }
+        }
+        ospedali.remove(ospedaleTrovato);
+    }
 }

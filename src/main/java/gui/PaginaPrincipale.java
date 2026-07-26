@@ -22,7 +22,6 @@ public class PaginaPrincipale {
     private JButton inserirePaziente;
 
 
-    private JPanel visualizzaPanel;
     //bottoni visualizza
     private JButton visualizzaMediciButton;
     private JButton visualizzaPazientiButton;
@@ -31,10 +30,11 @@ public class PaginaPrincipale {
     private JButton visualizzaSalaRicoveroButton;
 
 
-    private JPanel finalPanel;
     //bottoni finali
     private JButton gestioneOspedaleButton;
     private JButton logOutButton;
+    private JButton rimuoviMedicoButton;
+    private JButton rimuoviOspedaleButton;
     private Controller controller;
 
     //costruttore
@@ -87,6 +87,21 @@ public class PaginaPrincipale {
             public void actionPerformed(ActionEvent e) {
 
                 new InserirePaziente(frame,controller);
+            }
+        });
+
+        //listener dei bottoni rimuovi
+        rimuoviMedicoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new RimuoviMedico(frame, controller);
+            }
+        });
+
+        rimuoviOspedaleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new RimuoviOspedale(frame, controller);
             }
         });
 
