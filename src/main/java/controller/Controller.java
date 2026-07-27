@@ -16,11 +16,19 @@ import java.security.InvalidParameterException;
 
 
 public class Controller {
+
+    //liste di oggetti
     private ArrayList<Medico> medici = new ArrayList<Medico>();
     private ArrayList<Ospedale> ospedali = new ArrayList<Ospedale>();
     private ArrayList<Paziente> pazienti = new ArrayList<Paziente>();
     private ArrayList<Referto> referti = new ArrayList<Referto>();
 
+    private String medicoSelezionato;//medico che fa il login
+
+    /*
+    metodi che salva su una variabile l'identificativo del medico che fa il login
+    e sulla pagina principale stamperà poi l'id del medico che sta usando il programma
+     */
     public String getMedicoSelezionato() {
         return medicoSelezionato;
     }
@@ -29,10 +37,39 @@ public class Controller {
         this.medicoSelezionato = medicoSelezionato;
     }
 
-    private String medicoSelezionato;
 
-
-    //metodo che crea il medico
+    /**
+     * crea e aggiunge alla lista un medico,
+     * lancia un eccezione se l'identificativo è vuoto esiste già,
+     * lancia un eccezione se la password è incorretta,
+     * lancia un eccezione se un parametro è vuoto
+     *
+     *
+     * @param identificativoMedico codice identificativo del medico
+     * @param password
+     * @param codiceFiscale
+     * @param nome
+     * @param cognome
+     * @param dataDiNascita
+     * @param luogoDiNascita
+     * @param indirizzo
+     * @param tipoMedico
+     * @param rango
+     * @param dataAnnoAssunzione
+     * @param isAmministratore
+     * @throws ParameterMissingException
+     * @throws AuthenticationException
+     * @throws ChiaveException
+     *
+     * @see Medico
+     * @see ChiaveException
+     * @see AuthenticationException
+     * @see ParameterMissingException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void creaMedico(String identificativoMedico,
                            String password,
                            String codiceFiscale,
@@ -99,7 +136,20 @@ public class Controller {
         medici.add(m);
     }
 
-
+    /**
+     * crea e aggiunge alla lista un nuovo ospedale,
+     * lancia un eccezione se l'identificativo è vuoto o esiste già,
+     * lancia un eccezione se un parametro è vuoto
+     *
+     * @param identidicativoOspedale codice identificativo dell'ospedale
+     * @param nomeOspedale
+     * @throws ParameterMissingException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void creaOspedale(String identidicativoOspedale,
                              String nomeOspedale) throws ParameterMissingException, ChiaveException {
 
@@ -119,7 +169,30 @@ public class Controller {
         ospedali.add(o);
     }
 
-
+    /**
+     * crea e aggiunge un nuovo paziente alla lista,
+     * lancia un eccezione se l'identificativo è vuoto o esiste già,
+     * lancia un eccezione se l'id della sala in cui il paziente è associato non esiste in nessun ospedale,
+     * lancia un eccezione se un parametro è vuoto
+     *
+     * @param codiceFiscale
+     * @param nomePersona
+     * @param cognomePersona
+     * @param dataDiNascita
+     * @param luogoDiNascita
+     * @param indirizzo
+     * @param identificativoPaziente codice identificativo del paziente
+     * @param triagePaziente
+     * @param idSalaAssociata sala {@link SalaRicovero} in cui il paziente è associato
+     * @throws ParameterMissingException
+     * @throws ChiaveException
+     *
+     * @see SalaRicovero
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void creaPaziente(String codiceFiscale,
                              String nomePersona,
                              String cognomePersona,
@@ -193,6 +266,18 @@ public class Controller {
         pazienti.add(p);
     }
 
+    /**
+     * scorre la lista per vedere se esiste un paziente in specifico
+     *
+     * @param identificativoPaziente codice identificativo del paziente
+     *
+     * @return true se l'identificativo esiste
+     * @return false se l'identificativo non esiste
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public boolean esisteIdentificativo(String identificativoPaziente) {
         for (Paziente p : pazienti) {
             if (p.getIdentificativoPaziente().equals(identificativoPaziente)) {
@@ -202,15 +287,17 @@ public class Controller {
         return false;
     }
 
-    public boolean esisteIdentificativoMedico(String identificativoMedico) {
-        for (Medico m : medici) {
-            if (m.getIdentificativoMedico().equals(identificativoMedico)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * scorre la lista e verifica se esiste già un ospedale con quel'identificativo
+     *
+     * @param identificativoOspedale codice identificativo dell'ospedale
+     * @return true se l'identificativo esiste
+     * @return false se l'identificativo non esiste
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public boolean esisteIdentificativoOspedale(String identificativoOspedale) {
         for (Ospedale o : ospedali) {
             if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
@@ -220,6 +307,25 @@ public class Controller {
         return false;
     }
 
+    /**
+     * crea e aggiunge un nuovo referto alla lista,
+     * lancia un eccezione se gli id inseriti sono vuoti, oppure non esistono nelle liste,
+     * lancia un eccezione se gli altri parametri sono vuoti
+     *
+     * @param idPaziente codice identificativo del paziente
+     * @param idMedico
+     * @param dataOraArrivo
+     * @param dataOraUscita
+     * @param diagnosi
+     * @param trattamentoEffettuato
+     * @param esitoFinale
+     * @throws ParameterMissingException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void creaReferto(String idPaziente,
                             String idMedico,
                             LocalDateTime dataOraArrivo,
@@ -242,7 +348,7 @@ public class Controller {
             }
         }
         if (!pazienteTrovato) {
-            throw new ChiaveException("Paziente mancante");
+            throw new ChiaveException("il paziente inserito non esiste");
         }
 
 
@@ -262,7 +368,7 @@ public class Controller {
         }
 
         if (!medicoTrovato) {
-            throw new ChiaveException("medico mancante");
+            throw new ChiaveException("il medico inserito non esiste");
         }
 
 
@@ -291,6 +397,22 @@ public class Controller {
         referti.add(r);
     }
 
+    /**
+     * crea e aggiunge alla lista interna dell ospedale una nuova sala operatoria,
+     * lancia un eccezione se l'id ospedale è vuoto oppure non esiste,
+     * lancia un eccezione se l'id della sala operatoria è gia esistente oppure vuota,
+     * lancia un eccezione se gli altri parametri sono vuoti
+     *
+     *
+     * @param identificativOspedale codice identificativo dell'ospedale
+     * @param codiceSala
+     * @throws ParameterMissingException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void creaSalaOperatoria(String identificativOspedale,
                                    String codiceSala) throws ParameterMissingException, ChiaveException {
         if (identificativOspedale.isBlank() || !esisteIdentificativoOspedale(identificativOspedale)) {
@@ -313,6 +435,17 @@ public class Controller {
         }
     }
 
+    /**
+     * verifica se esiste gia uno specifico ospedale
+     *
+     * @param identificativoOspedale
+     * @return true se l'ospedale esiste
+     * @return false se l'ospedale non esiste
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public boolean esisteOspedale(String identificativoOspedale) {
         for (Ospedale o : ospedali) {
             if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
@@ -322,6 +455,24 @@ public class Controller {
         return false;
     }
 
+    /**
+     * crea e aggiunge alla lista interna dell'ospedale{@link Ospedale} una nuova sala ricovero,
+     * lancia un eccezione se l'id ospedale è vuoto oppure non esiste nella lista,
+     * lancia un eccezione se gli altri parametri sono vuoti
+     *
+     * @param identificativoOspedale codice identificativo dell'ospedale
+     * @param codiceSala codice identificativo della nuova sala
+     * @param tipoSala
+     * @param numeroLetti
+     * @throws ParameterMissingException
+     * @throws ChiaveException
+     *
+     * @see Ospedale
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void creaSalaRicovero(String identificativoOspedale,
                                  String codiceSala,
                                  String tipoSala,
@@ -355,6 +506,24 @@ public class Controller {
         }
     }
 
+    /**
+     * effettua il login di un utente gia registrato,
+     * lancia un eccezione se l'id e password sono vuoti,
+     * lancia un eccezione se l'id del medico non esiste,
+     * lancia un eccezione se la password inserita è sbagliata
+     *
+     * @param identificativo codice identificativo del medico
+     * @param password password del medico
+     *
+     * @return true se il login va a buon fine senza lanciare eccezioni
+     * @throws ChiaveException
+     * @throws AuthenticationException
+     * @throws InvalidParameterException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public boolean login(String identificativo,
                          String password) throws ChiaveException, AuthenticationException, InvalidParameterException {
 
@@ -385,12 +554,20 @@ public class Controller {
         return true;
     }
 
-
-    public List<String> getDisponibiliSaleRicovero() {
-
-        return new ArrayList<>();
-    }
-
+    /**
+     * ritorna una lista di stringhe contenente le informazioni di un medico,
+     * lancia un eccezione se l'identificativo inserito non corrisponde alla lista di medico
+     *
+     * @param idMedico codice identificativo del medico
+     * @return medico, l'array di stringhe delle informazioni della classe {@link Medico}
+     * @throws ChiaveException
+     *
+     * @see Medico
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public String[] getMedico(String idMedico) throws ChiaveException {
         for (Medico me : medici) {
             if (me.getIdentificativoMedico().equals(idMedico)) {
@@ -419,6 +596,18 @@ public class Controller {
         throw new ChiaveException("id medico non trovato");
     }
 
+    /**
+     * ritorna una lista di stringhe della classe {@link Paziente},
+     * lancia un eccezione se l'idPaziente non esiste nella lista pazienti
+     *
+     * @param idPaziente codice identificativo del paziente
+     * @return paziente, l'array di stringhe delle informazioni della classe{@link Paziente}
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public String[] getPaziente(String idPaziente) throws ChiaveException {
         for (Paziente pa : pazienti) {
             if (pa.getIdentificativoPaziente().equals(idPaziente)) {
@@ -445,6 +634,16 @@ public class Controller {
         throw new ChiaveException("paziente non trovato");
     }
 
+    /**
+     * verifica se è gia allocato un medico in una sala operatoria
+     *
+     * @param identificativoMedico codice identificativo del medico
+     * @return true se il medico è allocato
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public boolean eGiaAllocatoMedSalOp(String identificativoMedico) {
         for (Ospedale o : ospedali) {
             List<SalaOperatoria> listaSale = o.getSaleOperatorie();
@@ -460,6 +659,22 @@ public class Controller {
         return false;
     }
 
+    /**
+     * alloca il medico in una sala operatoria,
+     * lancia un eccezione se i campi sono vuoti,
+     * lancia un eccezione se l'id del medico non esiste nella lista di medici,
+     * lancia un eccezione se l'id della sala operatoria non esiste nella lista interna delle sale operatorie,
+     * lancia un eccezione se il medico esiste gia in un altra sala operatoria oppure in una sala ricovero
+     *
+     * @param idMedico codice identificativo del medico
+     * @param idSalaOperatoria codice identificativo della sala operatoria
+     * @throws ChiaveException
+     * @throws IllegalStateException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void allocaMedicoSalaOperatoria(String idMedico, String idSalaOperatoria) throws ChiaveException, IllegalStateException {
         if (idMedico.isBlank()) {
             throw new ChiaveException("campo id paziente vuoto");
@@ -511,7 +726,22 @@ public class Controller {
             throw new ChiaveException("sala operatoria non trovata");
         }
     }
-
+    /**
+     * alloca il medico in una sala ricovero,
+     * lancia un eccezione se i campi sono vuoti,
+     * lancia un eccezione se l'id del medico non esiste nella lista di medici,
+     * lancia un eccezione se l'id della sala ricovero non esiste nella lista interna delle sale ricovero,
+     * lancia un eccezione se il medico esiste gia in un altra sala ricovero oppure in una sala operatoria
+     *
+     * @param idMedico codice identificativo del medico
+     * @param idSalaRicovero codice identificativo della sala ricovero
+     * @throws ChiaveException
+     * @throws IllegalStateException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void allocaMedicoSalaRicovero(String idMedico, String idSalaRicovero) throws ChiaveException, IllegalStateException {
         if (idMedico.isBlank()) {
             throw new ChiaveException("campo id paziente vuoto");
@@ -562,7 +792,16 @@ public class Controller {
         }
     }
 
-
+    /**
+     * verifica se è gia allocato un paziente in una sala operatoria
+     *
+     * @param identificativoPaziente codice identificativo del medico
+     * @return true se il medico è allocato
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public boolean eGiaAllocatoPazSalOp(String identificativoPaziente) {
         for (Ospedale o : ospedali) {
             List<SalaOperatoria> listaSale = o.getSaleOperatorie();
@@ -577,6 +816,23 @@ public class Controller {
         return false;
     }
 
+    /**
+     * alloca il paziente in una sala ricovero,
+     * lancia un eccezione se i campi sono vuoti,
+     * lancia un eccezione se l'id del paziente non esiste nella lista di pazienti,
+     * lancia un eccezione se l'id della sala ricovero non esiste nella lista interna delle sale ricovero,
+     * lancia un eccezione se il paziente esiste gia in un altra sala ricovero oppure in una sala operatoria,
+     * lancia un eccezione se la sala ricovero è piena
+     *
+     * @param idPaziente codice identificativo del paziente
+     * @param idSalaRicovero codice identificativo della sala ricovero
+     * @throws ChiaveException
+     * @throws IllegalStateException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void allocaPazienteSalaRicovero(String idPaziente, String idSalaRicovero) throws ChiaveException, IllegalStateException {
         if (idPaziente.isBlank()) {
             throw new ChiaveException("campo id paziente vuoto");
@@ -636,6 +892,23 @@ public class Controller {
 
     }
 
+    /**
+     * alloca il paziente in una sala operatoria,
+     * lancia un eccezione se i campi sono vuoti,
+     * lancia un eccezione se l'id del paziente non esiste nella lista di pazienti,
+     * lancia un eccezione se l'id della sala operatoria non esiste nella lista interna delle sale operatorie,
+     * lancia un eccezione se il paziente esiste gia in un altra sala operatoria oppure in una sala ricovero,
+     * lancia un eccezione se la sala operatoria è già occupata da un altro paziente
+     *
+     * @param idPaziente codice identificativo del paziente
+     * @param idSalaOperatoria codice identificativo della sala operatoria
+     * @throws ChiaveException
+     * @throws IllegalStateException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void allocaPazienteSalaOperatoria(String idPaziente, String idSalaOperatoria) throws ChiaveException, IllegalStateException {
 
         if (idPaziente.isBlank()) {
@@ -674,6 +947,18 @@ public class Controller {
 
     }
 
+    /**
+     * metodo che restituisce un oggetto{@link Paziente} da allocare in una sala ricovero
+     *
+     * @param idPaziente codice identificativo del paziente
+     * @return pazienteDaAllocare, l'oggetto {@link Paziente}
+     * @throws ChiaveException
+     * @throws IllegalStateException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     private Paziente getPazienteDaAllocare(String idPaziente) throws ChiaveException, IllegalStateException {
         Paziente pazienteDaAllocare = null;
         for (Paziente pa : pazienti) {
@@ -695,6 +980,21 @@ public class Controller {
         }
     }
 
+    /**
+     * dealloca un paziente da una sala operatoria,
+     * lancia un eccezione se i campi sono vuoti,
+     * lancia un eccezione se non trova un paziente esistente nella lista,
+     * lancia un eccezione se il paziente non si trova in una sala operatoria
+     *
+     *
+     * @param idPaziente codice identificativo del paziente
+     * @throws IllegalStateException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void deallocaPazienteSalaOperatoria(String idPaziente) throws IllegalStateException, ChiaveException {
         if (idPaziente.isBlank()) {
             throw new ChiaveException("id paziente vuoto");
@@ -724,6 +1024,21 @@ public class Controller {
 
     }
 
+    /**
+     * dealloca un paziente da una sala ricovero,
+     * lancia un eccezione se i campi sono vuoti,
+     * lancia un eccezione se non trova un paziente esistente nella lista,
+     * lancia un eccezione se il paziente non si trova in una sala ricovero
+     *
+     *
+     * @param idPaziente codice identificativo del paziente
+     * @throws IllegalStateException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void deallocaPazienteSalaRicovero(String idPaziente) throws IllegalStateException, ChiaveException {
         if (idPaziente.isBlank()) {
             throw new ChiaveException("campo paziente vuoto");
@@ -753,7 +1068,21 @@ public class Controller {
         }
     }
 
-
+    /**
+     * dealloca un medico da una sala operatoria,
+     * lancia un eccezione se i campi sono vuoti,
+     * lancia un eccezione se non trova un medico esistente nella lista,
+     * lancia un eccezione se il medico non si trova in una sala operatoria
+     *
+     *
+     * @param idMedico codice identificativo del medico
+     * @throws IllegalStateException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void deallocaMedicoSalaOperatoria(String idMedico) throws ChiaveException, IllegalStateException {
 
         if (idMedico.isBlank()) {
@@ -779,6 +1108,21 @@ public class Controller {
 
     }
 
+    /**
+     * dealloca un medico da una sala ricovero,
+     * lancia un eccezione se i campi sono vuoti,
+     * lancia un eccezione se non trova un medico esistente nella lista,
+     * lancia un eccezione se il medico non si trova in una sala ricovero
+     *
+     *
+     * @param idMedico codice identificativo del medico
+     * @throws IllegalStateException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void deallocaMedicoSalaRicovero(String idMedico) throws IllegalStateException, ChiaveException {
         Medico medicoDaDeallocare = null;
         for (Medico me : medici) {
@@ -801,6 +1145,18 @@ public class Controller {
         medicoDaDeallocare.setSalaAssociata(null);
     }
 
+    /**
+     * restituisce un array di stringhe contenente le informazioni della {@link SalaRicovero},
+     * lancia un eccezione se la sala ricovero non esiste
+     *
+     * @param idSalaRicovero
+     * @return salaRicovero, l'array di stringhe
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public String[] getSalaRicovero(String idSalaRicovero) throws ChiaveException {
 
         for (Ospedale o : ospedali) {
@@ -819,13 +1175,25 @@ public class Controller {
         throw new ChiaveException("sala ricovero non trovata");
     }
 
-    public String[] getSalaOperatoria(String idSalaRicovero) throws ChiaveException {
+    /**
+     * restituisce un array di stringhe contenente le informazioni della {@link SalaOperatoria},
+     * lancia un eccezione se la sala operatoria non esiste
+     *
+     * @param idSalaOperatoria
+     * @return salaOperatoria, l'array di stringhe
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
+    public String[] getSalaOperatoria(String idSalaOperatoria) throws ChiaveException {
 
         for (Ospedale o : ospedali) {
             String[] salaOperatoria = new String[2];
             List<SalaOperatoria> listaSale = o.getSaleOperatorie();
             for (SalaOperatoria so : listaSale) {
-                if (so.getCodiceSala().equals(idSalaRicovero)) {
+                if (so.getCodiceSala().equals(idSalaOperatoria)) {
                     if (so.getPazienteAssociato() != null) {
                         salaOperatoria[0] = so.getPazienteAssociato().getIdentificativoPaziente();
                     } else {
@@ -842,15 +1210,27 @@ public class Controller {
                 }
             }
         }
-        throw new ChiaveException("sala ricovero non trovata");
+        throw new ChiaveException("sala operatoria non trovata");
     }
 
-    public List<String> getIdMediciSalaOperatoria(String idSalaRicovero) throws ChiaveException {
+    /**
+     * ritorna una lista di stringhe di id dei medici associati alla sala operatoria
+     * lancia un eccezione se la sala operatoria non esiste
+     *
+     * @param idSalaOperatoria codice identificativo della sala operatoria
+     * @return idMediciAssociati, la lista di stringhe
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
+    public List<String> getIdMediciSalaOperatoria(String idSalaOperatoria) throws ChiaveException {
         List<String> idMediciAssociati = new ArrayList<>();
         for (Ospedale o : ospedali) {
             List<SalaOperatoria> listaSale = o.getSaleOperatorie();
             for (SalaOperatoria so : listaSale) {
-                if (so.getCodiceSala().equals(idSalaRicovero)) {
+                if (so.getCodiceSala().equals(idSalaOperatoria)) {
                     List<Medico> listaMedici = so.getMediciAssociati();
                     for (Medico me : listaMedici) {
                         idMediciAssociati.add(me.getIdentificativoMedico());
@@ -859,9 +1239,18 @@ public class Controller {
                 }
             }
         }
-        throw new ChiaveException("sala ricovero non trovata");
+        throw new ChiaveException("sala operatoria non trovata");
     }
 
+    /**
+     * ritorna una lista di stringhe dei medici disponibili
+     *
+     * @return mediciDisponibili, la lista di stringhe
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public List<String> getDisponibilitaMedici() {
 
         List<String> mediciDisponibili = new ArrayList<>();
@@ -883,6 +1272,15 @@ public class Controller {
         return mediciDisponibili;
     }
 
+    /**
+     * ritorna una lista di stringhe delle sale operatorie disponibili
+     *
+     * @return saleDisponibili, la lista di stringhe
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public List<String>getDisponibilitaSalaOperatoria(String identificativoOspedale){
         List<String>saleDisponibili= new ArrayList<>();
 
@@ -901,6 +1299,15 @@ public class Controller {
         return saleDisponibili;
     }
 
+    /**
+     * ritorna una lista di stringhe delle sale ricovero disponibili
+     *
+     * @return saleDisponibili, la lista di stringhe
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public List<String>getDisponibilitaSalaRicovero(String identificativoOspedale){
         List<String>saleDisponibili= new ArrayList<>();
 
@@ -920,6 +1327,19 @@ public class Controller {
         return saleDisponibili;
     }
 
+    /**
+     * rimuove un medico dalla lista,
+     * lancia un eccezione se il campo medico è vuoto,
+     * lancia un eccezione se il medico è impegnato in una sala operatoria o in una sala ricovero
+     *
+     * @param idMedico codice identificativo del medico
+     * @throws IllegalStateException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void rimuoviMedico(String idMedico)throws IllegalStateException, ChiaveException{
         if(idMedico.isBlank()){
             throw new IllegalStateException("id medico vuoto");
@@ -952,6 +1372,19 @@ public class Controller {
         }
     }
 
+    /**
+     * rimuove un ospedale dalla lista,
+     * lancia un eccezione se il campo id ospedale è vuoto,
+     * lancia un eccezione se l'ospedale ha sale occupate da pazienti e medici
+     *
+     * @param idOspedale codice identificativo dell'ospedale
+     * @throws IllegalStateException
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public void rimuoviOspedale(String idOspedale) throws ChiaveException, IllegalStateException{
         if(idOspedale.isBlank()){
             throw new ChiaveException("id ospedale vuoto");
@@ -1000,5 +1433,21 @@ public class Controller {
             }
         }
         ospedali.remove(ospedaleTrovato);
+    }
+
+    /**
+     * verifica se l'utente è amministratore,
+     * lancia un eccezione se non è un amministratore
+     * @param idUtente codice identificativo dell'utente
+     * @throws IllegalAccessException
+     */
+    public void verificaAmministratore(String idUtente)throws IllegalAccessException{
+        for(Medico m:medici){
+            if (m.getIdentificativoMedico().equals(idUtente)){
+                if(!m.getIsAmministratore()){
+                    throw new IllegalAccessException("solo gli amministratori possono usare questa funzione");
+                }
+            }
+        }
     }
 }

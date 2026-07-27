@@ -28,6 +28,24 @@ public class Ospedale {
 	}
 	public String getIdentificativoOspedale(){return  identificativoOspedale;}
 
+    //altri metodi
+
+	/**
+	 * aggiunge alla lista una nuova sala ricovero
+	 * lancia un eccezione se esiste gia una sala con lo stesso codiceSala di quello inserito nel parametro
+	 *
+	 * @param codiceSala il codice della sala nuova {@link SalaRicovero}
+	 * @param tipoSala la tipologia della sala nuova {@link SalaRicovero}
+	 * @param numeroLetti il numero dei letti che avra la sala nuova {@link SalaRicovero}
+	 * @throws ChiaveException
+	 *
+	 * @see SalaRicovero
+	 * @see ChiaveException
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 	public void addSalaRicovero(String codiceSala,
 								String tipoSala,
 								int numeroLetti) throws ChiaveException{
@@ -41,6 +59,20 @@ public class Ospedale {
 		saleRicovero.add(salaRicovero);
 	}
 
+	/**
+	 * aggiunge alla lista una nuova sala operatoria
+	 * lancia un eccezione se esiste gia una sala con lo stesso codiceSala di quello inserito nel parametro
+	 *
+	 * @param codiceSala il codice della sala nuova {@link SalaOperatoria}
+	 * @throws ChiaveException
+	 *
+	 * @see SalaOperatoria
+	 * @see ChiaveException
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 	public void addSalaOperatoria(String codiceSala) throws ChiaveException {
 		for(SalaOperatoria so : saleOperatorie){
 			if(so.getCodiceSala().equals(codiceSala)){
@@ -51,6 +83,16 @@ public class Ospedale {
 		SalaOperatoria s = new SalaOperatoria(codiceSala);
 		saleOperatorie.add(s);
 	}
+
+	/**
+	 * restituisce la lista delle sale operatorie
+	 *
+	 * @see SalaOperatoria
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 	public List<SalaOperatoria> getSaleOperatorie(){
 		return saleOperatorie;
 	}
@@ -64,6 +106,15 @@ public class Ospedale {
 		throw new ChiaveException("Sala " + codiceSala + " non trovata");
 	}
 
+	/**
+	 * restituisce la lista delle sale ricovero
+	 *
+	 * @see SalaRicovero
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 	public List<SalaRicovero> getSaleRicovero(){
 		return saleRicovero;
 	}

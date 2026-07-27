@@ -39,13 +39,7 @@ public String getCodiceSala() {
 	return codiceSala;
 }
 
-public void stampaMediciAssociati() {
-	for(int i=0; i<mediciAssociati.size(); i++) {
-	mediciAssociati.get(i);	
-	}
-	}
-
-	public List<Medico> getMediciAssociati(){
+public List<Medico> getMediciAssociati(){
 		return mediciAssociati;
 	}
 	public Medico getMedico(String codiceMedico) throws ChiaveException {
@@ -56,6 +50,7 @@ public void stampaMediciAssociati() {
 		}
 		throw new ChiaveException("Medico " + codiceMedico + " non trovata");
 	}
+
 public Paziente getPazienteAssociato() {
 	return pazienteAssociato;
 }
@@ -63,14 +58,44 @@ public boolean getIsDisponibile() {
 	return isDisponibile;
 }
 
+
+    //altri metodi
+	/**
+	 * occupa la sala operatoria
+	 * lancia un eccezione se la sala operatoria è gia occupata
+	 *
+	 * @param pazienteCheOccupa l'oggetto {@link Paziente} da far occupare la sala operatoria
+	 * @throws IllegalStateException
+	 *
+	 * @see Paziente
+	 * @see IllegalStateException
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 public void occupaSala(Paziente pazienteCheOccupa)throws IllegalStateException {
 	if(pazienteAssociato==null) {
 		setPazienteAssociato(pazienteCheOccupa);
 		setIsDisponibile(false);
 		System.out.println("il paziente è entrato in sala operatoria, la stanza" + getCodiceSala() + " è occupata");
 	}
-	throw new IllegalStateException("la sala operatoria" + getCodiceSala() +  "è gia occupata");
+	else {
+		throw new IllegalStateException("la sala operatoria " + getCodiceSala() + "è gia occupata");
+	}
 }
+	/**
+	 * libera la sala operatoria
+	 * lancia un eccezione se la sala operatoria è gia vuota
+	 *
+	 * @throws IllegalStateException
+	 *
+	 * @see IllegalStateException
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 public void liberaSala() throws IllegalStateException{
 	if(pazienteAssociato==null) {
 		throw new IllegalStateException("la sala è gia vuota");
@@ -96,12 +121,26 @@ public void liberaSala() throws IllegalStateException{
 	mediciAssociati.add(medicoDaAggiungere);
 }
 
+	/**
+	 * rimuove un medico alla lista dei medici associati
+	 * lancia un eccezione se l'oggetto dato non risulta nella lista
+	 *
+	 * @param medicoDaRimuovere l'oggetto {@link Medico} da rimuovere alla lista di medici associati
+	 * @throws IllegalStateException
+	 *
+	 * @see Medico
+	 * @see IllegalStateException
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 public void rimuoviMedico(Medico medicoDaRimuovere)throws IllegalStateException{
 	if(medicoDaRimuovere!=null) {
 	mediciAssociati.remove(medicoDaRimuovere);
 	}
 	else {
-		 throw new IllegalStateException("non esiste quel medico registrato nel database");
+		 throw new IllegalStateException("non esiste quel medico registrato nel programma");
 		}
 	}
 }

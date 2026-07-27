@@ -35,6 +35,7 @@ public class PaginaPrincipale {
     private JButton logOutButton;
     private JButton rimuoviMedicoButton;
     private JButton rimuoviOspedaleButton;
+    private JLabel idUtente;
     private Controller controller;
 
     //costruttore
@@ -46,13 +47,19 @@ public class PaginaPrincipale {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        idUtente.setText(controller.getMedicoSelezionato());
 
 
         //listener di creazione
         creaOspedaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CreaOspedale(frame,controller);
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new CreaOspedale(frame, controller);
+                } catch (IllegalAccessException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -61,22 +68,36 @@ public class PaginaPrincipale {
         creaRefertoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                CreaReferto referto=new CreaReferto(frame,controller);
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new CreaReferto(frame,controller);
+                } catch (IllegalAccessException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
         creaSalaOperatoriaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CreaSalaOperatoria(frame,controller);
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new CreaSalaOperatoria(frame,controller);
+                } catch (IllegalAccessException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
         creaSalaRicoveroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CreaSalaRicovero(frame, controller);
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new CreaSalaRicovero(frame, controller);
+                } catch (IllegalAccessException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -85,8 +106,13 @@ public class PaginaPrincipale {
         inserirePaziente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new InserirePaziente(frame,controller);
+                } catch (IllegalAccessException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
 
-                new InserirePaziente(frame,controller);
             }
         });
 
@@ -94,14 +120,24 @@ public class PaginaPrincipale {
         rimuoviMedicoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new RimuoviMedico(frame, controller);
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new RimuoviMedico(frame, controller);
+                } catch (IllegalAccessException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
         rimuoviOspedaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new RimuoviOspedale(frame, controller);
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new RimuoviOspedale(frame, controller);
+                } catch (IllegalAccessException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -147,7 +183,12 @@ public class PaginaPrincipale {
         gestioneOspedaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new GestioneOspedale(frame,controller);
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new GestioneOspedale(frame,controller);
+                } catch (IllegalAccessException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 

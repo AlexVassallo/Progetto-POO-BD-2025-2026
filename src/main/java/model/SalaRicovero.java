@@ -47,6 +47,18 @@ public int getLettiLiberi() {
 }
 
 //metodi
+	/**
+	 * occupa un letto all'interno della sala ricovero
+	 * lancia un eccezione se la sala ricovero è piena
+	 *
+	 * @throws IllegalStateException
+	 *
+	 * @see IllegalStateException
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 public void occupaLetto()throws  IllegalStateException {
 	if(!isDisponibile()) {
 		throw new IllegalStateException("la sala ricovero" + getCodiceSala() + "è piena");
@@ -54,15 +66,35 @@ public void occupaLetto()throws  IllegalStateException {
 	lettiLiberi--;
 }
 
+	/**
+	 * libera un letto all'interno della sala ricovero
+	 * lancia un eccezione se la sala ricovero è vuota
+	 *
+	 * @throws IllegalStateException
+	 *
+	 * @see IllegalStateException
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 public void liberaLetto() throws IllegalStateException {
 	if(lettiLiberi<numeroLetti) {
 		lettiLiberi++;
 	}
     else {
-		throw new IllegalStateException("i letti occupati sono vuoti, forse volevi liberare i letti di un altra sala?");
+		throw new IllegalStateException("non ci sono letti occupati in questa sala, forse volevi liberare i letti di un altra sala?");
 	     }
 }
 
+	/**
+	 * verifica se la sala ricovero è disponibile
+	 *
+	 *
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
+	 */
 public boolean isDisponibile() {
 	if(lettiLiberi==0) {
 		return false;
