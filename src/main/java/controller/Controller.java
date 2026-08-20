@@ -1,7 +1,9 @@
 package controller;
 
+import dao.OspedaleDAO;
 import model.*;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +122,7 @@ public class Controller {
                 throw new ChiaveException("identificatico medico già esistente");
             }
         }
+        //salvataggio obsoleto ma ancora funzionante
         Medico m = new Medico(codiceFiscale,
                 nome,
                 cognome,
@@ -134,6 +137,8 @@ public class Controller {
                 isAmministratore,
                 password);
         medici.add(m);
+        //salvataggio nuovo suldatabase
+
     }
 
     /**
@@ -151,7 +156,7 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public void creaOspedale(String identidicativoOspedale,
-                             String nomeOspedale) throws ParameterMissingException, ChiaveException {
+                             String nomeOspedale) throws ParameterMissingException, ChiaveException, SQLException {
 
         if (identidicativoOspedale.isBlank()) {
             throw new ChiaveException("identificativo mancante");
@@ -164,9 +169,14 @@ public class Controller {
         if (nomeOspedale.isBlank()) {
             throw new ParameterMissingException("nome ospedale mancante");
         }
-
+        //salvataggio obsoleto ma ancora funzionante
         Ospedale o = new Ospedale(identidicativoOspedale, nomeOspedale);
         ospedali.add(o);
+
+        //salvataggio sul database
+        OspedaleDAO ospedaleDAO = new OspedaleDAO();
+
+        ospedaleDAO.salvaOspedale(o);
     }
 
     /**

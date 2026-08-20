@@ -7,6 +7,7 @@ import exceptions.ParameterMissingException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class CreaOspedale {
     //attributi
@@ -37,7 +38,7 @@ public class CreaOspedale {
                  frameChiamante.setVisible(true);
                  frame.dispose();
              }
-             catch (ChiaveException | ParameterMissingException ex){
+             catch (ChiaveException | ParameterMissingException | SQLException ex){
                  JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
              }
 
