@@ -7,6 +7,7 @@ import java.time.*;
 import java.sql.*;
     public class MedicoDAO {
         Connection connection;
+
         public MedicoDAO() throws SQLException {
             try{
                 connection= ConnessioneDatabase.getInstance().connection;
@@ -130,14 +131,14 @@ import java.sql.*;
                     p.data_di_nascita,
                     p.luogo_di_nascita,
                     p.indirizzo,
-                    m.identificatico_medico,
+                    m.identificativo_medico,
                     m.tipo_medico,
                     m.rango,
                     m.data_anno_assunzione,
                     m.is_amministratore,
                     m.password,
                     m.codice_sala_ricovero
-                    FROM medico m,
+                    FROM medico m
                     JOIN Persona p ON m.codice_fiscale = p.codice_fiscale
                     WHERE m.identificativo_medico=?;
                     """;
@@ -148,6 +149,8 @@ import java.sql.*;
                 throw new SQLDataException("medico non trovato");
 
             }
+            String codiceSala = rs.getString("codice_sala_ricovero");
+
             return new Medico(rs.getString(1),
                     rs.getString(2),
                     rs.getString(3),
@@ -158,10 +161,9 @@ import java.sql.*;
                     rs.getString(8),
                     rs.getString(9),
                     rs.getTimestamp(10) != null ? rs.getTimestamp(10).toLocalDateTime() : null,
-                    //domani fix
-                    rs.getString(11),
-                    rs.getBoolean(12),
-                    rs.getString(13));
+                    (codiceSala != null) ? new SalaRicoveroDAO().getSalaRicovero(codiceSala) : null,
+                    rs.getBoolean(11),
+                    rs.getString(12));
 
         }
 
