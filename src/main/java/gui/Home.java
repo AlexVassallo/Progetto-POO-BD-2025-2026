@@ -7,6 +7,7 @@ import exceptions.ParameterMissingException;
 import javax.naming.AuthenticationException;
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 
 
 public class Home {
@@ -32,7 +33,7 @@ public class Home {
                     frame.dispose();
                     PaginaPrincipale paginaPrincipale=new PaginaPrincipale(frame,controller);
                 }
-                catch (AuthenticationException | ParameterMissingException | ChiaveException ex){
+                catch (AuthenticationException | ParameterMissingException | ChiaveException | SQLException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
 
                 }

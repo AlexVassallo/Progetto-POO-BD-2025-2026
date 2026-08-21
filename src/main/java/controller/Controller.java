@@ -1,6 +1,8 @@
 package controller;
 
+import dao.MedicoDAO;
 import dao.OspedaleDAO;
+import dao.SalaRicoveroDAO;
 import model.*;
 
 import java.sql.SQLException;
@@ -83,7 +85,7 @@ public class Controller {
                            String tipoMedico,
                            String rango,
                            LocalDateTime dataAnnoAssunzione,
-                           boolean isAmministratore) throws ParameterMissingException, AuthenticationException, ChiaveException {
+                           boolean isAmministratore) throws ParameterMissingException, AuthenticationException, ChiaveException, SQLException {
         if (identificativoMedico.isBlank()) {
             throw new ChiaveException("identificativo mancante");
         }
@@ -137,8 +139,11 @@ public class Controller {
                 isAmministratore,
                 password);
         medici.add(m);
-        //salvataggio nuovo suldatabase
 
+        //salvataggio nuovo suldatabase
+        MedicoDAO medicoDAO= new MedicoDAO();
+        medicoDAO.aggiungiMedico(m);
+        medicoDAO.closeConnection();
     }
 
     /**
@@ -175,8 +180,10 @@ public class Controller {
 
         //salvataggio sul database
         OspedaleDAO ospedaleDAO = new OspedaleDAO();
-
         ospedaleDAO.salvaOspedale(o);
+        ospedaleDAO.closeConnection();
+
+
     }
 
     /**
@@ -486,7 +493,7 @@ public class Controller {
     public void creaSalaRicovero(String identificativoOspedale,
                                  String codiceSala,
                                  String tipoSala,
-                                 int numeroLetti) throws ParameterMissingException, ChiaveException {
+                                 int numeroLetti) throws ParameterMissingException, ChiaveException, SQLException {
 
         if (identificativoOspedale.isBlank() || !esisteOspedale(identificativoOspedale)) {
             throw new ChiaveException("identificativo ospedale inesistente oppure vuoto");
@@ -510,9 +517,12 @@ public class Controller {
             }
             if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
                 o.addSalaRicovero(codiceSala, tipoSala, numeroLetti);
+                SalaRicovero salaDAO= o.getSalaRicovero(codiceSala);
+                //aggiunta al database
+                SalaRicoveroDAO salaRicoveroDAO= new SalaRicoveroDAO();
+                salaRicoveroDAO.aggiungiSala(salaDAO, identificativoOspedale);
+                salaRicoveroDAO.closeConnection();
             }
-
-
         }
     }
 
@@ -535,9 +545,9 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public boolean login(String identificativo,
-                         String password) throws ChiaveException, AuthenticationException, InvalidParameterException {
+                         String password) throws ChiaveException, AuthenticationException, InvalidParameterException, SQLException {
 
-        Medico medicoTrovato = null;
+
 
         if (identificativo.isBlank()) {
             throw new ChiaveException("identificativo vuoto");
@@ -545,12 +555,9 @@ public class Controller {
         if (password.isBlank()) {
             throw new ChiaveException("password vuota");
         }
-        for (Medico me : medici) {
-            if (me.getIdentificativoMedico().equals(identificativo)) {
-                medicoTrovato = me;
-                break;
-            }
-        }
+
+        MedicoDAO medicoDAO=new MedicoDAO();
+        Medico medicoTrovato= medicoDAO.getMedico(identificativo);
 
         if (medicoTrovato == null) {
             throw new AuthenticationException("medico non trovato, prova a fare registrati");
@@ -561,6 +568,7 @@ public class Controller {
         }
 
         setMedicoSelezionato(identificativo);
+        medicoDAO.closeConnection();
         return true;
     }
 
@@ -1350,18 +1358,14 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public void rimuoviMedico(String idMedico)throws IllegalStateException, ChiaveException{
+    public void rimuoviMedico(String idMedico) throws IllegalStateException, ChiaveException, SQLException {
         if(idMedico.isBlank()){
             throw new IllegalStateException("id medico vuoto");
         }
-        Medico medicoTrovato=null;
 
-        for(Medico m: medici){
-            if(m.getIdentificativoMedico().equals(idMedico)){
-                medicoTrovato=m;
-                break;
-            }
-        }
+        MedicoDAO medicoDAO=new MedicoDAO();
+        Medico medicoTrovato= medicoDAO.getMedico(idMedico);
+
         if(medicoTrovato==null){
             throw new ChiaveException("medico non trovato");
         }
@@ -1370,12 +1374,14 @@ public class Controller {
         if(eGiaAllocatoMedSalOp(medicoTrovato.getIdentificativoMedico())){
             throw new IllegalStateException("il medico si trova in una sala operatoria, impossibile rimuoverlo");
         }
+
         SalaRicovero sala=null;
         try{
             sala=medicoTrovato.getSalaAssociata();
         }
         catch (Exception e){
-            medici.remove(medicoTrovato);
+            medicoDAO.rimuoviMedico(medicoTrovato.getIdentificativoMedico());
+            medicoDAO.closeConnection();
         }
         if(sala!=null){
             throw new IllegalStateException("il medico si trova in una sala ricovero, impossibile rimuoverlo");
@@ -1395,7 +1401,7 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public void rimuoviOspedale(String idOspedale) throws ChiaveException, IllegalStateException{
+    public void rimuoviOspedale(String idOspedale) throws ChiaveException, IllegalStateException, SQLException {
         if(idOspedale.isBlank()){
             throw new ChiaveException("id ospedale vuoto");
         }
@@ -1442,6 +1448,9 @@ public class Controller {
                         " si trovano ancora dei medici");
             }
         }
+        OspedaleDAO ospedaleDAO= new OspedaleDAO();
+        ospedaleDAO.rimuoviOspedale(ospedaleTrovato.getIdentificativoOspedale());
+        ospedaleDAO.closeConnection();
         ospedali.remove(ospedaleTrovato);
     }
 

@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import controller.Controller;
 import exceptions.ChiaveException;
@@ -36,7 +37,7 @@ public class RimuoviOspedale {
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }
-                catch (IllegalStateException | ChiaveException ex){
+                catch (IllegalStateException | ChiaveException | SQLException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
 

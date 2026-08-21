@@ -7,6 +7,7 @@ import exceptions.ParameterMissingException;
 import javax.naming.AuthenticationException;
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -67,7 +68,7 @@ public class Registrati {
                     frame.dispose();
                     frameChiamante.setVisible(true);
                 }
-                catch (ParameterMissingException | ChiaveException | AuthenticationException ex){
+                catch (ParameterMissingException | ChiaveException | AuthenticationException | SQLException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
                 catch (DateTimeParseException ex){

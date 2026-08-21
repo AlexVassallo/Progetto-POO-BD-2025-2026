@@ -12,8 +12,9 @@ public class ConnessioneDatabase {
 	 * Garantisce che ci sia una sola istanza attiva della connessione durante
 	 * il ciclo di vita dell'applicazione. Fornisce inoltre metodi per accedere
 	 * alla connessione stessa in modo sicuro.
-	 * @author Alessandro Pizzi
-	 * @author Emanuele Servillo
+	 * @author Alessio Riccio
+	 * @author Alessandro Vassallo
+	 * @author Emanuele Todisco
 	 * @see Connection
 	 * @see DriverManager
 	 * @see SQLException

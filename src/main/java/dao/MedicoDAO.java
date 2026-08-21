@@ -3,9 +3,12 @@ package dao;
 import database.ConnessioneDatabase;
 import model.Medico;
 import java.time.*;
-
+import java.util.List;
+import java.util.ArrayList;
 import java.sql.*;
-    public class MedicoDAO {
+
+
+public class MedicoDAO {
         Connection connection;
 
         public MedicoDAO() throws SQLException {
@@ -165,6 +168,45 @@ import java.sql.*;
                     rs.getBoolean(11),
                     rs.getString(12));
 
+        }
+        public List<Medico> getMedici() throws SQLException {
+            List<Medico> listaMedici= new ArrayList<>();
+            String query= """
+                    SELECT
+                    p.codice_fiscale,
+                    p.nome_persona,
+                    p.cognome_persona,
+                    p.data_di_nascita,
+                    p.luogo_di_nascita,
+                    p.indirizzo,
+                    m.identificativo_medico,
+                    m.tipo_medico,
+                    m.rango,
+                    m.data_anno_assunzione,
+                    m.is_amministratore,
+                    m.password,
+                    m.codice_sala_ricovero
+                    FROM Medico m
+                    JOIN Persona p ON m.codice_fiscale= p.codice_fiscale
+                    """;
+            PreparedStatement pr= connection.prepareStatement(query);
+            ResultSet resultSet=pr.executeQuery();
+            while(resultSet.next()){
+                listaMedici.add(new Medico(resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getDate(4)!= null ? resultSet.getDate(4).toLocalDate() : null,
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        resultSet.getString(8),
+                        resultSet.getString(9),
+                        resultSet.getTimestamp(10) != null ? resultSet.getTimestamp(10).toLocalDateTime() : null,
+                        resultSet.getString(11)!= null ? new SalaRicoveroDAO().getSalaRicovero(resultSet.getString(13)) : null,
+                        resultSet.getBoolean(12),
+                        resultSet.getString(13)));
+            }
+            return listaMedici;
         }
 
         public void closeConnection() throws SQLException {
