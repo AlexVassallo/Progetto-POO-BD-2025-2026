@@ -47,7 +47,7 @@ public class OspedaleDAO {
         String query= """
                 SELECT * 
                 FROM Ospedale
-                WHERE idOspedale = ?;
+                WHERE identificativo_Ospedale = ?;
                 """;
         PreparedStatement ps= connection.prepareStatement(query);
         ps.setString(1, idOspedale);

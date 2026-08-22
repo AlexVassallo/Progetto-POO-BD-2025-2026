@@ -463,13 +463,22 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public boolean esisteOspedale(String identificativoOspedale) {
+    public boolean esisteOspedale(String identificativoOspedale) throws SQLException {
+        Ospedale ospedaleTrovato;
+        OspedaleDAO ospedaleDAO= new OspedaleDAO();
+        ospedaleTrovato=ospedaleDAO.getOspedale(identificativoOspedale);
+        ospedaleDAO.closeConnection();
+        if(ospedaleTrovato == null) {
+            return false;
+        }
+         return true;
+       /*obsoleta ricerca
         for (Ospedale o : ospedali) {
             if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
                 return true;
             }
         }
-        return false;
+        */
     }
 
     /**
@@ -496,7 +505,7 @@ public class Controller {
                                  int numeroLetti) throws ParameterMissingException, ChiaveException, SQLException {
 
         if (identificativoOspedale.isBlank() || !esisteOspedale(identificativoOspedale)) {
-            throw new ChiaveException("identificativo ospedale inesistente oppure vuoto");
+            throw new ChiaveException("identificativo ospedale inesistente oppure il campo inserito è vuoto");
         }
         if (codiceSala.isBlank()) {
             throw new ChiaveException("codice sala vuoto");
@@ -508,6 +517,20 @@ public class Controller {
             throw new ParameterMissingException("campo numero letti vuoto, oppure minore di 1");
         }
 
+        SalaRicoveroDAO salaRicoveroDAO=new SalaRicoveroDAO();
+        try {
+            if (salaRicoveroDAO.getSalaRicovero(codiceSala) != null) {
+                throw new ChiaveException("Identificativo sala già esistente");
+            }
+            SalaRicovero salaDAO = new SalaRicovero(codiceSala, tipoSala, numeroLetti);
+            salaRicoveroDAO.aggiungiSala(salaDAO, identificativoOspedale);
+        }
+        finally {
+            salaRicoveroDAO.closeConnection();
+        }
+
+
+        /* obsoleta ricerca
         for (Ospedale o : ospedali) {
             List<SalaRicovero> listaSale = o.getSaleRicovero();
             for (SalaRicovero sr : listaSale) {
@@ -515,16 +538,13 @@ public class Controller {
                     throw new ChiaveException("identificativo sala già esistente");
                 }
             }
-            if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
+                        if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
                 o.addSalaRicovero(codiceSala, tipoSala, numeroLetti);
-                SalaRicovero salaDAO= o.getSalaRicovero(codiceSala);
-                //aggiunta al database
-                SalaRicoveroDAO salaRicoveroDAO= new SalaRicoveroDAO();
-                salaRicoveroDAO.aggiungiSala(salaDAO, identificativoOspedale);
-                salaRicoveroDAO.closeConnection();
+
+
             }
+            */
         }
-    }
 
     /**
      * effettua il login di un utente gia registrato,
