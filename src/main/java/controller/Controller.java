@@ -472,13 +472,6 @@ public class Controller {
             return false;
         }
          return true;
-       /*obsoleta ricerca
-        for (Ospedale o : ospedali) {
-            if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
-                return true;
-            }
-        }
-        */
     }
 
     /**
@@ -528,23 +521,7 @@ public class Controller {
         finally {
             salaRicoveroDAO.closeConnection();
         }
-
-
-        /* obsoleta ricerca
-        for (Ospedale o : ospedali) {
-            List<SalaRicovero> listaSale = o.getSaleRicovero();
-            for (SalaRicovero sr : listaSale) {
-                if (sr.getCodiceSala().equals(codiceSala)) {
-                    throw new ChiaveException("identificativo sala già esistente");
-                }
-            }
-                        if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
-                o.addSalaRicovero(codiceSala, tipoSala, numeroLetti);
-
-
-            }
-            */
-        }
+    }
 
     /**
      * effettua il login di un utente gia registrato,
