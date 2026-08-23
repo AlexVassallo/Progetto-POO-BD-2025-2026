@@ -1,6 +1,7 @@
 package dao;
 
 import database.ConnessioneDatabase;
+import model.Medico;
 import model.Paziente;
 import model.SalaOperatoria;
 import java.sql.*;
@@ -98,7 +99,14 @@ public class SalaOperatoriaDAO {
                     if (idPaziente != null) {
                         PazienteDAO pazienteDAO = new PazienteDAO();
                         paziente = pazienteDAO.getPaziente(idPaziente);
+                        so.setIsDisponibile(false);
                     }
+                    else {
+                        so.setIsDisponibile(true);
+                    }
+                    so.setPazienteAssociato(paziente);
+
+
 
                 }
             } catch (SQLException e) {
@@ -109,6 +117,31 @@ public class SalaOperatoriaDAO {
         }
 
     }
+
+    public List<Medico> getMediciPerSalaOperatoria(String idSalaOperatoria){
+        String query= """
+                SELECT
+                p.codice_fiscale,
+                p.nome_persona,
+                p.cognome_persona,
+                p.data_di_nascita,
+                p.luogo_di_nascita,
+                p.indirizzo,
+                m.identificativo_medico,
+                m.tipo_medico,
+                m.rango,
+                m.data_anno_assunzione,
+                m.is_amministratore,
+                m.password,
+                m.codice_sala_ricovero
+                FROM medico m
+                JOIN Persona p ON m.codice_fiscale = p.codice_fiscale
+                JOIN Sala_Operatoria_Medico som ON m.identidicativo_medico = som.identificativo_medico
+                WHERE codice_sala_ricovero= ?;
+                """;
+
+    }
+
     public void closeConnection() throws SQLException{
         connection.close();
     }
