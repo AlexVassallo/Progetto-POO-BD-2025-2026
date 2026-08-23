@@ -11,7 +11,7 @@ import java.sql.*;
 public class MedicoDAO {
         Connection connection;
 
-        public MedicoDAO() throws SQLException {
+        public MedicoDAO() {
             try{
                 connection= ConnessioneDatabase.getInstance().connection;
             } catch (SQLException e) {
@@ -105,7 +105,8 @@ public class MedicoDAO {
                     conn.rollback();
                 }
                 throw e;
-            } finally {
+            }
+            finally {
                 if (conn != null) {
                     conn.setAutoCommit(true); // Ripristina il comportamento standard
                     conn.close();

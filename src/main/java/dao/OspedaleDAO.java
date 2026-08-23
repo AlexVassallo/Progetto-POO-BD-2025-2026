@@ -49,7 +49,7 @@ public class OspedaleDAO {
      */
     public Ospedale getOspedale(String idOspedale) throws SQLException {
         String query= """
-                SELECT * 
+                SELECT identificativo_ospedale, nome_ospedale 
                 FROM Ospedale
                 WHERE identificativo_Ospedale = ?;
                 """;

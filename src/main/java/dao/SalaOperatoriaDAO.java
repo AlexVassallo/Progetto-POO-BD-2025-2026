@@ -1,12 +1,12 @@
 package dao;
 
 import database.ConnessioneDatabase;
-import model.Medico;
+import model.Paziente;
 import model.SalaOperatoria;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class SalaOperatoriaDAO {
     Connection connection;
@@ -77,6 +77,37 @@ public class SalaOperatoriaDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<SalaOperatoria> getSaleOperatoriePerOspedale(String identificativoOspedale){
+        String query= """
+                SELECT codice_sala, is_disponibile, identificativo_paziente
+                FROM sala_operatoria
+                WHERE identificativo_ospedale = ?;
+                """;
+        try{
+            PreparedStatement ps= connection.prepareStatement(query);
+            ps.setString(1,identificativoOspedale);
+            List<SalaOperatoria> listaSale= new ArrayList<>();
+            try{
+                ResultSet rs=ps.executeQuery();
+                while (rs.next()){
+                    SalaOperatoria so= new SalaOperatoria(rs.getString(1));
+                    String idPaziente = rs.getString("identificativo_paziente");
+                    Paziente paziente = null;
+                    if (idPaziente != null) {
+                        PazienteDAO pazienteDAO = new PazienteDAO();
+                        paziente = pazienteDAO.getPaziente(idPaziente);
+                    }
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
     public void closeConnection() throws SQLException{
         connection.close();

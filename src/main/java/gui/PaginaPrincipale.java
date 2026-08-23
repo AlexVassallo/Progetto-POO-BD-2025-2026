@@ -5,6 +5,7 @@ import controller.Controller;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class PaginaPrincipale {
     //attributi
@@ -57,7 +58,7 @@ public class PaginaPrincipale {
                 try {
                     controller.verificaAmministratore(idUtente.getText());
                     new CreaOspedale(frame, controller);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalAccessException | SQLException ex) {
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -71,7 +72,7 @@ public class PaginaPrincipale {
                 try {
                     controller.verificaAmministratore(idUtente.getText());
                     new CreaReferto(frame,controller);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalAccessException | SQLException ex) {
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -83,7 +84,7 @@ public class PaginaPrincipale {
                 try {
                     controller.verificaAmministratore(idUtente.getText());
                     new CreaSalaOperatoria(frame,controller);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalAccessException | SQLException ex) {
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -95,7 +96,7 @@ public class PaginaPrincipale {
                 try {
                     controller.verificaAmministratore(idUtente.getText());
                     new CreaSalaRicovero(frame, controller);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalAccessException | SQLException ex) {
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -109,7 +110,7 @@ public class PaginaPrincipale {
                 try {
                     controller.verificaAmministratore(idUtente.getText());
                     new InserirePaziente(frame,controller);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalAccessException | SQLException ex) {
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
 
@@ -123,7 +124,7 @@ public class PaginaPrincipale {
                 try {
                     controller.verificaAmministratore(idUtente.getText());
                     new RimuoviMedico(frame, controller);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalAccessException | SQLException ex) {
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -135,7 +136,7 @@ public class PaginaPrincipale {
                 try {
                     controller.verificaAmministratore(idUtente.getText());
                     new RimuoviOspedale(frame, controller);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalAccessException | SQLException ex) {
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -186,7 +187,7 @@ public class PaginaPrincipale {
                 try {
                     controller.verificaAmministratore(idUtente.getText());
                     new GestioneOspedale(frame,controller);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalAccessException | SQLException ex) {
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }

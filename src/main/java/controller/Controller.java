@@ -1398,14 +1398,8 @@ public class Controller {
         if(idOspedale.isBlank()){
             throw new ChiaveException("id ospedale vuoto");
         }
-
-        Ospedale ospedaleTrovato=null;
-        for(Ospedale o: ospedali){
-            if(o.getIdentificativoOspedale().equals(idOspedale)){
-                ospedaleTrovato=o;
-                break;
-            }
-        }
+        OspedaleDAO ospedaleDAO=new OspedaleDAO();
+        Ospedale ospedaleTrovato=ospedaleDAO.getOspedale(idOspedale);
         if(ospedaleTrovato==null){
             throw new ChiaveException("ospedale non trovato");
         }
@@ -1441,10 +1435,8 @@ public class Controller {
                         " si trovano ancora dei medici");
             }
         }
-        OspedaleDAO ospedaleDAO= new OspedaleDAO();
-        ospedaleDAO.rimuoviOspedale(ospedaleTrovato.getIdentificativoOspedale());
-        ospedaleDAO.closeConnection();
         ospedali.remove(ospedaleTrovato);
+
     }
 
     /**
@@ -1453,13 +1445,12 @@ public class Controller {
      * @param idUtente codice identificativo dell'utente
      * @throws IllegalAccessException
      */
-    public void verificaAmministratore(String idUtente)throws IllegalAccessException{
-        for(Medico m:medici){
-            if (m.getIdentificativoMedico().equals(idUtente)){
-                if(!m.getIsAmministratore()){
-                    throw new IllegalAccessException("solo gli amministratori possono usare questa funzione");
-                }
-            }
+    public void verificaAmministratore(String idUtente) throws IllegalAccessException, SQLException {
+        MedicoDAO medicoDAO= new MedicoDAO();
+        Medico medico=medicoDAO.getMedico(idUtente);
+        if(!medico.getIsAmministratore()) {
+            throw new IllegalAccessException("solo gli amministratori possono usare questa funzione");
         }
+        medicoDAO.closeConnection();
     }
 }
