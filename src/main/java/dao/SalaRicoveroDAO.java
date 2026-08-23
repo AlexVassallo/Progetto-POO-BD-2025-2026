@@ -19,7 +19,7 @@ public class SalaRicoveroDAO {
         }
     }
 
-    public boolean aggiungiSala(SalaRicovero s, String identificativoOspedale) throws SQLException {
+    public boolean aggiungiSala(SalaRicovero s, String identificativoOspedale){
         String query = """
                 INSERT INTO Sala_ricovero (codice_sala, 
                 identificativo_ospedale, 
@@ -28,24 +28,33 @@ public class SalaRicoveroDAO {
                 letti_liberi)
                 VALUES(?, ?, ?, ?, ?);""";
 
-        PreparedStatement ps = connection.prepareStatement(query);
-        ps.setString(1, s.getCodiceSala());
-        ps.setString(2, identificativoOspedale);
-        ps.setString(3, s.getTipoSala());
-        ps.setInt(4, s.getNumeroLetti());
-        ps.setInt(5, s.getLettiLiberi());
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, s.getCodiceSala());
+            ps.setString(2, identificativoOspedale);
+            ps.setString(3, s.getTipoSala());
+            ps.setInt(4, s.getNumeroLetti());
+            ps.setInt(5, s.getLettiLiberi());
 
-        return ps.execute();
+            return ps.execute();
+        }
+        catch (SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
-    public boolean rimuoviSala(String identificativoSala) throws SQLException {
+    public boolean rimuoviSala(String identificativoSala){
         String query = """
                 DELETE FROM Sala_ricovero
                 WHERE (codice_sala= ?);
                 """;
-        PreparedStatement ps = connection.prepareStatement(query);
-        ps.setString(1, identificativoSala);
-        return ps.execute();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, identificativoSala);
+            return ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -62,7 +71,7 @@ public class SalaRicoveroDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) {
-                    return null; // Ritorna null se la sala non esiste ancora nel DB
+                    return null;
                 }
                 return new SalaRicovero(
                         rs.getString(1),

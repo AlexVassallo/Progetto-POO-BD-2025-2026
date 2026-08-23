@@ -7,6 +7,7 @@ import exceptions.ParameterMissingException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class CreaSalaOperatoria {
     //attributi
@@ -37,7 +38,7 @@ public class CreaSalaOperatoria {
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }
-                catch (ParameterMissingException | ChiaveException ex){
+                catch (ParameterMissingException | ChiaveException | SQLException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
 

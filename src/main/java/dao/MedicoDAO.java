@@ -58,10 +58,10 @@ public class MedicoDAO {
             Connection conn = null;
             try {
                 conn = ConnessioneDatabase.getInstance().connection;
-                // 1. Disabilita l'autocommit per gestire la transazione manualmente
+                // Disabilito l'autocommit per gestire la transazione manualmente
                 conn.setAutoCommit(false);
 
-                // 2. Prima INSERT: Dati anagrafici (ereditati da Persona)
+                // faccio la prima INSERT dei dati anagrafici (dalla tabella persona)
                 try (PreparedStatement ps = conn.prepareStatement(queryPersona)) {
                     ps.setString(1, m.getCodiceFiscale());
                     ps.setString(2, m.getNomePersona());
@@ -72,7 +72,7 @@ public class MedicoDAO {
                     ps.executeUpdate();
                 }
 
-                // 3. Seconda INSERT: Dati specifici del Medico
+                // Seconda INSERT dove inserisco i dati specifici del Medico(salvati sulla tabella medici)
                 try (PreparedStatement ps = conn.prepareStatement(queryMedico)) {
                     ps.setString(1, m.getIdentificativoMedico());
                     ps.setString(2, m.getCodiceFiscale()); // Fa da Foreign Key verso Persona
@@ -87,10 +87,10 @@ public class MedicoDAO {
                         if (m.getSalaAssociata() != null) {
                             ps.setString(8, m.getSalaAssociata().getCodiceSala());
                         } else {
-                            ps.setNull(8, java.sql.Types.VARCHAR);
+                            ps.setNull(8, Types.VARCHAR);
                         }
                     } catch (Exception e) {
-                        ps.setNull(8, java.sql.Types.VARCHAR);
+                        ps.setNull(8, Types.VARCHAR);
                     }
 
                     ps.executeUpdate();
@@ -119,9 +119,13 @@ public class MedicoDAO {
                     FROM medico
                     WHERE (identificativo_medico=?);
                     """;
-            PreparedStatement ps= connection.prepareStatement(queryMedico);
-            ps.setString(1, identificativoMedico);
-            return ps.execute();
+            try {
+                PreparedStatement ps = connection.prepareStatement(queryMedico);
+                ps.setString(1, identificativoMedico);
+                return ps.execute();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
         }
 
@@ -145,28 +149,32 @@ public class MedicoDAO {
                     JOIN Persona p ON m.codice_fiscale = p.codice_fiscale
                     WHERE m.identificativo_medico=?;
                     """;
-            PreparedStatement ps= connection.prepareStatement(query);
-            ps.setString(1, identificativoMedico);
-            ResultSet rs=ps.executeQuery();
-            if(!rs.next()){
-                throw new SQLDataException("medico non trovato");
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                ps.setString(1, identificativoMedico);
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    throw new SQLDataException("medico non trovato");
 
+                }
+                String codiceSala = rs.getString("codice_sala_ricovero");
+
+                return new Medico(rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getDate(4) != null ? rs.getDate(4).toLocalDate() : null,
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getString(8),
+                        rs.getString(9),
+                        rs.getTimestamp(10) != null ? rs.getTimestamp(10).toLocalDateTime() : null,
+                        (codiceSala != null) ? new SalaRicoveroDAO().getSalaRicovero(codiceSala) : null,
+                        rs.getBoolean(11),
+                        rs.getString(12));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            String codiceSala = rs.getString("codice_sala_ricovero");
-
-            return new Medico(rs.getString(1),
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getDate(4) != null ? rs.getDate(4).toLocalDate() : null,
-                    rs.getString(5),
-                    rs.getString(6),
-                    rs.getString(7),
-                    rs.getString(8),
-                    rs.getString(9),
-                    rs.getTimestamp(10) != null ? rs.getTimestamp(10).toLocalDateTime() : null,
-                    (codiceSala != null) ? new SalaRicoveroDAO().getSalaRicovero(codiceSala) : null,
-                    rs.getBoolean(11),
-                    rs.getString(12));
 
         }
         public List<Medico> getMedici() throws SQLException {

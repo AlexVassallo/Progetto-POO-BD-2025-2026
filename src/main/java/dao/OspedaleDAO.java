@@ -24,16 +24,20 @@ public class OspedaleDAO {
      * @return se l'operazione e andata a buon fine
      * @throws SQLException se si verifica un errore durante la connessione al database oppure durante l'esecuzione della query
      */
-    public boolean salvaOspedale(Ospedale o) throws SQLException{
+    public boolean salvaOspedale(Ospedale o){
         String query= """
                 INSERT INTO Ospedale (identificativo_ospedale,nome_ospedale)
                 VALUES (?,?); 
                 """;
-        PreparedStatement ps= connection.prepareStatement(query);
-        ps.setString(1, o.getIdentificativoOspedale());
-        ps.setString(2, o.getNomeOspedale());
-        boolean res=ps.execute();
-        return res;
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, o.getIdentificativoOspedale());
+            ps.setString(2, o.getNomeOspedale());
+            return ps.execute();
+        }
+        catch(SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -49,6 +53,7 @@ public class OspedaleDAO {
                 FROM Ospedale
                 WHERE identificativo_Ospedale = ?;
                 """;
+
         PreparedStatement ps= connection.prepareStatement(query);
         ps.setString(1, idOspedale);
         ResultSet rs= ps.executeQuery();
@@ -60,15 +65,19 @@ public class OspedaleDAO {
 
     }
 
-    public boolean rimuoviOspedale(String idOspedale) throws SQLException{
+    public boolean rimuoviOspedale(String idOspedale){
         String query= """ 
                 DELETE 
                 FROM Ospedale
                 WHERE (idOspedale= ?);
                 """;
-        PreparedStatement ps= connection.prepareStatement(query);
-        ps.setString(1, idOspedale);
-         return ps.execute();
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, idOspedale);
+            return ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

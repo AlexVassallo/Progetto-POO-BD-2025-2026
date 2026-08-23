@@ -2,6 +2,7 @@ package controller;
 
 import dao.MedicoDAO;
 import dao.OspedaleDAO;
+import dao.SalaOperatoriaDAO;
 import dao.SalaRicoveroDAO;
 import model.*;
 
@@ -138,7 +139,6 @@ public class Controller {
                 null,
                 isAmministratore,
                 password);
-        medici.add(m);
 
         //salvataggio nuovo suldatabase
         MedicoDAO medicoDAO= new MedicoDAO();
@@ -431,24 +431,23 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public void creaSalaOperatoria(String identificativOspedale,
-                                   String codiceSala) throws ParameterMissingException, ChiaveException {
-        if (identificativOspedale.isBlank() || !esisteIdentificativoOspedale(identificativOspedale)) {
-            throw new ChiaveException("nome ospedale non trovato oppure vuoto");
+                                   String codiceSala) throws ParameterMissingException, ChiaveException, SQLException {
+        if (identificativOspedale.isBlank() || !esisteOspedale(identificativOspedale)) {
+            throw new ChiaveException("nome ospedale non esistente oppure campo vuoto");
         }
         if (codiceSala.isBlank()) {
             throw new ParameterMissingException("codice sala vuoto");
         }
-
-        for (Ospedale o : ospedali) {
-            List<SalaOperatoria> listaSale=o.getSaleOperatorie();
-            for (SalaOperatoria so:listaSale){
-                if(so.getCodiceSala().equals(codiceSala)){
-                    throw new ChiaveException("identificativo sala già esistente");
-                }
+        SalaOperatoriaDAO salaOperatoriaDAO= new SalaOperatoriaDAO();
+        try{
+            if(salaOperatoriaDAO.getSalaOperatoria(identificativOspedale)!=null){
+                throw new ChiaveException("identificativo sala già esistente");
             }
-            if (o.getIdentificativoOspedale().equals(identificativOspedale)) {
-                o.addSalaOperatoria(codiceSala);
-            }
+            SalaOperatoria salaDAO= new SalaOperatoria(codiceSala);
+            salaOperatoriaDAO.salvaSala(salaDAO, identificativOspedale);
+        }
+        finally {
+            salaOperatoriaDAO.closeConnection();
         }
     }
 
@@ -543,9 +542,6 @@ public class Controller {
      */
     public boolean login(String identificativo,
                          String password) throws ChiaveException, AuthenticationException, InvalidParameterException, SQLException {
-
-
-
         if (identificativo.isBlank()) {
             throw new ChiaveException("identificativo vuoto");
         }
