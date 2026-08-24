@@ -105,13 +105,17 @@ public class SalaOperatoriaDAO {
                         so.setIsDisponibile(true);
                     }
                     so.setPazienteAssociato(paziente);
-
-
-
+                    List<Medico> mediciPerSala = getMediciPerSalaOperatoria(rs.getString(1));
+                    so.setMediciAssociati(mediciPerSala);
+                    listaSale.add(so);
                 }
+
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+
+            return listaSale;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -119,6 +123,7 @@ public class SalaOperatoriaDAO {
     }
 
     public List<Medico> getMediciPerSalaOperatoria(String idSalaOperatoria){
+        List<Medico> medici= new ArrayList<>();
         String query= """
                 SELECT
                 p.codice_fiscale,
@@ -136,10 +141,39 @@ public class SalaOperatoriaDAO {
                 m.codice_sala_ricovero
                 FROM medico m
                 JOIN Persona p ON m.codice_fiscale = p.codice_fiscale
-                JOIN Sala_Operatoria_Medico som ON m.identidicativo_medico = som.identificativo_medico
-                WHERE codice_sala_ricovero= ?;
+                JOIN Sala_Operatoria_Medico som ON m.identificativo_medico = som.identificativo_medico
+                WHERE som.codice_sala = ?;
                 """;
+        try{
+            PreparedStatement ps= connection.prepareStatement(query);
+            ps.setString(1, idSalaOperatoria);
+            try {
+                ResultSet resultSet= ps.executeQuery();
+                while (resultSet.next()){
+                    Medico medico=new Medico(resultSet.getString(1),
+                            resultSet.getString(2),
+                            resultSet.getString(3),
+                            resultSet.getDate(4)!= null ? resultSet.getDate(4).toLocalDate() : null,
+                            resultSet.getString(5),
+                            resultSet.getString(6),
+                            resultSet.getString(7),
+                            resultSet.getString(8),
+                            resultSet.getString(9),
+                            resultSet.getTimestamp(10) != null ? resultSet.getTimestamp(10).toLocalDateTime() : null,
+                            resultSet.getString(13)!= null ? new SalaRicoveroDAO().getSalaRicovero(resultSet.getString(13)) : null,
+                            resultSet.getBoolean(11),
+                            resultSet.getString(12));
+                    medici.add(medico);
 
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return medici;
     }
 
     public void closeConnection() throws SQLException{

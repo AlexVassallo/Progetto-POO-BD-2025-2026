@@ -24,7 +24,7 @@ private boolean isDisponibile=true;
 public void setCodiceSala(String codiceSala) {
 	this.codiceSala=codiceSala;
 }
-public void setMediciAssociati(ArrayList<Medico> mediciAssociati) {
+public void setMediciAssociati(List<Medico> mediciAssociati) {
 	this.mediciAssociati=mediciAssociati;
 }
 public void setPazienteAssociato(Paziente pazienteAssociato) {
