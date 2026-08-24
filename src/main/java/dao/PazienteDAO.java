@@ -75,7 +75,6 @@ public class PazienteDAO {
         finally {
             if (conn != null) {
                 conn.setAutoCommit(true); // Ripristina il comportamento standard
-                conn.close();
             }
         }
     }

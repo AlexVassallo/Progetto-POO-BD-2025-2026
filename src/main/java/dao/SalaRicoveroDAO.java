@@ -62,7 +62,8 @@ public class SalaRicoveroDAO {
         String query = """
                 SELECT codice_sala,
                 tipo_sala,
-                numero_letti
+                numero_letti,
+                letti_liberi
                 FROM sala_ricovero
                 WHERE codice_sala= ?;""";
 
@@ -73,13 +74,31 @@ public class SalaRicoveroDAO {
                 if (!rs.next()) {
                     return null;
                 }
-                return new SalaRicovero(
+                 SalaRicovero sala=new SalaRicovero(
                         rs.getString(1),
                         rs.getString(2),
-                        rs.getInt(3)
-                );
+                        rs.getInt(3));
+                sala.setLettiLiberi(rs.getInt(4));
+                return sala;
             }
         }
+    }
+
+    public boolean aggiornaLetti(String codiceSala, int lettiLiberi){
+        String query= """
+                UPDATE sala_ricovero
+                SET letti_liberi=?
+                WHERE codice_sala=?;
+                """;
+        try{
+            PreparedStatement preparedStatement= connection.prepareStatement(query);
+            preparedStatement.setInt(1, lettiLiberi);
+            preparedStatement.setString(2, codiceSala);
+            return preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void closeConnection() throws SQLException {

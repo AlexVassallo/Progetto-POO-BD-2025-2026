@@ -248,18 +248,17 @@ public class Controller {
             throw new ParameterMissingException("campo id sala associata vuota");
         }
 
-        SalaRicovero salaRicovero = null;
-        boolean salaTrovata = false;
         PazienteDAO pazienteDAO=new PazienteDAO();
         SalaRicoveroDAO salaRicoveroDAO= new SalaRicoveroDAO();
         SalaRicovero sr= salaRicoveroDAO.getSalaRicovero(idSalaAssociata);
 
+
+
         if (sr==null) {
             throw new ChiaveException("id sala non trovata");
         }
-        else {
-            sr.occupaLetto();
-        }
+
+
         Paziente p = new Paziente(codiceFiscale,
                 nomePersona,
                 cognomePersona,
@@ -271,6 +270,9 @@ public class Controller {
                 sr);
 
         pazienteDAO.salvaPaziente(p);
+        sr.occupaLetto();
+        salaRicoveroDAO.aggiornaLetti(idSalaAssociata, sr.getLettiLiberi());
+
     }
 
     /**
