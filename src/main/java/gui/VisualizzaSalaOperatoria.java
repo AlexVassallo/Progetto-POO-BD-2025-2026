@@ -6,6 +6,7 @@ import exceptions.ChiaveException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class VisualizzaSalaOperatoria {
                     modello.addAll(controller.getIdMediciSalaOperatoria(idSalaOperatoria));
                     list1.setModel(modello);
                 }
-                catch (ChiaveException | IllegalArgumentException ex){
+                catch (ChiaveException | IllegalArgumentException | SQLException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                     return;
                 }

@@ -58,7 +58,7 @@ public class SalaOperatoriaDAO {
         }
     }
 
-    public SalaOperatoria getSalaOperatoria(String identificativoSala){
+    public SalaOperatoria getSalaOperatoria(String identificativoSala)throws SQLException{
         String querySala= """
                 SELECT codice_sala,
                 identificativo_ospedale,
@@ -72,9 +72,23 @@ public class SalaOperatoriaDAO {
             ps.setString(1, identificativoSala);
             ResultSet rs= ps.executeQuery();
             if(!rs.next()){
-                throw new SQLDataException("sala operatoria non trovata");
+                return null;
             }
-            return new SalaOperatoria(rs.getString(1));
+
+            SalaOperatoria so= new SalaOperatoria(rs.getString(1));
+            so.setIsDisponibile(rs.getBoolean(3));
+            List<Medico> listaMedici=getMediciPerSalaOperatoria(identificativoSala);
+            so.setMediciAssociati(listaMedici);
+            PazienteDAO pazienteDAO = new PazienteDAO();
+            String idPaziente=rs.getString(4);
+            if(idPaziente==null){
+                so.setPazienteAssociato(null);
+            }
+            else{
+                Paziente paziente = pazienteDAO.getPaziente(idPaziente);
+                so.setPazienteAssociato(paziente);
+            }
+            return so;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -3,6 +3,7 @@ package controller;
 import dao.*;
 import model.*;
 
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -430,15 +431,20 @@ public class Controller {
         if (codiceSala.isBlank()) {
             throw new ParameterMissingException("codice sala vuoto");
         }
-        SalaOperatoriaDAO salaOperatoriaDAO= new SalaOperatoriaDAO();
-        try{
-            if(salaOperatoriaDAO.getSalaOperatoria(identificativOspedale)!=null){
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        SalaOperatoria salaTrovata;
+        try {
+            salaTrovata = salaOperatoriaDAO.getSalaOperatoria(identificativOspedale);
+        } catch (RuntimeException e) {
+            salaTrovata = null;
+        }
+        try {
+            if (salaTrovata!=null){
                 throw new ChiaveException("identificativo sala già esistente");
             }
-            SalaOperatoria salaDAO= new SalaOperatoria(codiceSala);
+            SalaOperatoria salaDAO = new SalaOperatoria(codiceSala);
             salaOperatoriaDAO.salvaSala(salaDAO, identificativOspedale);
-        }
-        finally {
+        } finally {
             salaOperatoriaDAO.closeConnection();
         }
     }
@@ -1165,22 +1171,21 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public String[] getSalaRicovero(String idSalaRicovero) throws ChiaveException {
-
-        for (Ospedale o : ospedali) {
             String[] salaRicovero = new String[4];
-            List<SalaRicovero> listaSale = o.getSaleRicovero();
-            for (SalaRicovero sr : listaSale) {
-                if (sr.getCodiceSala().equals(idSalaRicovero)) {
-                    salaRicovero[0] = sr.getCodiceSala();
-                    salaRicovero[1] = sr.getTipoSala();
-                    salaRicovero[2] = Integer.toString(sr.getNumeroLetti());
-                    salaRicovero[3] = Integer.toString(sr.getLettiLiberi());
-                    return salaRicovero;
-                }
+            try {
+                SalaRicoveroDAO salaRicoveroDAO= new SalaRicoveroDAO();
+                SalaRicovero sr = salaRicoveroDAO.getSalaRicovero(idSalaRicovero);
+                salaRicovero[0] = sr.getCodiceSala();
+                salaRicovero[1] = sr.getTipoSala();
+                salaRicovero[2] = Integer.toString(sr.getNumeroLetti());
+                salaRicovero[3] = Integer.toString(sr.getLettiLiberi());
+                return salaRicovero;
+            }
+            catch (NullPointerException | SQLException e) {
+            throw new ChiaveException("sala ricovero non trovata");
             }
         }
-        throw new ChiaveException("sala ricovero non trovata");
-    }
+
 
     /**
      * restituisce un array di stringhe contenente le informazioni della {@link SalaOperatoria},
@@ -1194,31 +1199,28 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public String[] getSalaOperatoria(String idSalaOperatoria) throws ChiaveException {
+    public String[] getSalaOperatoria(String idSalaOperatoria) throws ChiaveException, SQLException {
 
-        for (Ospedale o : ospedali) {
-            String[] salaOperatoria = new String[2];
-            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
-            for (SalaOperatoria so : listaSale) {
-                if (so.getCodiceSala().equals(idSalaOperatoria)) {
-                    if (so.getPazienteAssociato() != null) {
-                        salaOperatoria[0] = so.getPazienteAssociato().getIdentificativoPaziente();
-                    } else {
-                        salaOperatoria[0] = "nessun paziente";
-                    }
-                    if(so.getIsDisponibile()){
-                        salaOperatoria[1] = "si";
-                    }
-                    else{
-                        salaOperatoria[1] = "no";
-                    }
-
-                    return salaOperatoria;
-                }
-            }
+        String[] salaOperatoria = new String[2];
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        SalaOperatoria so = salaOperatoriaDAO.getSalaOperatoria(idSalaOperatoria.trim());
+        if (so == null) {
+            throw new ChiaveException("sala operatoria non trovata");
         }
-        throw new ChiaveException("sala operatoria non trovata");
+
+        if (so.getPazienteAssociato() != null) {
+            salaOperatoria[0] = so.getPazienteAssociato().getIdentificativoPaziente();
+        } else {
+            salaOperatoria[0] = "nessun paziente";
+        }
+        if (so.getIsDisponibile()) {
+            salaOperatoria[1] = "si";
+        } else {
+            salaOperatoria[1] = "no";
+        }
+        return salaOperatoria;
     }
+
 
     /**
      * ritorna una lista di stringhe di id dei medici associati alla sala operatoria
@@ -1234,20 +1236,20 @@ public class Controller {
      */
     public List<String> getIdMediciSalaOperatoria(String idSalaOperatoria) throws ChiaveException {
         List<String> idMediciAssociati = new ArrayList<>();
-        for (Ospedale o : ospedali) {
-            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
-            for (SalaOperatoria so : listaSale) {
-                if (so.getCodiceSala().equals(idSalaOperatoria)) {
-                    List<Medico> listaMedici = so.getMediciAssociati();
-                    for (Medico me : listaMedici) {
-                        idMediciAssociati.add(me.getIdentificativoMedico());
-                    }
-                    return idMediciAssociati;
-                }
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        try {
+            List<Medico> listaMedici = salaOperatoriaDAO.getMediciPerSalaOperatoria(idSalaOperatoria);
+            for (Medico m : listaMedici) {
+                idMediciAssociati.add(m.getIdentificativoMedico());
             }
+            return idMediciAssociati;
         }
-        throw new ChiaveException("sala operatoria non trovata");
+        catch (RuntimeException e) {
+            throw new ChiaveException("sala operatoria non trovata");
+        }
     }
+
+
 
     /**
      * ritorna una lista di stringhe dei medici disponibili

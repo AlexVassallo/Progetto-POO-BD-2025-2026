@@ -65,7 +65,8 @@ public class SalaRicoveroDAO {
                 numero_letti,
                 letti_liberi
                 FROM sala_ricovero
-                WHERE codice_sala= ?;""";
+                WHERE codice_sala= ?;
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, identificativoSala);
