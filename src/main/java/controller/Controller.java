@@ -1,9 +1,6 @@
 package controller;
 
-import dao.MedicoDAO;
-import dao.OspedaleDAO;
-import dao.SalaOperatoriaDAO;
-import dao.SalaRicoveroDAO;
+import dao.*;
 import model.*;
 
 import java.sql.SQLException;
@@ -218,7 +215,7 @@ public class Controller {
                              String indirizzo,
                              String identificativoPaziente,
                              String triagePaziente,
-                             String idSalaAssociata) throws ParameterMissingException, ChiaveException {
+                             String idSalaAssociata) throws ParameterMissingException, ChiaveException, SQLException {
         if (codiceFiscale.length() != 16) {
             throw new ParameterMissingException("formato codice fiscale non rispettato(deve essere di 16)");
         }
@@ -253,23 +250,16 @@ public class Controller {
 
         SalaRicovero salaRicovero = null;
         boolean salaTrovata = false;
+        PazienteDAO pazienteDAO=new PazienteDAO();
+        SalaRicoveroDAO salaRicoveroDAO= new SalaRicoveroDAO();
+        SalaRicovero sr= salaRicoveroDAO.getSalaRicovero(idSalaAssociata);
 
-        for (Ospedale o : ospedali) {
-            List<SalaRicovero> listaSale = o.getSaleRicovero();
-            for (SalaRicovero sr : listaSale) {
-                if (sr.getCodiceSala().equals(idSalaAssociata)) {
-                    salaRicovero = sr;
-                    salaTrovata = true;
-                    sr.occupaLetto();
-                    break;
-                }
-            }
-        }
-
-        if (!salaTrovata) {
+        if (sr==null) {
             throw new ChiaveException("id sala non trovata");
         }
-
+        else {
+            sr.occupaLetto();
+        }
         Paziente p = new Paziente(codiceFiscale,
                 nomePersona,
                 cognomePersona,
@@ -278,9 +268,9 @@ public class Controller {
                 indirizzo,
                 identificativoPaziente,
                 triagePaziente,
-                salaRicovero);
+                sr);
 
-        pazienti.add(p);
+        pazienteDAO.salvaPaziente(p);
     }
 
     /**
@@ -579,8 +569,9 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public String[] getMedico(String idMedico) throws ChiaveException {
-        for (Medico me : medici) {
+    public String[] getMedico(String idMedico) throws ChiaveException, SQLException {
+        MedicoDAO medicoDAO=new MedicoDAO();
+        Medico me= medicoDAO.getMedico(idMedico);
             if (me.getIdentificativoMedico().equals(idMedico)) {
                 String[] medico = new String[13];
                 medico[0] = me.getCodiceFiscale();
@@ -601,9 +592,11 @@ public class Controller {
                 medico[11] = Boolean.valueOf(me.getIsAmministratore()).toString();
                 medico[12] = me.getPassword();
 
+                medicoDAO.closeConnection();
+
                 return medico;
             }
-        }
+
         throw new ChiaveException("id medico non trovato");
     }
 
@@ -619,8 +612,9 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public String[] getPaziente(String idPaziente) throws ChiaveException {
-        for (Paziente pa : pazienti) {
+    public String[] getPaziente(String idPaziente) throws ChiaveException, SQLException {
+        PazienteDAO pazienteDAO= new PazienteDAO();
+        Paziente pa= pazienteDAO.getPaziente(idPaziente);
             if (pa.getIdentificativoPaziente().equals(idPaziente)) {
                 String[] paziente = new String[9];
                 paziente[0] = pa.getCodiceFiscale();
@@ -638,10 +632,10 @@ public class Controller {
                     paziente[8]= "nessuna sala";
                 }
 
-
+                pazienteDAO.closeConnection();
                 return paziente;
             }
-        }
+
         throw new ChiaveException("paziente non trovato");
     }
 
@@ -1424,7 +1418,8 @@ public class Controller {
                 }
             }
         }
-        List<SalaOperatoria> listaSaleOperatorie= ospedaleTrovato.getSaleOperatorie();
+        SalaOperatoriaDAO salaOperatoriaDAO= new SalaOperatoriaDAO();
+        List<SalaOperatoria> listaSaleOperatorie= salaOperatoriaDAO.getSaleOperatoriePerOspedale(ospedaleTrovato.getIdentificativoOspedale());
         for(SalaOperatoria so:listaSaleOperatorie){
             if(so.getPazienteAssociato()!=null){
                 throw new IllegalStateException("il paziente " + so.getPazienteAssociato().getIdentificativoPaziente() +
@@ -1435,8 +1430,9 @@ public class Controller {
                         " si trovano ancora dei medici");
             }
         }
-        ospedali.remove(ospedaleTrovato);
-
+        ospedaleDAO.rimuoviOspedale(ospedaleTrovato.getIdentificativoOspedale());
+        salaOperatoriaDAO.closeConnection();
+        ospedaleDAO.closeConnection();
     }
 
     /**

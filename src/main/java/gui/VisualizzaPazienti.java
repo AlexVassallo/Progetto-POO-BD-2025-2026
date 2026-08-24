@@ -5,6 +5,7 @@ import exceptions.ChiaveException;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 
 public class VisualizzaPazienti {
 
@@ -55,7 +56,7 @@ public class VisualizzaPazienti {
                 try {
                     paziente = controller.getPaziente(idPaziente);
                 }
-                catch (ChiaveException ex){
+                catch (ChiaveException | SQLException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                     return;
                 }

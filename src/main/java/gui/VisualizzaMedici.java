@@ -2,9 +2,11 @@ package gui;
 
 import controller.Controller;
 import exceptions.ChiaveException;
+import org.postgresql.core.SqlCommand;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 
 public class VisualizzaMedici {
     //attributi
@@ -51,7 +53,7 @@ public class VisualizzaMedici {
                 try {
                     medico = controller.getMedico(idmedico);
                 }
-                catch (ChiaveException ex){
+                catch (ChiaveException | SQLException ex){
                     JOptionPane.showMessageDialog(frame,ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                     return;
                 }

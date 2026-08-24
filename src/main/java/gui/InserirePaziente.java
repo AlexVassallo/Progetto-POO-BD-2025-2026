@@ -6,6 +6,7 @@ import exceptions.ParameterMissingException;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.DateTimeException;
 
@@ -52,7 +53,7 @@ public class InserirePaziente {
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }
-                catch (ParameterMissingException | ChiaveException | IllegalStateException ex){
+                catch (ParameterMissingException | ChiaveException | IllegalStateException | SQLException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
                 catch (DateTimeException ex){

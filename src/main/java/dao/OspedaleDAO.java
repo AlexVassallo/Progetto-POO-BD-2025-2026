@@ -69,7 +69,7 @@ public class OspedaleDAO {
         String query= """ 
                 DELETE 
                 FROM Ospedale
-                WHERE (idOspedale= ?);
+                WHERE (identificativo_Ospedale= ?);
                 """;
         try {
             PreparedStatement ps = connection.prepareStatement(query);

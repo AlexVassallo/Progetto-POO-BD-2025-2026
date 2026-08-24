@@ -103,8 +103,8 @@ public class PazienteDAO {
                 pe.data_di_nascita,
                 pe.luogo_di_nascita,
                 pe.indirizzo,
-                pa.identificativo_paziente
-                pa.triage_paziente
+                pa.identificativo_paziente,
+                pa.triage_paziente,
                 pa.codice_sala_ricovero
                 FROM paziente pa
                 JOIN persona pe ON pa.codice_fiscale = pe.codice_fiscale
