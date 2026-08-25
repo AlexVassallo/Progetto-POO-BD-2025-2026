@@ -94,6 +94,46 @@ public class SalaOperatoriaDAO {
         }
     }
 
+    public List<SalaOperatoria> getSaleOperatorie(){
+        String query= """
+                SELECT codice_sala, is_disponibile, identificativo_paziente
+                FROM sala_operatoria
+                """;
+        try{
+            PreparedStatement ps= connection.prepareStatement(query);
+            List<SalaOperatoria> listaSale= new ArrayList<>();
+            try{
+                ResultSet rs=ps.executeQuery();
+                while (rs.next()){
+                    SalaOperatoria so= new SalaOperatoria(rs.getString(1));
+                    String idPaziente = rs.getString("identificativo_paziente");
+                    Paziente paziente = null;
+                    if (idPaziente != null) {
+                        PazienteDAO pazienteDAO = new PazienteDAO();
+                        paziente = pazienteDAO.getPaziente(idPaziente);
+                        so.setIsDisponibile(false);
+                    }
+                    else {
+                        so.setIsDisponibile(true);
+                    }
+                    so.setPazienteAssociato(paziente);
+                    List<Medico> mediciPerSala = getMediciPerSalaOperatoria(rs.getString(1));
+                    so.setMediciAssociati(mediciPerSala);
+                    listaSale.add(so);
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            return listaSale;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public List<SalaOperatoria> getSaleOperatoriePerOspedale(String identificativoOspedale){
         String query= """
                 SELECT codice_sala, is_disponibile, identificativo_paziente

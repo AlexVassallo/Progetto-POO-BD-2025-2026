@@ -158,7 +158,7 @@ public class MedicoDAO {
                     throw new SQLDataException("medico non trovato");
 
                 }
-                String codiceSala = rs.getString("codice_sala_ricovero");
+                String codiceSala = rs.getString(13);
 
                 return new Medico(rs.getString(1),
                         rs.getString(2),
@@ -211,9 +211,9 @@ public class MedicoDAO {
                         resultSet.getString(8),
                         resultSet.getString(9),
                         resultSet.getTimestamp(10) != null ? resultSet.getTimestamp(10).toLocalDateTime() : null,
-                        resultSet.getString(11)!= null ? new SalaRicoveroDAO().getSalaRicovero(resultSet.getString(13)) : null,
-                        resultSet.getBoolean(12),
-                        resultSet.getString(13)));
+                        resultSet.getString(13)!= null ? new SalaRicoveroDAO().getSalaRicovero(resultSet.getString(13)) : null,
+                        resultSet.getBoolean(11),
+                        resultSet.getString(12)));
             }
             return listaMedici;
         }

@@ -3,6 +3,7 @@ import model.Ospedale;
 import database.ConnessioneDatabase;
 
 import java.sql.*;
+import java.util.List;
 
 public class OspedaleDAO {
     Connection connection;
@@ -64,6 +65,7 @@ public class OspedaleDAO {
                 rs.getString(2));
 
     }
+
 
     public boolean rimuoviOspedale(String idOspedale){
         String query= """ 

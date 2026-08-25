@@ -4,6 +4,7 @@ import controller.Controller;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 
 public class VisualizzaDisponibilita {
     //attributi
@@ -38,10 +39,12 @@ public class VisualizzaDisponibilita {
         saleOperatorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (controller.esisteIdentificativoOspedale(textField1.getText())) {
-                    frame.setVisible(false);
-                    new VisualizzaDisponibilitaSalaOperatoria(frame, controller, textField1.getText());
-                } else {
+                try {
+                    if(controller.esisteOspedale(textField1.getText())){
+                        frame.setVisible(false);
+                        new VisualizzaDisponibilitaSalaOperatoria(frame,controller, textField1.getText());
+                    }
+                } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(frame, "ospedale non trovato", "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -50,11 +53,12 @@ public class VisualizzaDisponibilita {
         saleRicoveratorieButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(controller.esisteIdentificativoOspedale(textField1.getText())){
-                    frame.setVisible(false);
-                    new VisualizzaDisponibilitaSalaRicovero(frame,controller, textField1.getText());
-                }
-                else {
+                try {
+                    if(controller.esisteOspedale(textField1.getText())){
+                        frame.setVisible(false);
+                        new VisualizzaDisponibilitaSalaRicovero(frame,controller, textField1.getText());
+                    }
+                } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(frame, "ospedale non trovato", "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }

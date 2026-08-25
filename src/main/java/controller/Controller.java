@@ -816,16 +816,20 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public boolean eGiaAllocatoPazSalOp(String identificativoPaziente) {
-        for (Ospedale o : ospedali) {
-            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
-            for (SalaOperatoria so : listaSale) {
-                Paziente p = so.getPazienteAssociato();
-
-                if (p != null && p.getIdentificativoPaziente().equals(identificativoPaziente)) {
-                    return true;
-                }
-            }
-        }
+       try {
+           SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+           List<SalaOperatoria> listaSale = salaOperatoriaDAO.getSaleOperatorie();
+           salaOperatoriaDAO.closeConnection();
+           for (SalaOperatoria so : listaSale) {
+               Paziente p = so.getPazienteAssociato();
+               if (p != null && p.getIdentificativoPaziente().equals(identificativoPaziente)) {
+                   return true;
+               }
+           }
+       }
+       catch (SQLException e){
+           throw new RuntimeException(e);
+       }
         return false;
     }
 
@@ -922,7 +926,7 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public void allocaPazienteSalaOperatoria(String idPaziente, String idSalaOperatoria) throws ChiaveException, IllegalStateException {
+    public void allocaPazienteSalaOperatoria(String idPaziente, String idSalaOperatoria) throws ChiaveException, IllegalStateException, SQLException {
 
         if (idPaziente.isBlank()) {
             throw new ChiaveException("campo id paziente vuoto");
@@ -932,28 +936,31 @@ public class Controller {
         }
 
         Paziente pazienteDaAllocare = getPazienteDaAllocare(idPaziente);
+        try{
+
+            if(pazienteDaAllocare.getSalaAssociata()!= null) {
+                throw new RuntimeException("il paziente si trova in sala ricovero, rimuovilo prima dalla sala");
+            }
+        } catch (Exception _) {
+
+        }
 
         if (eGiaAllocatoPazSalOp(idPaziente)) {
             throw new IllegalStateException("il paziente è gia allocato in una sala operatoria");
         }
-
-
         boolean salaTrovata = false;
-
-        for (Ospedale o : ospedali) {
-            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        List<SalaOperatoria> listaSale =salaOperatoriaDAO.getSaleOperatorie();
             for (SalaOperatoria so : listaSale) {
                 if (so.getCodiceSala().equals(idSalaOperatoria)) {
                     if (!so.getIsDisponibile()) {
                         throw new IllegalStateException("la sala è già occupata da un altro paziente");
                     }
                     so.occupaSala(pazienteDaAllocare);
-                    pazienteDaAllocare.setSalaAssociata(null);
                     salaTrovata = true;
                     break;
                 }
             }
-        }
         if (!salaTrovata) {
             throw new ChiaveException("sala non trovata");
         }
@@ -972,18 +979,13 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    private Paziente getPazienteDaAllocare(String idPaziente) throws ChiaveException, IllegalStateException {
-        Paziente pazienteDaAllocare = null;
-        for (Paziente pa : pazienti) {
-            if (pa.getIdentificativoPaziente().equals(idPaziente)) {
-                pazienteDaAllocare = pa;
-                break;
-            }
-        }
+    private Paziente getPazienteDaAllocare(String idPaziente) throws ChiaveException, IllegalStateException, SQLException {
+
+        PazienteDAO pazienteDAO= new PazienteDAO();
+        Paziente pazienteDaAllocare= pazienteDAO.getPaziente(idPaziente);
         if (pazienteDaAllocare == null) {
             throw new ChiaveException("paziente non trovato");
         }
-
         try{
             pazienteDaAllocare.getSalaAssociata();
             throw new IllegalStateException("il paziente e gia in un altra sala ricovero");
@@ -1218,6 +1220,8 @@ public class Controller {
         } else {
             salaOperatoria[1] = "no";
         }
+
+        salaOperatoriaDAO.closeConnection();
         return salaOperatoria;
     }
 
@@ -1242,9 +1246,10 @@ public class Controller {
             for (Medico m : listaMedici) {
                 idMediciAssociati.add(m.getIdentificativoMedico());
             }
+            salaOperatoriaDAO.closeConnection();
             return idMediciAssociati;
         }
-        catch (RuntimeException e) {
+        catch (SQLException | RuntimeException e) {
             throw new ChiaveException("sala operatoria non trovata");
         }
     }
@@ -1263,21 +1268,29 @@ public class Controller {
     public List<String> getDisponibilitaMedici() {
 
         List<String> mediciDisponibili = new ArrayList<>();
+        MedicoDAO medicoDAO= new MedicoDAO();
+        try {
+            List<Medico> listamedici = medicoDAO.getMedici();
+            for (Medico me : listamedici) {
+                boolean haGiaSala = true;
+                try {
+                    me.getSalaAssociata();
+                } catch (Exception e) {
+                    haGiaSala = false;
+                }
+                if (!haGiaSala && !eGiaAllocatoMedSalOp(me.getIdentificativoMedico())) {
+                    String rigaMedico = "ID: " + me.getIdentificativoMedico() + "\n codice fiscale: " + me.getCodiceFiscale() +
+                            "\n Dr." + me.getNomePersona() + " " + me.getCognomePersona() + "\n tipo medico: " +
+                            me.getTipoMedico() + "\n rango: " + me.getRango() + "\n data assunzione: " + me.getDataAnnoAssunzione();
+                    mediciDisponibili.add(rigaMedico);
+                }
+            }
+            medicoDAO.closeConnection();
 
-        for (Medico me : medici) {
-            boolean haGiaSala = true;
-            try {
-                me.getSalaAssociata();
-            } catch (Exception e) {
-                haGiaSala = false;
-            }
-            if (!haGiaSala && !eGiaAllocatoMedSalOp(me.getIdentificativoMedico())) {
-                String rigaMedico = "ID: " + me.getIdentificativoMedico() + "\n codice fiscale: " + me.getCodiceFiscale() +
-                         "\n Dr." + me.getNomePersona() + " " + me.getCognomePersona() + "\n tipo medico: " +
-                        me.getTipoMedico() + "\n rango: " + me.getRango() + "\n data assunzione: " + me.getDataAnnoAssunzione();
-                mediciDisponibili.add(rigaMedico);
-            }
+        }catch (SQLException e){
+            throw new RuntimeException(e);
         }
+
         return mediciDisponibili;
     }
 
@@ -1290,19 +1303,21 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public List<String>getDisponibilitaSalaOperatoria(String identificativoOspedale){
-        List<String>saleDisponibili= new ArrayList<>();
+    public List<String>getDisponibilitaSalaOperatoria(String identificativoOspedale) {
+        List<String> saleDisponibili = new ArrayList<>();
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        List<SalaOperatoria> listaSale = salaOperatoriaDAO.getSaleOperatoriePerOspedale(identificativoOspedale);
 
-        for(Ospedale o: ospedali){
-            if(o.getIdentificativoOspedale().equals(identificativoOspedale)){
-                List<SalaOperatoria> listaSale= o.getSaleOperatorie();
-                for(SalaOperatoria so: listaSale){
-                    if(so.getIsDisponibile()){
-                        String rigaSalaOp= "ID:" + so.getCodiceSala() + "\n id medici associati: " + getIdMediciSalaOperatoria(so.getCodiceSala());
-                        saleDisponibili.add(rigaSalaOp);
-                    }
-                }
+        for (SalaOperatoria so : listaSale) {
+            if (so.getIsDisponibile()) {
+                String rigaSalaOp = "ID:" + so.getCodiceSala() + "\n id medici associati: " + getIdMediciSalaOperatoria(so.getCodiceSala());
+                saleDisponibili.add(rigaSalaOp);
             }
+        }
+        try {
+            salaOperatoriaDAO.closeConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         return saleDisponibili;
@@ -1319,20 +1334,21 @@ public class Controller {
      */
     public List<String>getDisponibilitaSalaRicovero(String identificativoOspedale){
         List<String>saleDisponibili= new ArrayList<>();
+        SalaRicoveroDAO salaRicoveroDAO= new SalaRicoveroDAO();
+        List<SalaRicovero> saleRicovero= salaRicoveroDAO.getSalaRicoveroPerOspedale(identificativoOspedale);
 
-        for(Ospedale o: ospedali){
-            if(o.getIdentificativoOspedale().equals(identificativoOspedale)){
-                List<SalaRicovero> listaSale= o.getSaleRicovero();
-                for(SalaRicovero sr: listaSale){
-                    if(sr.isDisponibile()){
-                        String rigaSalaRic= "ID:" + sr.getCodiceSala() + "\n tipologia sala: " + sr.getTipoSala() +
-                                "\n numero letti: " + sr.getNumeroLetti() + "\n letti liberi " + sr.getLettiLiberi();
-                        saleDisponibili.add(rigaSalaRic);
-                    }
-                }
+        for(SalaRicovero sr:saleRicovero) {
+            if (sr.isDisponibile()) {
+                String rigaSalaRic = "ID:" + sr.getCodiceSala() + "\n tipologia sala: " + sr.getTipoSala() +
+                        "\n numero letti: " + sr.getNumeroLetti() + "\n letti liberi " + sr.getLettiLiberi();
+                saleDisponibili.add(rigaSalaRic);
             }
         }
-
+        try {
+            salaRicoveroDAO.closeConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return saleDisponibili;
     }
 
