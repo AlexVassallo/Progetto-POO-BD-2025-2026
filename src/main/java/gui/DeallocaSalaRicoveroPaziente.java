@@ -2,6 +2,8 @@ package gui;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
+
 import controller.Controller;
 import exceptions.ChiaveException;
 
@@ -34,7 +36,7 @@ public class DeallocaSalaRicoveroPaziente {
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }
-                catch (IllegalStateException | ChiaveException ex){
+                catch (IllegalStateException | ChiaveException | SQLException ex){
                     JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
                 }
             }

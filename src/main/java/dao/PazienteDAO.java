@@ -131,6 +131,28 @@ public class PazienteDAO {
         }
     }
 
+    public void updatePaziente(Paziente p){
+        String query= """
+                UPDATE paziente
+                SET Codice_sala_ricovero = ?
+                WHERE identificativo_paziente = ?;
+                """;
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            try {
+                ps.setString(1, p.getSalaAssociata().getCodiceSala());
+            } catch (Exception e) {
+                ps.setNull(1, java.sql.Types.VARCHAR);
+            }
+            ps.setString(2, p.getIdentificativoPaziente());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void closeConnection() throws SQLException {
         connection.close();
     }

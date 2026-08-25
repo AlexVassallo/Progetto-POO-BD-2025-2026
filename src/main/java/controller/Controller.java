@@ -936,13 +936,15 @@ public class Controller {
         }
 
         Paziente pazienteDaAllocare = getPazienteDaAllocare(idPaziente);
+        SalaRicovero salaAssociata = null;
         try{
-
-            if(pazienteDaAllocare.getSalaAssociata()!= null) {
-                throw new RuntimeException("il paziente si trova in sala ricovero, rimuovilo prima dalla sala");
-            }
-        } catch (Exception _) {
-
+            salaAssociata= pazienteDaAllocare.getSalaAssociata();
+        }
+        catch (Exception e) {
+            salaAssociata=null;
+        }
+        if(salaAssociata!=null){
+            throw new IllegalStateException("il paziente si troca in sala ricovero, rimuovilo prima");
         }
 
         if (eGiaAllocatoPazSalOp(idPaziente)) {
@@ -957,6 +959,8 @@ public class Controller {
                         throw new IllegalStateException("la sala è già occupata da un altro paziente");
                     }
                     so.occupaSala(pazienteDaAllocare);
+                    salaOperatoriaDAO.aggiornaSala(so);
+                    salaOperatoriaDAO.closeConnection();
                     salaTrovata = true;
                     break;
                 }
@@ -1054,33 +1058,28 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public void deallocaPazienteSalaRicovero(String idPaziente) throws IllegalStateException, ChiaveException {
+    public void deallocaPazienteSalaRicovero(String idPaziente) throws IllegalStateException, ChiaveException, SQLException {
         if (idPaziente.isBlank()) {
             throw new ChiaveException("campo paziente vuoto");
         }
 
-        boolean pazienteTrovato=false;
-        for (Paziente pa : pazienti) {
-            if (pa.getIdentificativoPaziente().equals(idPaziente)) {
-                pazienteTrovato=true;
-                SalaRicovero sala=null;
+        PazienteDAO pazienteDAO = new PazienteDAO();
+        Paziente pa = pazienteDAO.getPaziente(idPaziente);
 
-                try {
-                    sala=pa.getSalaAssociata();
-                }
-                catch (Exception e){
-                    throw new IllegalStateException("il paziente non si trova in sala ricovero");
-                }
-                sala.liberaLetto();
-                pa.setSalaAssociata(null);
-                break;
-            }
-
+        SalaRicovero sala = null;
+        try {
+            sala = pa.getSalaAssociata();
+        } catch (Exception e) {
+            throw new IllegalStateException("il paziente non si trova in sala ricovero");
         }
+        sala.liberaLetto();
+        SalaRicoveroDAO salaRicoveroDAO= new SalaRicoveroDAO();
+        salaRicoveroDAO.aggiornaLetti(sala.getCodiceSala(), sala.getLettiLiberi());
+        pa.setSalaAssociata(null);
+        pazienteDAO.updatePaziente(pa);
 
-        if(!pazienteTrovato) {
-            throw new ChiaveException("paziente non trovato");
-        }
+        pazienteDAO.closeConnection();
+        salaRicoveroDAO.closeConnection();
     }
 
     /**

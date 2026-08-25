@@ -230,6 +230,30 @@ public class SalaOperatoriaDAO {
         return medici;
     }
 
+    public void aggiornaSala(SalaOperatoria so){
+        String query= """
+                UPDATE sala_operatoria
+                SET identificativo_paziente = ?, 
+                    is_disponibile=?
+                WHERE codice_sala = ?;
+                """;
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            if (so.getPazienteAssociato() != null) {
+                ps.setString(1, so.getPazienteAssociato().getIdentificativoPaziente());
+            } else {
+                ps.setNull(1, java.sql.Types.VARCHAR);
+            }
+            ps.setBoolean(2, so.getIsDisponibile());
+
+            ps.setString(3, so.getCodiceSala());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void closeConnection() throws SQLException{
         connection.close();
     }
