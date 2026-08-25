@@ -87,6 +87,40 @@ public class SalaRicoveroDAO {
         }
     }
 
+    public List<SalaRicovero> getSaleRicovero(){
+        String query= """
+                SELECT codice_sala,
+                tipo_sala,
+                numero_letti,
+                letti_liberi
+                FROM Sala_ricovero
+                """;
+        try{
+            PreparedStatement ps= connection.prepareStatement(query);
+            List<SalaRicovero> saleRicovero= new ArrayList<>();
+            try{
+                ResultSet rs =ps.executeQuery();
+                while (rs.next()){
+                    SalaRicovero salaRicovero= new SalaRicovero(rs.getString(1),
+                            rs.getString(2),
+                            rs.getInt(3));
+                    salaRicovero.setLettiLiberi(rs.getInt(4));
+                    saleRicovero.add(salaRicovero);
+                }
+
+            }
+            catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            return saleRicovero;
+
+        }
+        catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean aggiornaLetti(String codiceSala, int lettiLiberi){
         String query= """
                 UPDATE sala_ricovero

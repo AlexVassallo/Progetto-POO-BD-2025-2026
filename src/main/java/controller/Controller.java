@@ -816,20 +816,17 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public boolean eGiaAllocatoPazSalOp(String identificativoPaziente) {
-       try {
-           SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
-           List<SalaOperatoria> listaSale = salaOperatoriaDAO.getSaleOperatorie();
-           salaOperatoriaDAO.closeConnection();
-           for (SalaOperatoria so : listaSale) {
-               Paziente p = so.getPazienteAssociato();
-               if (p != null && p.getIdentificativoPaziente().equals(identificativoPaziente)) {
-                   return true;
-               }
-           }
-       }
-       catch (SQLException e){
-           throw new RuntimeException(e);
-       }
+
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        List<SalaOperatoria> listaSale = salaOperatoriaDAO.getSaleOperatorie();
+
+        for (SalaOperatoria so : listaSale) {
+            Paziente p = so.getPazienteAssociato();
+            if (p != null && p.getIdentificativoPaziente().equals(identificativoPaziente)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -858,27 +855,22 @@ public class Controller {
             throw new ChiaveException("campo id sala operatoria vuoto");
         }
 
-        Paziente pazienteDaAllocare = null;
-        SalaRicovero sala=null;
+        PazienteDAO pazienteDAO = new PazienteDAO();
+        Paziente pazienteDaAllocare;
+        SalaRicovero sala;
 
-        for (Paziente pa : pazienti) {
-            if (pa.getIdentificativoPaziente().equals(idPaziente)) {
-                try{
-                    sala=pa.getSalaAssociata();
-                }
-                catch (Exception e) {
-                    pazienteDaAllocare = pa;
-                    break;
-                }
 
-                if(sala!=null){
-                    throw new IllegalStateException("il paziente è gia in una sala ricovero");
-                }
-
+        try {
+            pazienteDaAllocare = pazienteDAO.getPaziente(idPaziente);
+            try {
+                sala = pazienteDaAllocare.getSalaAssociata();
+            } catch (Exception e) {
+                sala = null;
             }
-        }
-
-        if (pazienteDaAllocare == null) {
+            if (sala != null) {
+                throw new IllegalStateException("il paziente è gia in una sala ricovero");
+            }
+        } catch (RuntimeException | SQLException e) {
             throw new ChiaveException("paziente non trovato");
         }
 
@@ -887,26 +879,30 @@ public class Controller {
         }
 
         boolean salaTrovata = false;
+        SalaRicoveroDAO salaRicoveroDAO = new SalaRicoveroDAO();
+        List<SalaRicovero> listaSale = salaRicoveroDAO.getSaleRicovero();
 
-        for (Ospedale o : ospedali) {
-            List<SalaRicovero> listaSale = o.getSaleRicovero();
-            for (SalaRicovero sr : listaSale) {
-                if (sr.getCodiceSala().equals(idSalaRicovero)) {
-                    try {
-                        sr.occupaLetto();
-                    } catch (IllegalStateException e) {
-                        throw new IllegalStateException("la sala ricovero è piena");
-                    }
+        for (SalaRicovero sr : listaSale) {
+            if (sr.getCodiceSala().equals(idSalaRicovero)) {
+                try {
+                    sr.occupaLetto();
                     pazienteDaAllocare.setSalaAssociata(sr);
-                    salaTrovata = true;
-                    break;
+
+
+                    pazienteDAO.updatePaziente(pazienteDaAllocare);
+                    salaRicoveroDAO.aggiornaLetti(sr.getCodiceSala(), sr.getLettiLiberi());
+
+                } catch (IllegalStateException e) {
+                    throw new IllegalStateException("la sala ricovero è piena");
                 }
+                salaTrovata = true;
+                break;
             }
         }
+
         if (!salaTrovata) {
             throw new ChiaveException("sala non trovata");
         }
-
     }
 
     /**
@@ -1014,33 +1010,31 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public void deallocaPazienteSalaOperatoria(String idPaziente) throws IllegalStateException, ChiaveException {
+    public void deallocaPazienteSalaOperatoria(String idPaziente) throws IllegalStateException, ChiaveException, SQLException {
         if (idPaziente.isBlank()) {
             throw new ChiaveException("id paziente vuoto");
         }
+
         Paziente pazienteDaDeallocare = null;
-        for (Paziente pa : pazienti) {
-            if (pa.getIdentificativoPaziente().equals(idPaziente)) {
-                pazienteDaDeallocare = pa;
-            }
+        try {
+            PazienteDAO pazienteDAO = new PazienteDAO();
+            pazienteDaDeallocare = pazienteDAO.getPaziente(idPaziente);
         }
-        if (pazienteDaDeallocare == null) {
+       catch(SQLException e){
             throw new ChiaveException("paziente non trovato");
         }
         if (!eGiaAllocatoPazSalOp(idPaziente)) {
             throw new IllegalStateException("il paziente non si trova attualmente in una sala operatoria");
         }
-
-        for (Ospedale o : ospedali) {
-            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+            List<SalaOperatoria> listaSale = salaOperatoriaDAO.getSaleOperatorie();
             for (SalaOperatoria so : listaSale) {
                 Paziente p = so.getPazienteAssociato();
                 if (p != null && p.getIdentificativoPaziente().equals(idPaziente)) {
                     so.liberaSala();
+                    salaOperatoriaDAO.aggiornaSala(so);
                 }
             }
-        }
-
     }
 
     /**
