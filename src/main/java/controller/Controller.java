@@ -123,7 +123,6 @@ public class Controller {
                 throw new ChiaveException("identificatico medico già esistente");
             }
         }
-        //salvataggio obsoleto ma ancora funzionante
         Medico m = new Medico(codiceFiscale,
                 nome,
                 cognome,
@@ -138,7 +137,6 @@ public class Controller {
                 isAmministratore,
                 password);
 
-        //salvataggio nuovo suldatabase
         MedicoDAO medicoDAO= new MedicoDAO();
         medicoDAO.aggiungiMedico(m);
         medicoDAO.closeConnection();
@@ -397,7 +395,7 @@ public class Controller {
         if (esitoFinale.isBlank()) {
             throw new ParameterMissingException("esito inserito vuoto");
         }
-        Referto r = new Referto(paziente,
+        /*Referto r = new Referto(paziente,
                 medico,
                 dataOraArrivo,
                 dataOraUscita,
@@ -405,6 +403,7 @@ public class Controller {
                 trattamentoEffettuato,
                 esitoFinale);
         referti.add(r);
+         */
     }
 
     /**

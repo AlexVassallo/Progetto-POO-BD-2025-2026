@@ -3,7 +3,7 @@ import model.Ospedale;
 import database.ConnessioneDatabase;
 
 import java.sql.*;
-import java.util.List;
+
 
 public class OspedaleDAO {
     Connection connection;
