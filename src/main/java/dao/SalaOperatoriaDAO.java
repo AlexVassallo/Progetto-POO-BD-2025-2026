@@ -254,6 +254,38 @@ public class SalaOperatoriaDAO {
         }
     }
 
+    public void aggiungiMedicoAllaSala(String idMedico, String codiceSala){
+        String query= """
+                INSERT INTO Sala_operatoria_medico(codice_sala, identificativo_medico)
+                VALUES (?,?);
+                """;
+        try {
+            PreparedStatement preparedStatement= connection.prepareStatement(query);
+            preparedStatement.setString(1, codiceSala);
+            preparedStatement.setString(2, idMedico);
+            preparedStatement.execute();
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public void rimuoviMedicoAllaSala(String idMedico){
+        String query= """
+                DELETE FROM sala_operatoria_medico
+                WHERE identificativo_medico = ?
+                """;
+        try {
+            PreparedStatement preparedStatement= connection.prepareStatement(query);
+            preparedStatement.setString(1, idMedico);
+            preparedStatement.execute();
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void closeConnection() throws SQLException{
         connection.close();
     }

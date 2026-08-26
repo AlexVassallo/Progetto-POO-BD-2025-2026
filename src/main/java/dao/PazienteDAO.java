@@ -142,7 +142,7 @@ public class PazienteDAO {
             try {
                 ps.setString(1, p.getSalaAssociata().getCodiceSala());
             } catch (Exception e) {
-                ps.setNull(1, java.sql.Types.VARCHAR);
+                ps.setNull(1, Types.VARCHAR);
             }
             ps.setString(2, p.getIdentificativoPaziente());
 

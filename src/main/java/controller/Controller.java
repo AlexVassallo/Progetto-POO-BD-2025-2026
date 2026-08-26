@@ -658,8 +658,8 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public boolean eGiaAllocatoMedSalOp(String identificativoMedico) {
-        for (Ospedale o : ospedali) {
-            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+            List<SalaOperatoria> listaSale = salaOperatoriaDAO.getSaleOperatorie();
             for (SalaOperatoria so : listaSale) {
                 List<Medico> listaMedici = so.getMediciAssociati();
                 for (Medico me : listaMedici) {
@@ -668,7 +668,6 @@ public class Controller {
                     }
                 }
             }
-        }
         return false;
     }
 
@@ -690,21 +689,17 @@ public class Controller {
      */
     public void allocaMedicoSalaOperatoria(String idMedico, String idSalaOperatoria) throws ChiaveException, IllegalStateException {
         if (idMedico.isBlank()) {
-            throw new ChiaveException("campo id paziente vuoto");
+            throw new ChiaveException("campo id medico vuoto");
         }
         if (idSalaOperatoria.isBlank()) {
             throw new ChiaveException("campo id sala operatoria vuoto");
         }
 
-        Medico medicoDaAllocare = null;
-        for (Medico me : medici) {
-            if (me.getIdentificativoMedico().equals(idMedico)) {
-                medicoDaAllocare = me;
-                break;
-            }
-        }
-
-        if (medicoDaAllocare == null) {
+        MedicoDAO medicoDAO = new MedicoDAO();
+        Medico medicoDaAllocare;
+        try {
+            medicoDaAllocare = medicoDAO.getMedico(idMedico);
+        } catch (RuntimeException | SQLException e) {
             throw new ChiaveException("medico non trovato");
         }
 
@@ -722,19 +717,18 @@ public class Controller {
             throw new IllegalStateException("il medico è già in una sala ricovero");
         }
 
-
         boolean salaTrovata = false;
-
-        for (Ospedale o : ospedali) {
-            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
-            for (SalaOperatoria so : listaSale) {
-                if (so.getCodiceSala().equals(idSalaOperatoria)) {
-                    so.aggiungiMedico(medicoDaAllocare);
-                    medicoDaAllocare.setSalaAssociata(null);
-                    salaTrovata = true;
-                }
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        List<SalaOperatoria> listaSale = salaOperatoriaDAO.getSaleOperatorie();
+        for (SalaOperatoria so : listaSale) {
+            if (so.getCodiceSala().equals(idSalaOperatoria)) {
+                so.aggiungiMedico(medicoDaAllocare);
+                salaOperatoriaDAO.aggiungiMedicoAllaSala(medicoDaAllocare.getIdentificativoMedico(), so.getCodiceSala());
+                salaTrovata = true;
+                break;
             }
         }
+
         if (!salaTrovata) {
             throw new ChiaveException("sala operatoria non trovata");
         }
@@ -757,18 +751,18 @@ public class Controller {
      */
     public void allocaMedicoSalaRicovero(String idMedico, String idSalaRicovero) throws ChiaveException, IllegalStateException {
         if (idMedico.isBlank()) {
-            throw new ChiaveException("campo id paziente vuoto");
+            throw new ChiaveException("campo id medico vuoto");
         }
         if (idSalaRicovero.isBlank()) {
-            throw new ChiaveException("campo id sala operatoria vuoto");
+            throw new ChiaveException("campo id sala ricovero vuoto");
         }
 
-        Medico medicoDaAllocare = null;
-        for (Medico me : medici) {
-            if (me.getIdentificativoMedico().equals(idMedico)) {
-                medicoDaAllocare = me;
-                break;
-            }
+        MedicoDAO medicoDAO = new MedicoDAO();
+        Medico medicoDaAllocare;
+        try {
+            medicoDaAllocare = medicoDAO.getMedico(idMedico);
+        } catch (RuntimeException | SQLException e) {
+            throw new ChiaveException("medico non trovato");
         }
 
         if (medicoDaAllocare == null) {
@@ -790,16 +784,17 @@ public class Controller {
         }
 
         boolean salaTrovata = false;
-        for (Ospedale o : ospedali) {
-            List<SalaRicovero> listaSale = o.getSaleRicovero();
-            for (SalaRicovero sr : listaSale) {
-                if (sr.getCodiceSala().equals(idSalaRicovero)) {
-                    medicoDaAllocare.setSalaAssociata(sr);
-                    salaTrovata = true;
-                    break;
-                }
+        SalaRicoveroDAO salaRicoveroDAO = new SalaRicoveroDAO();
+        List<SalaRicovero> listaSale = salaRicoveroDAO.getSaleRicovero();
+        for (SalaRicovero sr : listaSale) {
+            if (sr.getCodiceSala().equals(idSalaRicovero)) {
+                medicoDaAllocare.setSalaAssociata(sr);
+                medicoDAO.updateMedico(medicoDaAllocare);
+                salaTrovata = true;
+                break;
             }
         }
+
         if (!salaTrovata) {
             throw new ChiaveException("sala non trovata");
         }
@@ -1092,24 +1087,28 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public void deallocaMedicoSalaOperatoria(String idMedico) throws ChiaveException, IllegalStateException {
-
         if (idMedico.isBlank()) {
             throw new ChiaveException("id medico vuoto");
         }
-        boolean medicoTrovato = false;
 
-        for (Ospedale o : ospedali) {
-            List<SalaOperatoria> listaSale = o.getSaleOperatorie();
+        boolean medicoTrovato = false;
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+            List<SalaOperatoria> listaSale =salaOperatoriaDAO.getSaleOperatorie();
+
             for (SalaOperatoria so : listaSale) {
                 for (Medico me : so.getMediciAssociati()) {
                     if (me.getIdentificativoMedico().equals(idMedico)) {
                         so.rimuoviMedico(me);
+                        salaOperatoriaDAO.rimuoviMedicoAllaSala(me.getIdentificativoMedico());
                         medicoTrovato = true;
                         break;
                     }
                 }
+                if (medicoTrovato) {
+                    break;
+                }
             }
-        }
+
         if (!medicoTrovato) {
             throw new ChiaveException("medico non esistente oppure non è in sala operatoria");
         }
@@ -1132,13 +1131,18 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public void deallocaMedicoSalaRicovero(String idMedico) throws IllegalStateException, ChiaveException {
-        Medico medicoDaDeallocare = null;
-        for (Medico me : medici) {
-            if (me.getIdentificativoMedico().equals(idMedico)) {
-                medicoDaDeallocare = me;
-                break;
-            }
+        if (idMedico.isBlank()) {
+            throw new ChiaveException("id medico vuoto");
         }
+
+        MedicoDAO medicoDAO = new MedicoDAO();
+        Medico medicoDaDeallocare;
+        try {
+            medicoDaDeallocare = medicoDAO.getMedico(idMedico);
+        } catch (RuntimeException | SQLException e) {
+            throw new ChiaveException("medico non trovato");
+        }
+
 
         if (medicoDaDeallocare == null) {
             throw new ChiaveException("medico non trovato");
@@ -1151,6 +1155,7 @@ public class Controller {
             throw new IllegalStateException("il medico non si trova in una sala ricovero");
         }
         medicoDaDeallocare.setSalaAssociata(null);
+        medicoDAO.updateMedico(medicoDaDeallocare);
     }
 
     /**

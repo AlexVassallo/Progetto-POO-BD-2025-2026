@@ -218,6 +218,27 @@ public class MedicoDAO {
             return listaMedici;
         }
 
+        public void updateMedico(Medico medico){
+            String query= """
+                    UPDATE medico
+                    SET Codice_sala_ricovero=?
+                    WHERE identificativo_medico=?;
+                    """;
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                try{
+                    ps.setString(1, medico.getSalaAssociata().getCodiceSala());
+                } catch (Exception e) {
+                    ps.setNull(1, Types.VARCHAR);
+                }
+                ps.setString(2, medico.getIdentificativoMedico());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
         public void closeConnection() throws SQLException {
             connection.close();
         }
