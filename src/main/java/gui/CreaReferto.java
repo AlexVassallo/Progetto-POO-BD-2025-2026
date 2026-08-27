@@ -40,17 +40,12 @@ public class CreaReferto {
             public void actionPerformed(ActionEvent e) {
 
                 try{
-                    java.time.format.DateTimeFormatter dateFormatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-                    String dataOraArrivoString = textField2.getText().trim();
-                    LocalDateTime dataOraArrivo = LocalDateTime.parse(dataOraArrivoString, dateFormatter);
-                    String dataOraUscitaString = textField3.getText().trim();
-                    LocalDateTime dataOraUscita= LocalDateTime.parse(dataOraUscitaString, dateFormatter);
+                    LocalDateTime dataEmissione = LocalDateTime.now();
 
-
-
-                    controller.creaReferto(textField1.getText(), textField2.getText(), dataOraArrivo,
-                            dataOraUscita, textField5.getText(), textField6.getText(), textField7.getText());
+                    controller.creaReferto(textField1.getText(), textField2.getText(), textField3.getText(),
+                            dataEmissione, textField4.getText(),
+                            textField5.getText(), textField6.getText(), textField7.getText());
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }

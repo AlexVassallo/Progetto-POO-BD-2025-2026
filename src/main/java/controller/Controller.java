@@ -163,7 +163,7 @@ public class Controller {
             throw new ChiaveException("identificativo mancante");
         }
 
-        if (esisteIdentificativoOspedale(identidicativoOspedale)) {
+        if (esisteOspedale(identidicativoOspedale)) {
             throw new ChiaveException("ospedale gia esistente");
         }
 
@@ -252,7 +252,6 @@ public class Controller {
         SalaRicovero sr= salaRicoveroDAO.getSalaRicovero(idSalaAssociata);
 
 
-
         if (sr==null) {
             throw new ChiaveException("id sala non trovata");
         }
@@ -287,43 +286,23 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public boolean esisteIdentificativo(String identificativoPaziente) {
-        for (Paziente p : pazienti) {
-            if (p.getIdentificativoPaziente().equals(identificativoPaziente)) {
-                return true;
-            }
+        Paziente pazienteTrovato=null;
+        PazienteDAO pazienteDAO= new PazienteDAO();
+        try {
+            pazienteTrovato = pazienteDAO.getPaziente(identificativoPaziente);
+            return pazienteTrovato !=null;
+        } catch (SQLException e) {
+            return false;
         }
-        return false;
     }
 
-    /**
-     * scorre la lista e verifica se esiste già un ospedale con quel'identificativo
-     *
-     * @param identificativoOspedale codice identificativo dell'ospedale
-     * @return true se l'identificativo esiste
-     * @return false se l'identificativo non esiste
-     *
-     * @author Alessio Riccio
-     * @author Alessandro Vassallo
-     * @author Emanuele Todisco
-     */
-    public boolean esisteIdentificativoOspedale(String identificativoOspedale) {
-        for (Ospedale o : ospedali) {
-            if (o.getIdentificativoOspedale().equals(identificativoOspedale)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     /**
      * crea e aggiunge un nuovo referto alla lista,
      * lancia un eccezione se gli id inseriti sono vuoti, oppure non esistono nelle liste,
      * lancia un eccezione se gli altri parametri sono vuoti
      *
-     * @param idPaziente codice identificativo del paziente
-     * @param idMedico
-     * @param dataOraArrivo
-     * @param dataOraUscita
      * @param diagnosi
      * @param trattamentoEffettuato
      * @param esitoFinale
@@ -334,76 +313,63 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    public void creaReferto(String idPaziente,
-                            String idMedico,
-                            LocalDateTime dataOraArrivo,
-                            LocalDateTime dataOraUscita,
+    public void creaReferto(String idReferto,
+                            String idOperazione,
                             String diagnosi,
+                            LocalDateTime dataEmissione,
                             String trattamentoEffettuato,
+                            String note,
+                            String prescrizioniTeraupetiche,
                             String esitoFinale) throws ParameterMissingException, ChiaveException {
 
-        Paziente paziente = null;
-
-        if (idPaziente.isBlank()) {
-            throw new ChiaveException("identificativo mancante");
+        if (idReferto.isBlank() || esisteIdentificativoReferto(idReferto)) {
+            throw new ChiaveException("id referto vuoto o gia esistente");
         }
-        boolean pazienteTrovato = false;
-        for (Paziente p : pazienti) {
-            if (p.getIdentificativoPaziente().equals(idPaziente)) {
-                paziente = p;
-                pazienteTrovato = true;
-                break;
-            }
-        }
-        if (!pazienteTrovato) {
-            throw new ChiaveException("il paziente inserito non esiste");
-        }
-
-
-        Medico medico = null;
-        boolean medicoTrovato = false;
-
-        if (idMedico.isBlank()) {
-            throw new ParameterMissingException("medico mancante");
-        }
-
-        for (Medico me : medici) {
-            if (me.getIdentificativoMedico().equals(idMedico)) {
-                medico = me;
-                medicoTrovato = true;
-                break;
-            }
-        }
-
-        if (!medicoTrovato) {
-            throw new ChiaveException("il medico inserito non esiste");
-        }
-
-
-        if (dataOraArrivo == null) {
-            throw new ParameterMissingException("data ora di arrivo vuoto");
-        }
-        if (dataOraUscita == null) {
-            throw new ParameterMissingException("data ora di uscita vuoto");
+        if (idOperazione.isBlank()) {
+            throw new ChiaveException("id operazione vuoto");
         }
         if (diagnosi.isBlank()) {
-            throw new ParameterMissingException("diagnosi vuota");
+            throw new ParameterMissingException("diagnosi vuoto");
         }
         if (trattamentoEffettuato.isBlank()) {
             throw new ParameterMissingException("trattamento inserito vuoto");
         }
+        if (note.isBlank()) {
+            throw new ParameterMissingException("note vuoto");
+        }
+        if (prescrizioniTeraupetiche.isBlank()) {
+            throw new ParameterMissingException("prescrizioni vuote");
+        }
         if (esitoFinale.isBlank()) {
             throw new ParameterMissingException("esito inserito vuoto");
         }
-        /*Referto r = new Referto(paziente,
-                medico,
-                dataOraArrivo,
-                dataOraUscita,
+        RefertoDAO refertoDAO= new RefertoDAO();
+        OperazioneDAO operazioneDAO = new OperazioneDAO();
+        Operazione operazioneEffettuata;
+        try {
+            operazioneEffettuata=operazioneDAO.getOperazione(idOperazione);
+        } catch (RuntimeException e) {
+            throw new ChiaveException("operazione non trovata");
+        }
+
+        Referto r = new Referto(idReferto,
+                operazioneEffettuata,
                 diagnosi,
+                dataEmissione,
                 trattamentoEffettuato,
+                note,
+                prescrizioniTeraupetiche,
                 esitoFinale);
-        referti.add(r);
-         */
+
+        refertoDAO.salvaReferto(r);
+    }
+
+    public boolean esisteIdentificativoReferto(String identificativoReferto) {
+        try {
+            return new RefertoDAO().getReferto(identificativoReferto) != null;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     /**
