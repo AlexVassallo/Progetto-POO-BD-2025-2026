@@ -93,7 +93,7 @@ public class PazienteDAO {
 
     }
 
-    public Paziente getPaziente(String identificativoPaziente) throws SQLException{
+    public Paziente getPaziente(String identificativoPaziente){
         String query= """
                 SELECT
                 pe.codice_fiscale,

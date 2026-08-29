@@ -58,7 +58,7 @@ public class SalaOperatoriaDAO {
         }
     }
 
-    public SalaOperatoria getSalaOperatoria(String identificativoSala)throws SQLException{
+    public SalaOperatoria getSalaOperatoria(String identificativoSala){
         String querySala= """
                 SELECT codice_sala,
                 identificativo_ospedale,

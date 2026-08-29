@@ -291,7 +291,7 @@ public class Controller {
         try {
             pazienteTrovato = pazienteDAO.getPaziente(identificativoPaziente);
             return pazienteTrovato !=null;
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
             return false;
         }
     }
@@ -362,6 +362,65 @@ public class Controller {
                 esitoFinale);
 
         refertoDAO.salvaReferto(r);
+    }
+
+    public void creaOperazione(String idOperazione,
+                               String idPazienteOperato,
+                               String idSalaUtilizzata,
+                               String tipoOperazione,
+                               LocalDateTime dataOraInizio) throws ChiaveException, ParameterMissingException, SQLException{
+        if(idOperazione.isBlank() || esisteIdOperazione(idOperazione)){
+            throw new ChiaveException("id operazione vuota oppure operazione già eseguita");
+        }
+        if(idPazienteOperato.isBlank() || !esisteIdentificativo(idPazienteOperato)){
+            throw new ChiaveException("id paziente vuoto oppure il paziente non esiste");
+        }
+        if(idSalaUtilizzata.isBlank()){
+            throw new ChiaveException("id sala vuota");
+        }
+        if (tipoOperazione.isBlank()){
+            throw new ParameterMissingException("tipo operazione vuoto");
+        }
+        if(dataOraInizio==null){
+            throw new ParameterMissingException("data ora inizio vuoto");
+        }
+
+        SalaOperatoria salaTrovata;
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        try {
+            salaTrovata= salaOperatoriaDAO.getSalaOperatoria(idSalaUtilizzata);
+        } catch (RuntimeException e) {
+           salaTrovata=null;
+        }
+        if (salaTrovata==null) {
+            throw new ChiaveException("sala operatoria non trovata");
+        }
+
+        PazienteDAO pazienteDAO= new PazienteDAO();
+        Paziente paziente = pazienteDAO.getPaziente(idPazienteOperato);
+
+
+        OperazioneDAO operazioneDAO= new OperazioneDAO();
+        Operazione operazione = new Operazione(idOperazione,
+                salaTrovata.getMediciAssociati(),
+                paziente,
+                salaTrovata,
+                tipoOperazione,
+                dataOraInizio);
+
+            operazioneDAO.salvaOperazione(operazione);
+
+    }
+
+    public boolean esisteIdOperazione(String idOperazione){
+        OperazioneDAO operazioneDAO = new OperazioneDAO();
+        try {
+            Operazione operazione = operazioneDAO.getOperazione(idOperazione);
+            return operazione != null;
+        }
+        catch (RuntimeException e) {
+        return false;
+        }
     }
 
     public boolean esisteIdentificativoReferto(String identificativoReferto) {
@@ -830,7 +889,7 @@ public class Controller {
             if (sala != null) {
                 throw new IllegalStateException("il paziente è gia in una sala ricovero");
             }
-        } catch (RuntimeException | SQLException e) {
+        } catch (RuntimeException e) {
             throw new ChiaveException("paziente non trovato");
         }
 
@@ -980,7 +1039,7 @@ public class Controller {
             PazienteDAO pazienteDAO = new PazienteDAO();
             pazienteDaDeallocare = pazienteDAO.getPaziente(idPaziente);
         }
-       catch(SQLException e){
+       catch(RuntimeException e){
             throw new ChiaveException("paziente non trovato");
         }
         if (!eGiaAllocatoPazSalOp(idPaziente)) {
