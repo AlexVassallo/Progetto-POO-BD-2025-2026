@@ -1252,8 +1252,10 @@ public class Controller {
 
         String[] salaOperatoria = new String[2];
         SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
-        SalaOperatoria so = salaOperatoriaDAO.getSalaOperatoria(idSalaOperatoria.trim());
-        if (so == null) {
+        SalaOperatoria so;
+        try {
+             so = salaOperatoriaDAO.getSalaOperatoria(idSalaOperatoria.trim());
+        }catch (RuntimeException e) {
             throw new ChiaveException("sala operatoria non trovata");
         }
 
@@ -1271,7 +1273,35 @@ public class Controller {
         salaOperatoriaDAO.closeConnection();
         return salaOperatoria;
     }
+    public String[] getOperazione(String idOperazione) throws ChiaveException{
+        String[] operazione = new String[7];
+        OperazioneDAO operazioneDAO = new OperazioneDAO();
+        Operazione o;
+        try {
+             o = operazioneDAO.getOperazione(idOperazione);
+        } catch (RuntimeException e) {
+            throw new ChiaveException("operazione non trovata");
+        }
+        operazione[0] = o.getIdOperazione();
+        operazione[1] = o.getPazienteOperato().getIdentificativoPaziente();
+        operazione[2] = o.getSalaUtilizzata().getCodiceSala();
+        operazione[3] = o.getTipoOperazione();
+        operazione[4] = o.getDataOraInizio().toString();
+        if(o.getDataOraFine()!=null) {
+            operazione[5] = o.getDataOraFine().toString();
+        }
+        else {
+            operazione[5]= "da definire";
+        }
+        if(o.getEsito()!=null){
+            operazione[6] = o.getEsito();
+        }
+        else {
+            operazione[6]= "da definire";
+        }
+        return operazione;
 
+    }
 
     /**
      * ritorna una lista di stringhe di id dei medici associati alla sala operatoria
@@ -1300,6 +1330,23 @@ public class Controller {
             throw new ChiaveException("sala operatoria non trovata");
         }
     }
+
+    public List<String> getIdMediciOperazione(String idOperazione) throws ChiaveException {
+        List<String> idMediciAssociati = new ArrayList<>();
+        OperazioneDAO operazioneDAO=new OperazioneDAO();
+        try {
+            List<Medico> listaMedici = operazioneDAO.getMediciOperazione(idOperazione);
+            for (Medico m : listaMedici) {
+                idMediciAssociati.add(m.getIdentificativoMedico());
+            }
+            operazioneDAO.closeConnection();
+            return idMediciAssociati;
+        }
+        catch (SQLException | RuntimeException e) {
+            throw new ChiaveException("operazione non trovata");
+        }
+    }
+
 
 
 

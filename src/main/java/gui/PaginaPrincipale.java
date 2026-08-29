@@ -184,6 +184,13 @@ public class PaginaPrincipale {
             }
         });
 
+        visualizzaUnOperazioneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+             new VisualizzaOperazione(frame, controller);
+            }
+    });
+
 
         //listener finali
         effettuaUnOperazioneButton.addActionListener(new ActionListener() {

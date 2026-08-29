@@ -13,6 +13,7 @@ import java.util.List;
 
 public class OperazioneDAO {
     Connection connection;
+
     public OperazioneDAO(){
         try{
             connection= ConnessioneDatabase.getInstance().connection;
@@ -129,5 +130,8 @@ public class OperazioneDAO {
         catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public void closeConnection() throws SQLException {
+        connection.close();
     }
 }
