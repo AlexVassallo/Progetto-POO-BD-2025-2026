@@ -233,8 +233,7 @@ public class SalaOperatoriaDAO {
     public void aggiornaSala(SalaOperatoria so){
         String query= """
                 UPDATE sala_operatoria
-                SET identificativo_paziente = ?, 
-                    is_disponibile=?
+                SET identificativo_paziente = ?
                 WHERE codice_sala = ?;
                 """;
         try {
@@ -244,9 +243,23 @@ public class SalaOperatoriaDAO {
             } else {
                 ps.setNull(1, java.sql.Types.VARCHAR);
             }
-            ps.setBoolean(2, so.getIsDisponibile());
+            ps.setString(2, so.getCodiceSala());
+            ps.executeUpdate();
 
-            ps.setString(3, so.getCodiceSala());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void aggiornaDisponibilitaSala(SalaOperatoria so){
+        String query= """
+                UPDATE sala_operatoria
+                SET Is_disponibile = ?
+                WHERE codice_sala = ?;
+                """;
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setBoolean(1, so.getIsDisponibile());
+            ps.setString(2, so.getCodiceSala());
             ps.executeUpdate();
 
         } catch (SQLException e) {

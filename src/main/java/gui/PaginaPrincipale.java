@@ -37,6 +37,11 @@ public class PaginaPrincipale {
     private JButton rimuoviMedicoButton;
     private JButton rimuoviOspedaleButton;
     private JLabel idUtente;
+    private JButton effettuaUnOperazioneButton;
+    private JButton visualizzaUnOperazioneButton;
+    private JButton visualizzaUnRefertoButton;
+    private JButton concludiOperazioneButton;
+    private JButton visualizzaOperazioniInCorsoButton;
     private Controller controller;
 
     //costruttore
@@ -181,6 +186,19 @@ public class PaginaPrincipale {
 
 
         //listener finali
+        effettuaUnOperazioneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new EffettuaUnOperazione(frame,controller);
+                } catch (IllegalAccessException | SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
+
+            }
+        });
+
         gestioneOspedaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

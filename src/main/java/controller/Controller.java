@@ -364,16 +364,13 @@ public class Controller {
         refertoDAO.salvaReferto(r);
     }
 
+    public static final int MIN_MEDICI_OPERAZIONE = 2;
     public void creaOperazione(String idOperazione,
-                               String idPazienteOperato,
                                String idSalaUtilizzata,
                                String tipoOperazione,
                                LocalDateTime dataOraInizio) throws ChiaveException, ParameterMissingException, SQLException{
         if(idOperazione.isBlank() || esisteIdOperazione(idOperazione)){
             throw new ChiaveException("id operazione vuota oppure operazione già eseguita");
-        }
-        if(idPazienteOperato.isBlank() || !esisteIdentificativo(idPazienteOperato)){
-            throw new ChiaveException("id paziente vuoto oppure il paziente non esiste");
         }
         if(idSalaUtilizzata.isBlank()){
             throw new ChiaveException("id sala vuota");
@@ -396,20 +393,34 @@ public class Controller {
             throw new ChiaveException("sala operatoria non trovata");
         }
 
-        PazienteDAO pazienteDAO= new PazienteDAO();
-        Paziente paziente = pazienteDAO.getPaziente(idPazienteOperato);
+        Paziente paziente = salaTrovata.getPazienteAssociato();
+        if (paziente==null){
+            throw new ChiaveException("nessun paziente allocato nella sala operatoria selezionata");
+        }
+
+        List<Medico> mediciEquipe = salaTrovata.getMediciAssociati();
+        if (mediciEquipe == null || mediciEquipe.size() < MIN_MEDICI_OPERAZIONE) {
+            throw new ChiaveException("Impossibile avviare l'operazione: l'équipe nella sala deve avere almeno "
+                    + MIN_MEDICI_OPERAZIONE + " medici");
+        }
 
 
         OperazioneDAO operazioneDAO= new OperazioneDAO();
-        Operazione operazione = new Operazione(idOperazione,
-                salaTrovata.getMediciAssociati(),
-                paziente,
-                salaTrovata,
-                tipoOperazione,
-                dataOraInizio);
+        if(salaTrovata.getIsDisponibile()) {
+            salaTrovata.setIsDisponibile(false);
+            salaOperatoriaDAO.aggiornaDisponibilitaSala(salaTrovata);
+            Operazione operazione = new Operazione(idOperazione,
+                    mediciEquipe,
+                    paziente,
+                    salaTrovata,
+                    tipoOperazione,
+                    dataOraInizio);
 
             operazioneDAO.salvaOperazione(operazione);
-
+        }
+        else {
+            throw new IllegalStateException("nella sala" + salaTrovata.getCodiceSala() + "si sta svolgendo già un operazione ");
+        }
     }
 
     public boolean esisteIdOperazione(String idOperazione){
@@ -712,7 +723,7 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public void allocaMedicoSalaOperatoria(String idMedico, String idSalaOperatoria) throws ChiaveException, IllegalStateException {
-        if (idMedico.isBlank()) {
+        if (idMedico.isBlank()){
             throw new ChiaveException("campo id medico vuoto");
         }
         if (idSalaOperatoria.isBlank()) {
@@ -746,10 +757,15 @@ public class Controller {
         List<SalaOperatoria> listaSale = salaOperatoriaDAO.getSaleOperatorie();
         for (SalaOperatoria so : listaSale) {
             if (so.getCodiceSala().equals(idSalaOperatoria)) {
-                so.aggiungiMedico(medicoDaAllocare);
-                salaOperatoriaDAO.aggiungiMedicoAllaSala(medicoDaAllocare.getIdentificativoMedico(), so.getCodiceSala());
-                salaTrovata = true;
-                break;
+                if(so.getIsDisponibile()) {
+                    so.aggiungiMedico(medicoDaAllocare);
+                    salaOperatoriaDAO.aggiungiMedicoAllaSala(medicoDaAllocare.getIdentificativoMedico(), so.getCodiceSala());
+                    salaTrovata = true;
+                    break;
+                }
+                else {
+                    throw new IllegalStateException("questa sala non è disponibile al momento");
+                }
             }
         }
 
@@ -959,7 +975,7 @@ public class Controller {
             salaAssociata=null;
         }
         if(salaAssociata!=null){
-            throw new IllegalStateException("il paziente si troca in sala ricovero, rimuovilo prima");
+            throw new IllegalStateException("il paziente si trova in sala ricovero, rimuovilo prima");
         }
 
         if (eGiaAllocatoPazSalOp(idPaziente)) {
@@ -970,8 +986,11 @@ public class Controller {
         List<SalaOperatoria> listaSale =salaOperatoriaDAO.getSaleOperatorie();
             for (SalaOperatoria so : listaSale) {
                 if (so.getCodiceSala().equals(idSalaOperatoria)) {
-                    if (!so.getIsDisponibile()) {
+                    if (so.getPazienteAssociato()!= null) {
                         throw new IllegalStateException("la sala è già occupata da un altro paziente");
+                    }
+                    if(!so.getIsDisponibile()){
+                        throw new IllegalStateException("la sala non è disponibile");
                     }
                     so.occupaSala(pazienteDaAllocare);
                     salaOperatoriaDAO.aggiornaSala(so);
@@ -1050,6 +1069,9 @@ public class Controller {
             for (SalaOperatoria so : listaSale) {
                 Paziente p = so.getPazienteAssociato();
                 if (p != null && p.getIdentificativoPaziente().equals(idPaziente)) {
+                    if(!so.getIsDisponibile()){
+                        throw new IllegalStateException("il paziente si sta operando, impossibile rimuoverlo");
+                    }
                     so.liberaSala();
                     salaOperatoriaDAO.aggiornaSala(so);
                 }
@@ -1122,6 +1144,9 @@ public class Controller {
             for (SalaOperatoria so : listaSale) {
                 for (Medico me : so.getMediciAssociati()) {
                     if (me.getIdentificativoMedico().equals(idMedico)) {
+                        if(!so.getIsDisponibile()){
+                            throw new IllegalStateException("è in corso un operazione, impossibile rimuoverlo");
+                        }
                         so.rimuoviMedico(me);
                         salaOperatoriaDAO.rimuoviMedicoAllaSala(me.getIdentificativoMedico());
                         medicoTrovato = true;

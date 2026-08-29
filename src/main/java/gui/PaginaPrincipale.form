@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="gui.PaginaPrincipale">
-  <grid id="27dc6" binding="createPanel" layout-manager="GridLayoutManager" row-count="12" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="createPanel" layout-manager="GridLayoutManager" row-count="14" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="430" height="594"/>
+      <xy x="20" y="20" width="430" height="749"/>
     </constraints>
     <properties>
-      <minimumSize width="430" height="487"/>
-      <preferredSize width="430" height="487"/>
+      <minimumSize width="430" height="597"/>
+      <preferredSize width="430" height="597"/>
     </properties>
     <border type="none"/>
     <children>
@@ -59,7 +59,7 @@
           <text value="crea referto"/>
         </properties>
       </component>
-      <grid id="309a5" binding="insertPanel" layout-manager="GridLayoutManager" row-count="6" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="309a5" binding="insertPanel" layout-manager="GridLayoutManager" row-count="9" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="8" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
@@ -127,6 +127,30 @@
               <text value="operazioni di visualizzazione"/>
             </properties>
           </component>
+          <component id="2d4a1" class="javax.swing.JButton" binding="visualizzaUnOperazioneButton" default-binding="true">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="visualizza un operazione"/>
+            </properties>
+          </component>
+          <component id="15540" class="javax.swing.JButton" binding="visualizzaUnRefertoButton" default-binding="true">
+            <constraints>
+              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="visualizza un referto"/>
+            </properties>
+          </component>
+          <component id="61b68" class="javax.swing.JButton" binding="visualizzaOperazioniInCorsoButton" default-binding="true">
+            <constraints>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="visualizza operazioni in corso"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <component id="a7b42" class="javax.swing.JButton" binding="inserirePaziente">
@@ -159,7 +183,7 @@
       </component>
       <component id="8b107" class="javax.swing.JButton" binding="gestioneOspedaleButton" default-binding="true">
         <constraints>
-          <grid row="10" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="12" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="gestione ospedale"/>
@@ -167,7 +191,7 @@
       </component>
       <component id="7328f" class="javax.swing.JButton" binding="logOutButton" default-binding="true">
         <constraints>
-          <grid row="11" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="13" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="log out"/>
@@ -207,6 +231,22 @@
         </constraints>
         <properties>
           <text value="Label"/>
+        </properties>
+      </component>
+      <component id="976e7" class="javax.swing.JButton" binding="effettuaUnOperazioneButton" default-binding="true">
+        <constraints>
+          <grid row="11" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="effettua un operazione"/>
+        </properties>
+      </component>
+      <component id="710dc" class="javax.swing.JButton" binding="concludiOperazioneButton" default-binding="true">
+        <constraints>
+          <grid row="10" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="concludi operazione"/>
         </properties>
       </component>
     </children>

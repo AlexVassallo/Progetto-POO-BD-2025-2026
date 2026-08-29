@@ -77,7 +77,6 @@ public boolean getIsDisponibile() {
 public void occupaSala(Paziente pazienteCheOccupa)throws IllegalStateException {
 	if(pazienteAssociato==null) {
 		setPazienteAssociato(pazienteCheOccupa);
-		setIsDisponibile(false);
 		System.out.println("il paziente è entrato in sala operatoria, la stanza" + getCodiceSala() + " è occupata");
 	}
 	else {
@@ -102,7 +101,6 @@ public void liberaSala() throws IllegalStateException{
 	}
 	else {
 		setPazienteAssociato(null);
-		setIsDisponibile(true);
 		System.out.println("il paziente è uscito dalla sala operatoria, la stanza" + getCodiceSala() + " è libera");
 	}
 }
