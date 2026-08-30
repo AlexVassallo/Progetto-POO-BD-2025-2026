@@ -70,19 +70,6 @@ public class PaginaPrincipale {
         });
 
 
-        //listener dei bottoni creazione
-        creaRefertoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    controller.verificaAmministratore(idUtente.getText());
-                    new CreaReferto(frame,controller);
-                } catch (IllegalAccessException | SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
         creaSalaOperatoriaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -197,8 +184,27 @@ public class PaginaPrincipale {
             }
         });
 
+        visualizzaUnRefertoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new VisualizzaReferto(frame, controller);
+            }
+        });
+
 
         //listener finali
+        concludiOperazioneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.verificaAmministratore(idUtente.getText());
+                    new ConcludiOperazione(frame,controller);
+                } catch (IllegalAccessException | SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
         effettuaUnOperazioneButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

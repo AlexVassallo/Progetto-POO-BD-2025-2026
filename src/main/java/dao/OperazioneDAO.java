@@ -23,24 +23,21 @@ public class OperazioneDAO {
         }
     }
 
-    public void salvaOperazione(Operazione o)  throws SQLException {
-        String queryOperazione= """
+    public void salvaOperazione(Operazione o) throws SQLException {
+        String queryOperazione = """
                 INSERT INTO Operazione(id_operazione, id_paziente, codice_sala_operatoria, tipo_operazione,
                 data_ora_inizio, data_ora_fine, esito)
                 VALUES(?,?,?,?,?,?,?);
                 """;
-        String queryMediciOperazione= """
+        String queryMediciOperazione = """
                 INSERT INTO Operazione_medico(id_operazione, id_medico)
                 VALUES(?,?);
                 """;
 
-        Connection conn=null;
         try {
-            conn= ConnessioneDatabase.getInstance().connection;
+            connection.setAutoCommit(false);
 
-            conn.setAutoCommit(false);
-            try(PreparedStatement preparedStatement = conn.prepareStatement(queryOperazione)){
-
+            try (PreparedStatement preparedStatement = connection.prepareStatement(queryOperazione)) {
                 preparedStatement.setString(1, o.getIdOperazione());
                 preparedStatement.setString(2, o.getPazienteOperato().getIdentificativoPaziente());
                 preparedStatement.setString(3, o.getSalaUtilizzata().getCodiceSala());
@@ -49,29 +46,26 @@ public class OperazioneDAO {
                 preparedStatement.setTimestamp(6, o.getDataOraFine() != null ? java.sql.Timestamp.valueOf(o.getDataOraFine()) : null);
                 preparedStatement.setString(7, o.getEsito());
                 preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
-            try(PreparedStatement preparedStatement = conn.prepareStatement(queryMediciOperazione)){
-                for(Medico m:o.getMediciPartecipanti()){
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(queryMediciOperazione)) {
+                for (Medico m : o.getMediciPartecipanti()) {
                     preparedStatement.setString(1, o.getIdOperazione());
                     preparedStatement.setString(2, m.getIdentificativoMedico());
                     preparedStatement.addBatch();
                 }
                 preparedStatement.executeBatch();
             }
-            conn.commit();
-        }
-        catch (SQLException e) {
-            if(conn != null){
-                conn.rollback();
+
+            connection.commit();
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback();
             }
             throw e;
-        }
-        finally {
-            if(conn != null){
-                conn.setAutoCommit(true);
-                conn.close();
+        } finally {
+            if (connection != null) {
+                connection.setAutoCommit(true); // Ripristina l'autocommit senza chiudere la connessione
             }
         }
     }
@@ -165,6 +159,24 @@ public class OperazioneDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public void updateOperazione(Operazione o) {
+        String query = """
+                UPDATE Operazione
+                SET data_ora_fine = ?, esito = ?
+                WHERE id_operazione = ?;
+                """;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setTimestamp(1, o.getDataOraFine() != null ? java.sql.Timestamp.valueOf(o.getDataOraFine()) : null);
+            preparedStatement.setString(2, o.getEsito());
+            preparedStatement.setString(3, o.getIdOperazione());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public void closeConnection() throws SQLException {
         connection.close();

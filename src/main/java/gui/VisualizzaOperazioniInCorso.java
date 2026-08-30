@@ -11,7 +11,7 @@ public class VisualizzaOperazioniInCorso {
     private JPanel mainPanel;
     private JButton tornaIndietroButton;
 public  VisualizzaOperazioniInCorso(JFrame frameChiamante, Controller controller){
-    frame=new JFrame("crea referto");
+    frame=new JFrame("visualizza operazioni in corso");
     frame.setContentPane(this.mainPanel);
     frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
     frame.pack();

@@ -15,7 +15,7 @@ import exceptions.ParameterMissingException;
 
 import javax.naming.AuthenticationException;
 import java.security.InvalidParameterException;
-
+import java.util.Objects;
 
 
 public class Controller {
@@ -320,7 +320,8 @@ public class Controller {
                             String trattamentoEffettuato,
                             String note,
                             String prescrizioniTeraupetiche,
-                            String esitoFinale) throws ParameterMissingException, ChiaveException {
+                            String esitoFinale,
+                            List<Object> listaOperazione) throws ParameterMissingException, ChiaveException {
 
         if (idReferto.isBlank() || esisteIdentificativoReferto(idReferto)) {
             throw new ChiaveException("id referto vuoto o gia esistente");
@@ -343,14 +344,14 @@ public class Controller {
         if (esitoFinale.isBlank()) {
             throw new ParameterMissingException("esito inserito vuoto");
         }
-        RefertoDAO refertoDAO= new RefertoDAO();
-        OperazioneDAO operazioneDAO = new OperazioneDAO();
-        Operazione operazioneEffettuata;
-        try {
-            operazioneEffettuata=operazioneDAO.getOperazione(idOperazione);
-        } catch (RuntimeException e) {
-            throw new ChiaveException("operazione non trovata");
+        if(listaOperazione == null || listaOperazione.size()< 2){
+            throw new ParameterMissingException("errore sconosciuto");
         }
+
+        Operazione operazioneEffettuata= (Operazione) listaOperazione.get(0);
+        SalaOperatoria salaOperatoria = (SalaOperatoria) listaOperazione.get(1);
+
+
 
         Referto r = new Referto(idReferto,
                 operazioneEffettuata,
@@ -361,7 +362,13 @@ public class Controller {
                 prescrizioniTeraupetiche,
                 esitoFinale);
 
+        RefertoDAO refertoDAO= new RefertoDAO();
+        OperazioneDAO operazioneDAO = new OperazioneDAO();
+        SalaOperatoriaDAO salaOperatoriaDAO= new SalaOperatoriaDAO();
+
         refertoDAO.salvaReferto(r);
+        operazioneDAO.updateOperazione(operazioneEffettuata);
+        salaOperatoriaDAO.aggiornaDisponibilitaSala(salaOperatoria);
     }
 
     public static final int MIN_MEDICI_OPERAZIONE = 2;
@@ -1220,6 +1227,10 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public String[] getSalaRicovero(String idSalaRicovero) throws ChiaveException {
+        if(idSalaRicovero.isBlank()){
+            throw new ChiaveException("id sala ricovero vuoto");
+        }
+
             String[] salaRicovero = new String[4];
             try {
                 SalaRicoveroDAO salaRicoveroDAO= new SalaRicoveroDAO();
@@ -1235,6 +1246,30 @@ public class Controller {
             }
         }
 
+    public String[] visualizzaReferto(String idReferto){
+        if(idReferto.isBlank()){
+            throw new ChiaveException("id Referto vuoto");
+        }
+        
+        String[] referto = new String[8];
+
+        try {
+            RefertoDAO refertoDAO = new RefertoDAO();
+            Referto r = refertoDAO.getReferto(idReferto);
+            referto[0] = r.getIdReferto();
+            referto[1] = r.getOperazioneEffettuata().getIdOperazione();
+            referto[2] = r.getDiagnosi();
+            referto[3] = r.getDataEmissione().toString();
+            referto[4] = r.getTrattamentoEffettuato();
+            referto[5] = r.getNoteMedico();
+            referto[6] = r.getPrescrizioni();
+            referto[7] = r.getEsitoFinale();
+            return referto;
+        } catch (RuntimeException e) {
+            throw new ChiaveException("referto non trovato");
+        }
+
+    }
 
     /**
      * restituisce un array di stringhe contenente le informazioni della {@link SalaOperatoria},
@@ -1318,6 +1353,8 @@ public class Controller {
         }
         return operazioniInCorso;
     }
+
+
 
     /**
      * ritorna una lista di stringhe di id dei medici associati alla sala operatoria
@@ -1548,6 +1585,7 @@ public class Controller {
                 }
             }
         }
+
         SalaOperatoriaDAO salaOperatoriaDAO= new SalaOperatoriaDAO();
         List<SalaOperatoria> listaSaleOperatorie= salaOperatoriaDAO.getSaleOperatoriePerOspedale(ospedaleTrovato.getIdentificativoOspedale());
         for(SalaOperatoria so:listaSaleOperatorie){
@@ -1564,6 +1602,45 @@ public class Controller {
         salaOperatoriaDAO.closeConnection();
         ospedaleDAO.closeConnection();
     }
+
+    public List<Object> concludiOperazione(String idOperazione, String esito) throws ChiaveException, ParameterMissingException, IllegalStateException {
+        if (idOperazione.isBlank()) {
+            throw new ChiaveException("id operazione vuoto");
+        }
+        if (esito.isBlank()) {
+            throw new ParameterMissingException("esito vuoto");
+        }
+        List<Object> listaOggetti = new ArrayList<>();
+        OperazioneDAO operazioneDAO = new OperazioneDAO();
+        Operazione operazione;
+        SalaOperatoria salaOperatoria;
+        LocalDateTime dataOraFine = LocalDateTime.now();
+        try {
+            operazione = operazioneDAO.getOperazione(idOperazione);
+        } catch (RuntimeException e) {
+            operazione = null;
+        }
+        if (operazione == null) {
+            throw new ChiaveException("operazione non trovata");
+        }
+        if (operazione.getDataOraFine() != null) {
+            throw new IllegalStateException("operazione già conclusa");
+        }
+
+        salaOperatoria = operazione.getSalaUtilizzata();
+        if (salaOperatoria == null) {
+            throw new ChiaveException("errore sconosciuto: sala non trovata");
+        }
+
+        operazione.setDataOraFine(dataOraFine);
+        operazione.setEsito(esito);
+        salaOperatoria.setIsDisponibile(true);
+        listaOggetti.add(operazione);
+        listaOggetti.add(salaOperatoria);
+
+        return listaOggetti;
+    }
+
 
     /**
      * verifica se l'utente è amministratore,

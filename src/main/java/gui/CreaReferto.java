@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CreaReferto {
     //attributi
@@ -28,7 +29,7 @@ public class CreaReferto {
     private JButton tornaIndietroButton;
 
     //costruttore
-    public CreaReferto(JFrame frameChiamante, Controller controller){
+    public CreaReferto(JFrame frameChiamante, Controller controller, List<Object> listaOggetti, String idOperazione){
         frame=new JFrame("crea referto");
         frame.setContentPane(this.mainPanel);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
@@ -43,9 +44,9 @@ public class CreaReferto {
 
                     LocalDateTime dataEmissione = LocalDateTime.now();
 
-                    controller.creaReferto(textField1.getText(), textField2.getText(), textField3.getText(),
+                    controller.creaReferto(textField1.getText(), idOperazione, textField3.getText(),
                             dataEmissione, textField4.getText(),
-                            textField5.getText(), textField6.getText(), textField7.getText());
+                            textField5.getText(), textField6.getText(), textField7.getText(), listaOggetti);
                     frameChiamante.setVisible(true);
                     frame.dispose();
                 }
