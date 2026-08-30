@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class OperazioneDAO {
     Connection connection;
 
@@ -131,6 +132,40 @@ public class OperazioneDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public List<Operazione> getOperazioniInCorso(){
+        String query= """
+                SELECT id_operazione, id_paziente, codice_sala_operatoria, tipo_operazione,
+                data_ora_inizio, data_ora_fine, esito
+                FROM Operazione
+                WHERE esito IS NULL;
+                """;
+        List<Operazione> operazioni= new ArrayList<>();
+        PazienteDAO pazienteDAO =new PazienteDAO();
+        SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                String idPaziente= rs.getString(2);
+                String idSalaOperatoria= rs.getString(3);
+
+                Operazione operazione = new Operazione(rs.getString(1),
+                        getMediciOperazione(rs.getString(1)),
+                        (idPaziente!= null) ? pazienteDAO.getPaziente(idPaziente) : null,
+                        (idSalaOperatoria != null) ? salaOperatoriaDAO.getSalaOperatoria(idSalaOperatoria) : null,
+                        rs.getString(4),
+                        rs.getTimestamp(5) != null ? rs.getTimestamp(5).toLocalDateTime() : null);
+                operazione.setDataOraFine(rs.getTimestamp(6) != null ? rs.getTimestamp(6).toLocalDateTime() : null);
+                operazione.setEsito(rs.getString(7));
+                operazioni.add(operazione);
+            }
+            return operazioni;
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     public void closeConnection() throws SQLException {
         connection.close();
     }

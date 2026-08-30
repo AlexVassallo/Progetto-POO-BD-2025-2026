@@ -190,6 +190,12 @@ public class PaginaPrincipale {
              new VisualizzaOperazione(frame, controller);
             }
     });
+        visualizzaOperazioniInCorsoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new VisualizzaOperazioniInCorso(frame, controller);
+            }
+        });
 
 
         //listener finali

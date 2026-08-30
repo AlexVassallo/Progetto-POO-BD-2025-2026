@@ -1303,6 +1303,22 @@ public class Controller {
 
     }
 
+    public List<String> visualizzaOperazioniInCorso(){
+        List<String> operazioniInCorso=  new ArrayList<>();
+        OperazioneDAO operazioneDAO =new OperazioneDAO();
+        List<Operazione> operazioni= operazioneDAO.getOperazioniInCorso();
+
+        for(Operazione o :operazioni){
+            String riga= "ID: " + o.getIdOperazione() + "\n ID medici associati: " +
+                    getIdMediciOperazione(o.getIdOperazione()) + "\n Paziente operato: " +
+                    o.getPazienteOperato().getIdentificativoPaziente() + "\n sala utilizzata " +
+                    o.getSalaUtilizzata().getCodiceSala() + "\n tipo operazione " +
+                    o.getTipoOperazione() + "\n data e ora di inizio " + o.getDataOraInizio();
+            operazioniInCorso.add(riga);
+        }
+        return operazioniInCorso;
+    }
+
     /**
      * ritorna una lista di stringhe di id dei medici associati alla sala operatoria
      * lancia un eccezione se la sala operatoria non esiste
