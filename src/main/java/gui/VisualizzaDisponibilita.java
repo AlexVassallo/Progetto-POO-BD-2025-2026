@@ -44,6 +44,9 @@ public class VisualizzaDisponibilita {
                         frame.setVisible(false);
                         new VisualizzaDisponibilitaSalaOperatoria(frame,controller, textField1.getText());
                     }
+                    else{
+                        JOptionPane.showMessageDialog(frame,"ospedale non trovato", "errore", JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(frame, "ospedale non trovato", "errore", JOptionPane.ERROR_MESSAGE);
                 }
@@ -57,6 +60,9 @@ public class VisualizzaDisponibilita {
                     if(controller.esisteOspedale(textField1.getText())){
                         frame.setVisible(false);
                         new VisualizzaDisponibilitaSalaRicovero(frame,controller, textField1.getText());
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(frame,"ospedale non trovato", "errore", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(frame, "ospedale non trovato", "errore", JOptionPane.ERROR_MESSAGE);

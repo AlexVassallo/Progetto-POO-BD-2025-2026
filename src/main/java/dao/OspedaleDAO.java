@@ -48,21 +48,27 @@ public class OspedaleDAO {
      * @return
      * @throws SQLException
      */
-    public Ospedale getOspedale(String idOspedale) throws SQLException {
+    public Ospedale getOspedale(String idOspedale) {
         String query= """
                 SELECT identificativo_ospedale, nome_ospedale 
                 FROM Ospedale
                 WHERE identificativo_Ospedale = ?;
                 """;
 
-        PreparedStatement ps= connection.prepareStatement(query);
-        ps.setString(1, idOspedale);
-        ResultSet rs= ps.executeQuery();
-        if(!rs.next()){
-            throw new SQLDataException("Ospedale Non Trovato");
+        try {
+            PreparedStatement ps= connection.prepareStatement(query);
+            ps.setString(1, idOspedale);
+            ResultSet rs= ps.executeQuery();
+            if(!rs.next()){
+                throw new RuntimeException("Ospedale Non Trovato");
+            }
+            return new Ospedale(rs.getString(1),
+                    rs.getString(2));
+        }catch (SQLException e){
+            throw new RuntimeException(e);
         }
-        return new Ospedale(rs.getString(1),
-                rs.getString(2));
+
+
 
     }
 

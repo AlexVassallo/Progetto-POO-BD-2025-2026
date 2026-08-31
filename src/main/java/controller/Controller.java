@@ -170,16 +170,13 @@ public class Controller {
         if (nomeOspedale.isBlank()) {
             throw new ParameterMissingException("nome ospedale mancante");
         }
-        //salvataggio obsoleto ma ancora funzionante
+
+
         Ospedale o = new Ospedale(identidicativoOspedale, nomeOspedale);
-        ospedali.add(o);
 
         //salvataggio sul database
         OspedaleDAO ospedaleDAO = new OspedaleDAO();
         ospedaleDAO.salvaOspedale(o);
-        ospedaleDAO.closeConnection();
-
-
     }
 
     /**
@@ -486,8 +483,8 @@ public class Controller {
             }
             SalaOperatoria salaDAO = new SalaOperatoria(codiceSala);
             salaOperatoriaDAO.salvaSala(salaDAO, identificativOspedale);
-        } finally {
-            salaOperatoriaDAO.closeConnection();
+        } catch (RuntimeException e) {
+            throw new ChiaveException("l'identificativo sala operatoria già esistente");
         }
     }
 
@@ -505,12 +502,13 @@ public class Controller {
     public boolean esisteOspedale(String identificativoOspedale) throws SQLException {
         Ospedale ospedaleTrovato;
         OspedaleDAO ospedaleDAO= new OspedaleDAO();
-        ospedaleTrovato=ospedaleDAO.getOspedale(identificativoOspedale);
-        ospedaleDAO.closeConnection();
-        if(ospedaleTrovato == null) {
+        try {
+            ospedaleTrovato=ospedaleDAO.getOspedale(identificativoOspedale);
+            return ospedaleTrovato!=null;
+        }
+        catch (RuntimeException e){
             return false;
         }
-         return true;
     }
 
     /**
@@ -590,9 +588,11 @@ public class Controller {
         }
 
         MedicoDAO medicoDAO=new MedicoDAO();
-        Medico medicoTrovato= medicoDAO.getMedico(identificativo);
-
-        if (medicoTrovato == null) {
+        Medico medicoTrovato;
+        try {
+            medicoTrovato = medicoDAO.getMedico(identificativo);
+        }
+        catch (RuntimeException e) {
             throw new AuthenticationException("medico non trovato, prova a fare registrati");
         }
 
@@ -621,8 +621,13 @@ public class Controller {
      */
     public String[] getMedico(String idMedico) throws ChiaveException, SQLException {
         MedicoDAO medicoDAO=new MedicoDAO();
-        Medico me= medicoDAO.getMedico(idMedico);
-            if (me.getIdentificativoMedico().equals(idMedico)) {
+        Medico me;
+        try {
+           me = medicoDAO.getMedico(idMedico);
+        } catch (RuntimeException e) {
+            throw new ChiaveException("medico non trovato");
+        }
+
                 String[] medico = new String[13];
                 medico[0] = me.getCodiceFiscale();
                 medico[1] = me.getNomePersona();
@@ -647,9 +652,6 @@ public class Controller {
                 return medico;
             }
 
-        throw new ChiaveException("id medico non trovato");
-    }
-
     /**
      * ritorna una lista di stringhe della classe {@link Paziente},
      * lancia un eccezione se l'idPaziente non esiste nella lista pazienti
@@ -663,31 +665,33 @@ public class Controller {
      * @author Emanuele Todisco
      */
     public String[] getPaziente(String idPaziente) throws ChiaveException, SQLException {
-        PazienteDAO pazienteDAO= new PazienteDAO();
-        Paziente pa= pazienteDAO.getPaziente(idPaziente);
-            if (pa.getIdentificativoPaziente().equals(idPaziente)) {
-                String[] paziente = new String[9];
-                paziente[0] = pa.getCodiceFiscale();
-                paziente[1] = pa.getNomePersona();
-                paziente[2] = pa.getCognomePersona();
-                paziente[3] = pa.getDataDiNascita().toString();
-                paziente[4] = pa.getLuogoDiNascita();
-                paziente[5] = pa.getIndirizzo();
-                paziente[6] = pa.getIdentificativoPaziente();
-                paziente[7] = pa.getTriagePaziente();
-                try{
-                    paziente[8] = pa.getSalaAssociata().getCodiceSala();
-                }
-                catch(Exception ex){
-                    paziente[8]= "nessuna sala";
-                }
+        PazienteDAO pazienteDAO = new PazienteDAO();
+        Paziente pa;
+        try {
+            pa = pazienteDAO.getPaziente(idPaziente);
+        } catch (RuntimeException e) {
+            throw new ChiaveException("paziente non trovato");
+        }
 
-                pazienteDAO.closeConnection();
-                return paziente;
-            }
+        String[] paziente = new String[9];
+        paziente[0] = pa.getCodiceFiscale();
+        paziente[1] = pa.getNomePersona();
+        paziente[2] = pa.getCognomePersona();
+        paziente[3] = pa.getDataDiNascita().toString();
+        paziente[4] = pa.getLuogoDiNascita();
+        paziente[5] = pa.getIndirizzo();
+        paziente[6] = pa.getIdentificativoPaziente();
+        paziente[7] = pa.getTriagePaziente();
+        try {
+            paziente[8] = pa.getSalaAssociata().getCodiceSala();
+        } catch (Exception ex) {
+            paziente[8] = "nessuna sala";
+        }
 
-        throw new ChiaveException("paziente non trovato");
+        pazienteDAO.closeConnection();
+        return paziente;
     }
+
 
     /**
      * verifica se è gia allocato un medico in una sala operatoria
@@ -1027,10 +1031,13 @@ public class Controller {
     private Paziente getPazienteDaAllocare(String idPaziente) throws ChiaveException, IllegalStateException, SQLException {
 
         PazienteDAO pazienteDAO= new PazienteDAO();
-        Paziente pazienteDaAllocare= pazienteDAO.getPaziente(idPaziente);
-        if (pazienteDaAllocare == null) {
+        Paziente pazienteDaAllocare;
+        try {
+            pazienteDaAllocare= pazienteDAO.getPaziente(idPaziente);
+        } catch (RuntimeException e) {
             throw new ChiaveException("paziente non trovato");
         }
+
         try{
             pazienteDaAllocare.getSalaAssociata();
             throw new IllegalStateException("il paziente e gia in un altra sala ricovero");
@@ -1106,9 +1113,15 @@ public class Controller {
         }
 
         PazienteDAO pazienteDAO = new PazienteDAO();
-        Paziente pa = pazienteDAO.getPaziente(idPaziente);
+        Paziente pa;
+        try {
+            pa= pazienteDAO.getPaziente(idPaziente);
+        } catch (RuntimeException e) {
+            throw new ChiaveException("Paziente non trovato");
+        }
 
-        SalaRicovero sala = null;
+
+        SalaRicovero sala;
         try {
             sala = pa.getSalaAssociata();
         } catch (Exception e) {
@@ -1250,7 +1263,7 @@ public class Controller {
         if(idReferto.isBlank()){
             throw new ChiaveException("id Referto vuoto");
         }
-        
+
         String[] referto = new String[8];
 
         try {
@@ -1289,7 +1302,7 @@ public class Controller {
         SalaOperatoriaDAO salaOperatoriaDAO = new SalaOperatoriaDAO();
         SalaOperatoria so;
         try {
-             so = salaOperatoriaDAO.getSalaOperatoria(idSalaOperatoria.trim());
+             so = salaOperatoriaDAO.getSalaOperatoria(idSalaOperatoria);
         }catch (RuntimeException e) {
             throw new ChiaveException("sala operatoria non trovata");
         }
