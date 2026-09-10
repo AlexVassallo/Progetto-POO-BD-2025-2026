@@ -15,16 +15,11 @@ import exceptions.ParameterMissingException;
 
 import javax.naming.AuthenticationException;
 import java.security.InvalidParameterException;
-import java.util.Objects;
-
 
 public class Controller {
 
     //liste di oggetti
     private ArrayList<Medico> medici = new ArrayList<Medico>();
-    private ArrayList<Ospedale> ospedali = new ArrayList<Ospedale>();
-    private ArrayList<Paziente> pazienti = new ArrayList<Paziente>();
-    private ArrayList<Referto> referti = new ArrayList<Referto>();
 
     private String medicoSelezionato;//medico che fa il login
 
@@ -42,7 +37,7 @@ public class Controller {
 
 
     /**
-     * crea e aggiunge alla lista un medico,
+     * crea e aggiunge un medico,
      * lancia un eccezione se l'identificativo è vuoto esiste già,
      * lancia un eccezione se la password è incorretta,
      * lancia un eccezione se un parametro è vuoto
@@ -143,7 +138,7 @@ public class Controller {
     }
 
     /**
-     * crea e aggiunge alla lista un nuovo ospedale,
+     * crea e aggiunge un nuovo ospedale,
      * lancia un eccezione se l'identificativo è vuoto o esiste già,
      * lancia un eccezione se un parametro è vuoto
      *
@@ -180,7 +175,7 @@ public class Controller {
     }
 
     /**
-     * crea e aggiunge un nuovo paziente alla lista,
+     * crea e aggiunge un nuovo paziente,
      * lancia un eccezione se l'identificativo è vuoto o esiste già,
      * lancia un eccezione se l'id della sala in cui il paziente è associato non esiste in nessun ospedale,
      * lancia un eccezione se un parametro è vuoto
@@ -271,7 +266,7 @@ public class Controller {
     }
 
     /**
-     * scorre la lista per vedere se esiste un paziente in specifico
+     * fa la query al database per vedere se esiste un paziente in specifico
      *
      * @param identificativoPaziente codice identificativo del paziente
      *
@@ -296,7 +291,7 @@ public class Controller {
 
 
     /**
-     * crea e aggiunge un nuovo referto alla lista,
+     * crea e aggiunge un nuovo referto,
      * lancia un eccezione se gli id inseriti sono vuoti, oppure non esistono nelle liste,
      * lancia un eccezione se gli altri parametri sono vuoti
      *
@@ -368,7 +363,23 @@ public class Controller {
         salaOperatoriaDAO.aggiornaDisponibilitaSala(salaOperatoria);
     }
 
+
     public static final int MIN_MEDICI_OPERAZIONE = 2;
+
+    /**
+     * crea e salva un operazione
+     *
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @param idOperazione l'id dell'operazione
+     * @param idSalaUtilizzata l'id della sala utilizzata
+     * @param tipoOperazione la tipologia dell'operazione
+     * @param dataOraInizio la data e ora di inizio dell'operazione
+     * @throws ChiaveException se le chiavi inseriti sono vuoti o gia esistenti
+     * @throws ParameterMissingException se i dati inseriti sono vuoti
+     * @throws SQLException se ci sono errori al database
+     */
     public void creaOperazione(String idOperazione,
                                String idSalaUtilizzata,
                                String tipoOperazione,
@@ -427,6 +438,15 @@ public class Controller {
         }
     }
 
+
+    /**
+     * Verifica se esiste l'operazione
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @param idOperazione
+     * @return
+     */
     public boolean esisteIdOperazione(String idOperazione){
         OperazioneDAO operazioneDAO = new OperazioneDAO();
         try {
@@ -438,6 +458,14 @@ public class Controller {
         }
     }
 
+    /**
+     * verifica se esiste il referto
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @param identificativoReferto
+     * @return false se il referto non esiste
+     */
     public boolean esisteIdentificativoReferto(String identificativoReferto) {
         try {
             return new RefertoDAO().getReferto(identificativoReferto) != null;
@@ -447,7 +475,7 @@ public class Controller {
     }
 
     /**
-     * crea e aggiunge alla lista interna dell ospedale una nuova sala operatoria,
+     * crea e aggiunge al database una nuova sala operatoria,
      * lancia un eccezione se l'id ospedale è vuoto oppure non esiste,
      * lancia un eccezione se l'id della sala operatoria è gia esistente oppure vuota,
      * lancia un eccezione se gli altri parametri sono vuoti
@@ -492,8 +520,7 @@ public class Controller {
      * verifica se esiste gia uno specifico ospedale
      *
      * @param identificativoOspedale
-     * @return true se l'ospedale esiste
-     * @return false se l'ospedale non esiste
+     * @return true se l'ospedale esiste oppure false se l'ospedale non esiste
      *
      * @author Alessio Riccio
      * @author Alessandro Vassallo
@@ -512,7 +539,7 @@ public class Controller {
     }
 
     /**
-     * crea e aggiunge alla lista interna dell'ospedale{@link Ospedale} una nuova sala ricovero,
+     * crea e aggiunge al database una nuova sala ricovero,
      * lancia un eccezione se l'id ospedale è vuoto oppure non esiste nella lista,
      * lancia un eccezione se gli altri parametri sono vuoti
      *
@@ -522,8 +549,8 @@ public class Controller {
      * @param numeroLetti
      * @throws ParameterMissingException
      * @throws ChiaveException
+     * @throws SQLException
      *
-     * @see Ospedale
      *
      * @author Alessio Riccio
      * @author Alessandro Vassallo
@@ -573,6 +600,7 @@ public class Controller {
      * @throws ChiaveException
      * @throws AuthenticationException
      * @throws InvalidParameterException
+     * @throws SQLException
      *
      * @author Alessio Riccio
      * @author Alessandro Vassallo
@@ -854,8 +882,8 @@ public class Controller {
     /**
      * verifica se è gia allocato un paziente in una sala operatoria
      *
-     * @param identificativoPaziente codice identificativo del medico
-     * @return true se il medico è allocato
+     * @param identificativoPaziente codice identificativo del paziente
+     * @return true se il paziente è allocato
      *
      * @author Alessio Riccio
      * @author Alessandro Vassallo
@@ -1028,7 +1056,7 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Emanuele Todisco
      */
-    private Paziente getPazienteDaAllocare(String idPaziente) throws ChiaveException, IllegalStateException, SQLException {
+    private Paziente getPazienteDaAllocare(String idPaziente) throws ChiaveException, IllegalStateException {
 
         PazienteDAO pazienteDAO= new PazienteDAO();
         Paziente pazienteDaAllocare;
@@ -1259,6 +1287,15 @@ public class Controller {
             }
         }
 
+
+    /**
+     * restituisce un array di stringhe contenente le informazioni di un referto
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @param idReferto
+     * @return
+     */
     public String[] visualizzaReferto(String idReferto){
         if(idReferto.isBlank()){
             throw new ChiaveException("id Referto vuoto");
@@ -1321,6 +1358,16 @@ public class Controller {
         salaOperatoriaDAO.closeConnection();
         return salaOperatoria;
     }
+
+    /**
+     * Restituisce un array di stringhe di una Operazione
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @param idOperazione
+     * @return l'array di stringhe
+     * @throws ChiaveException
+     */
     public String[] getOperazione(String idOperazione) throws ChiaveException{
         String[] operazione = new String[7];
         OperazioneDAO operazioneDAO = new OperazioneDAO();
@@ -1351,6 +1398,14 @@ public class Controller {
 
     }
 
+    /**
+     * restituisce una lista di stringhe delle operazioni in corsi
+     * @return la lista di stringhe
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public List<String> visualizzaOperazioniInCorso(){
         List<String> operazioniInCorso=  new ArrayList<>();
         OperazioneDAO operazioneDAO =new OperazioneDAO();
@@ -1397,6 +1452,17 @@ public class Controller {
         }
     }
 
+    /**
+     * restituisce una lista di stringhe di id dei medici in una specifica operazione
+     *
+     * @param idOperazione l'id dell'operazione
+     * @return la lista di stringhe
+     * @throws ChiaveException
+     *
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     */
     public List<String> getIdMediciOperazione(String idOperazione) throws ChiaveException {
         List<String> idMediciAssociati = new ArrayList<>();
         OperazioneDAO operazioneDAO=new OperazioneDAO();
@@ -1660,6 +1726,9 @@ public class Controller {
      * lancia un eccezione se non è un amministratore
      * @param idUtente codice identificativo dell'utente
      * @throws IllegalAccessException
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
      */
     public void verificaAmministratore(String idUtente) throws IllegalAccessException, SQLException {
         MedicoDAO medicoDAO= new MedicoDAO();

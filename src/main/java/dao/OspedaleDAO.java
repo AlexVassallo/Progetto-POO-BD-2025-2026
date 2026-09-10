@@ -43,10 +43,10 @@ public class OspedaleDAO {
 
 
     /**
-     *
+     * restitusce un ospedale dal database
      * @param idOspedale
-     * @return
-     * @throws SQLException
+     * @return l'ospedale selezionato
+     * @throws RuntimeException se non viene trovato l'ospedale
      */
     public Ospedale getOspedale(String idOspedale) {
         String query= """

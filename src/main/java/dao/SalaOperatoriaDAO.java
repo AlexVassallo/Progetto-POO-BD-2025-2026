@@ -11,6 +11,13 @@ import java.util.List;
 
 public class SalaOperatoriaDAO {
     Connection connection;
+    /**
+     * Connette la SalaOperatoria al database
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @throws RuntimeException
+     */
     public  SalaOperatoriaDAO(){
         try{
             connection= ConnessioneDatabase.getInstance().connection;
@@ -19,6 +26,16 @@ public class SalaOperatoriaDAO {
         }
     }
 
+    /**
+     * Salva la SalaOperatoria nel database
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @throws RuntimeException
+     * @param s sala operatoria da aggiungere
+     * @param identificativoOspedale l'ospedale dove appartiene la sala operatoria
+     * @return l'esito dell'operazione
+     */
     public boolean salvaSala(SalaOperatoria s, String identificativoOspedale){
         String query= """
                 INSERT INTO Sala_operatoria(codice_sala, 
@@ -44,20 +61,19 @@ public class SalaOperatoriaDAO {
         }
     }
 
-    public boolean rimuoviSala(String identificativoSala){
-        String query= """
-                DELETE FROM Sala_operatoria
-                WHERE (codice_sala=?);
-                """;
-        try{
-            PreparedStatement ps= connection.prepareStatement(query);
-            ps.setString(1, identificativoSala);
-            return ps.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
+    /**
+     * restituisce tutti i dati della SalaOperatoria
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @see Medico
+     * @see PazienteDAO
+     * @see SalaOperatoriaDAO
+     * @throws RuntimeException
+     * @param identificativoSala l'identificativo della sala selezionata
+     * @return la sala operatoria selezionata
+     */
     public SalaOperatoria getSalaOperatoria(String identificativoSala){
         String querySala= """
                 SELECT codice_sala,
@@ -94,6 +110,16 @@ public class SalaOperatoriaDAO {
         }
     }
 
+    /**
+     * restituisce la lista delle SaleOperatorie con le loro info associate E la loro disponibilità
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @throws RuntimeException
+     * @see SalaOperatoriaDAO
+     * @see Medico
+     * @return la lista delle sale operatorie
+     */
     public List<SalaOperatoria> getSaleOperatorie(){
         String query= """
                 SELECT codice_sala, is_disponibile, identificativo_paziente
@@ -131,6 +157,15 @@ public class SalaOperatoriaDAO {
 
     }
 
+    /**
+     * restituisce la lista delle SaleOperartorie di uno specifico ospedale
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @throws RuntimeException
+     * @param identificativoOspedale
+     * @return LA LISTA DELLE SALE
+     */
     public List<SalaOperatoria> getSaleOperatoriePerOspedale(String identificativoOspedale){
         String query= """
                 SELECT codice_sala, is_disponibile, identificativo_paziente
@@ -173,6 +208,17 @@ public class SalaOperatoriaDAO {
 
     }
 
+    /**
+     * Restituisce la lista dei medici di una specifica SalaOperatoria associata
+     * @author Emanuele Todisco
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @throws RuntimeException
+     * @see Medico
+     * @see SalaOperatoriaDAO
+     * @param idSalaOperatoria l'identificativo della sala operatoria selezionata
+     * @return la lista dei medici
+     */
     public List<Medico> getMediciPerSalaOperatoria(String idSalaOperatoria){
         List<Medico> medici= new ArrayList<>();
         String query= """
@@ -227,6 +273,15 @@ public class SalaOperatoriaDAO {
         return medici;
     }
 
+    /**
+     * aggiorna lo stato della sala operatoria, se il paziente è presente oppure è assente
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @author Alessandro Vassallo
+     * @throws RuntimeException
+     * @see SalaOperatoriaDAO
+     * @param so la sala da aggiornare
+     */
     public void aggiornaSala(SalaOperatoria so){
         String query= """
                 UPDATE sala_operatoria
@@ -247,6 +302,16 @@ public class SalaOperatoriaDAO {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Serve per aggiornare la Disponibilità delle varie Sale
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @see SalaOperatoriaDAO
+     * @throws RuntimeException
+     * @param so la sala da aggiornare
+     */
     public void aggiornaDisponibilitaSala(SalaOperatoria so){
         String query= """
                 UPDATE sala_operatoria
@@ -264,6 +329,17 @@ public class SalaOperatoriaDAO {
         }
     }
 
+    /**
+     * Aggiunge un Medico ad una SalaOperatoria associata
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @see Medico
+     * @see SalaOperatoriaDAO
+     * @throws RuntimeException
+     * @param idMedico l'identificativo del medico
+     * @param codiceSala il codice della sala
+     */
     public void aggiungiMedicoAllaSala(String idMedico, String codiceSala){
         String query= """
                 INSERT INTO Sala_operatoria_medico(codice_sala, identificativo_medico)
@@ -280,6 +356,17 @@ public class SalaOperatoriaDAO {
         }
 
     }
+
+    /**
+     * Rimuove un Medico da una sala operatoia associata
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @see Medico
+     * @see SalaOperatoriaDAO
+     * @throws RuntimeException
+     * @param idMedico l'identificativo del medico
+     */
     public void rimuoviMedicoAllaSala(String idMedico){
         String query= """
                 DELETE FROM sala_operatoria_medico
@@ -296,6 +383,13 @@ public class SalaOperatoriaDAO {
 
     }
 
+    /**
+     * Chiude la connessione col database
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @throws SQLException
+     */
     public void closeConnection() throws SQLException{
         connection.close();
     }

@@ -16,6 +16,16 @@ public class PazienteDAO {
         }
     }
 
+    /**
+     * Salva il paziente nel database
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @see Paziente
+     * @see model.Persona
+     * @param p paziente da aggiungere
+     * @throws SQLException
+     */
     public void salvaPaziente(Paziente p) throws SQLException{
             String queryPersona = """
                     INSERT INTO Persona (codice_fiscale,
@@ -78,21 +88,17 @@ public class PazienteDAO {
             }
         }
     }
-    public boolean rimuoviPaziente(String identificativoPaziente){
-        String query= """
-                DELETE
-                FROM paziente
-                WHERE (identificativo_paziente=?);""";
-        try{
-            PreparedStatement ps= connection.prepareStatement(query);
-            ps.setString(1,identificativoPaziente);
-            return ps.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
-    }
-
+    /**
+     * restituisce un paziente selezionato
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @see Paziente
+     * @throws RuntimeException
+     * @param identificativoPaziente
+     * @return il paziente selezionato
+     */
     public Paziente getPaziente(String identificativoPaziente){
         String query= """
                 SELECT
@@ -131,6 +137,15 @@ public class PazienteDAO {
         }
     }
 
+    /**
+     * Aggiorna lo stato del paziente
+     * @see Paziente
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @throws RuntimeException
+     * @param p paziente selezionato
+     */
     public void updatePaziente(Paziente p){
         String query= """
                 UPDATE paziente
@@ -153,6 +168,13 @@ public class PazienteDAO {
 
     }
 
+    /**
+     * Chiude la connessione col database
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @throws SQLException
+     */
     public void closeConnection() throws SQLException {
         connection.close();
     }

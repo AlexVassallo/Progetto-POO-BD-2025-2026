@@ -15,6 +15,13 @@ import java.util.List;
 public class OperazioneDAO {
     Connection connection;
 
+    /**
+     * Inizializza la connessione col databse
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @throws RuntimeException
+     */
     public OperazioneDAO(){
         try{
             connection= ConnessioneDatabase.getInstance().connection;
@@ -23,6 +30,14 @@ public class OperazioneDAO {
         }
     }
 
+    /**
+     * Salva l'Operazione nel database con tutte le sue varie informazioni
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @param o operazione da salvare
+     * @throws SQLException
+     */
     public void salvaOperazione(Operazione o) throws SQLException {
         String queryOperazione = """
                 INSERT INTO Operazione(id_operazione, id_paziente, codice_sala_operatoria, tipo_operazione,
@@ -70,6 +85,15 @@ public class OperazioneDAO {
         }
     }
 
+    /**
+     * restituisce un operazione attraverso l'id inserito
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @throws RuntimeException
+     * @param idOperazione
+     * @return l'operazione trovata
+     */
     public Operazione getOperazione(String idOperazione){
         String query = """
                 SELECT id_operazione, id_paziente, 
@@ -104,6 +128,16 @@ public class OperazioneDAO {
         }
     }
 
+    /**
+     * restituisce i vari medici che sono assegnati alle varie operazioni
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @see Medico
+     * @throws RuntimeException
+     * @param idOperazione
+     * @return UNA LISTA DEI MEDICI LEGATI ALLE OPERAZIONI
+     */
     public List<Medico> getMediciOperazione(String idOperazione){
         String query= """
                 SELECT id_operazione, id_medico
@@ -127,6 +161,16 @@ public class OperazioneDAO {
         }
     }
 
+    /**
+     * restituisce una lista delle Operazioni ATTUALMENTE in corso
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @author Alessandro Vassallo
+     * @see PazienteDAO
+     * @see SalaOperatoriaDAO
+     * @throws RuntimeException
+     * @return la lista delle operazioni
+     */
     public List<Operazione> getOperazioniInCorso(){
         String query= """
                 SELECT id_operazione, id_paziente, codice_sala_operatoria, tipo_operazione,
@@ -160,6 +204,15 @@ public class OperazioneDAO {
         }
     }
 
+    /**
+     * aggiorna lo stato di un operazione concludendola
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @throws RuntimeException
+     * @see OperazioneDAO
+     * @param o l'operazione da concludere
+     */
     public void updateOperazione(Operazione o) {
         String query = """
                 UPDATE Operazione
@@ -177,7 +230,13 @@ public class OperazioneDAO {
         }
     }
 
-
+    /**
+     * Chiude la connessione col database
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @throws SQLException
+     */
     public void closeConnection() throws SQLException {
         connection.close();
     }

@@ -13,6 +13,16 @@ public class RefertoDAO {
         }
     }
 
+    /**
+     * Salva il Referto nel database
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @see Referto
+     * @throws RuntimeException
+     * @param r referto da aggiungere
+     * @return l'esito dell'operazione
+     */
     public boolean salvaReferto(Referto r) {
         String query = """
                 INSERT INTO Referto(id_referto, id_operazione, diagnosi,
@@ -36,6 +46,16 @@ public class RefertoDAO {
         }
     }
 
+    /**
+     * restituisce un Referto con tutte le sue varie informazioni
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @throws RuntimeException
+     * @see Referto
+     * @param idReferto referto da restituire
+     * @return referto selezionato
+     */
     public Referto getReferto(String idReferto){
             String query= """
                     SELECT id_referto, id_operazione, diagnosi, data_emissione, trattamento_effettuato,

@@ -19,17 +19,22 @@ public class MedicoDAO {
             }
         }
 
-        /**
-         * Salva un medico nel database
-         * @author Alessio Riccio
-         * @author Alessandro Vassallo
-         * @author Emanuele Todisco
-         * @see Medico
-         * @param m medico da salvare nel database
-         * @return se l'operazione e andata a buon fine
-         * @throws SQLException se si verifica un errore durante la connessione al database oppure durante l'esecuzione della query
-         */
-        public void aggiungiMedico(Medico m) throws SQLException {
+    /**
+     * Salva un medico nel database
+     * Tramite la queryPersona inserisce attribyti della Persona
+     * Tramite la queryMedico inserisce attributi del Medico
+     * Instaura una connesione col database
+     * Esegue un INSERT per inserire i dati anagrafici della Persona
+     * Esegue una seconda INSERT per inserire i dati specifici del Medico
+     * Gestisce le relazioni con la SalaRicovero
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @see Medico
+     * @param m medico da aggiungere al database
+     * @throws SQLException
+     */
+    public void aggiungiMedico(Medico m) throws SQLException {
             String queryPersona = """
                     INSERT INTO Persona (codice_fiscale,
                     nome_persona,  
@@ -114,6 +119,16 @@ public class MedicoDAO {
             }
         }
 
+    /**
+     * Rimuove medico dal database
+     * @author Alessandro Vassallo
+     * @author Alessio Riccio
+     * @author Emanuele Todisco
+     * @param identificativoMedico
+     * @see Medico
+     * @throws SQLException
+     * @throws RuntimeException
+     */
         public boolean rimuoviMedico(String identificativoMedico) throws SQLException{
             String queryMedico= """
                     DELETE 
@@ -129,7 +144,20 @@ public class MedicoDAO {
             }
 
         }
-
+    /**
+     * Prende i parametri del Medico prendendoli da identificativoMedico dalla classe Persona
+     * Ti restitusce il medico associato e i dati a lui legato della SalaRicovero
+     * @author Alessio Riccio
+     * @author Emauele Todisco
+     * @author Alessandro Vassallo
+     * @see Medico
+     * @see model.Persona
+     * @param identificativoMedico
+     * @return
+     * @throws SQLException
+     * @throws SQLDataException
+     * @throws RuntimeException
+     */
         public Medico getMedico(String identificativoMedico) throws SQLException{
             String query= """
                     SELECT
@@ -178,6 +206,18 @@ public class MedicoDAO {
             }
 
         }
+
+    /**
+     * restituisce la lista dei medici creati con le loro informazioni
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @see Medico
+     * @see model.Persona
+     * @return la lista dei medici
+     * @throws SQLException
+     * @throws RuntimeException
+     */
         public List<Medico> getMedici() throws SQLException {
             List<Medico> listaMedici= new ArrayList<>();
             String query= """
@@ -218,6 +258,14 @@ public class MedicoDAO {
             return listaMedici;
         }
 
+    /**
+     * Aggiorna i dati relativi al Medico
+     * @author Emanuele Todisco
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @throws RuntimeException
+     * @param medico
+     */
         public void updateMedico(Medico medico){
             String query= """
                     UPDATE medico
@@ -239,6 +287,13 @@ public class MedicoDAO {
 
         }
 
+    /**
+     * Chiude la connessione col database
+     * @author Alessio Riccio
+     * @author Alessandro Vassallo
+     * @author Emanuele Todisco
+     * @throws SQLException
+     */
         public void closeConnection() throws SQLException {
             connection.close();
         }
