@@ -23,7 +23,6 @@ public class OspedaleDAO {
      * @see Ospedale
      * @param o ospedale da salvare nel database
      * @return se l'operazione e andata a buon fine
-     * @throws SQLException se si verifica un errore durante la connessione al database oppure durante l'esecuzione della query
      */
     public boolean salvaOspedale(Ospedale o){
         String query= """

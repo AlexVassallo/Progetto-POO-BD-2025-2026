@@ -1127,8 +1127,9 @@ public class Controller {
      *
      *
      * @param idPaziente codice identificativo del paziente
-     * @throws IllegalStateException
-     * @throws ChiaveException
+     * @throws IllegalStateException se ci sono problemi di stato
+     * @throws ChiaveException se il campo di paziente è vuoto o non esiste
+     * @throws SQLException se ci sono problemi di query al database
      *
      * @author Alessio Riccio
      * @author Alessandro Vassallo
@@ -1172,8 +1173,8 @@ public class Controller {
      *
      *
      * @param idMedico codice identificativo del medico
-     * @throws IllegalStateException
-     * @throws ChiaveException
+     * @throws IllegalStateException se ci sono problemi legati alla posizione del medico
+     * @throws ChiaveException se l'id del medico è vuoto
      *
      * @author Alessio Riccio
      * @author Alessandro Vassallo
@@ -1219,8 +1220,8 @@ public class Controller {
      *
      *
      * @param idMedico codice identificativo del medico
-     * @throws IllegalStateException
-     * @throws ChiaveException
+     * @throws IllegalStateException se ci sono problemi legati alla posizione del medico
+     * @throws ChiaveException se l'id del medico è vuoto
      *
      * @author Alessio Riccio
      * @author Alessandro Vassallo
@@ -1260,7 +1261,7 @@ public class Controller {
      *
      * @param idSalaRicovero
      * @return salaRicovero, l'array di stringhe
-     * @throws ChiaveException
+     * @throws ChiaveException se la chiave inserita è vuota
      *
      * @author Alessio Riccio
      * @author Alessandro Vassallo
@@ -1292,7 +1293,7 @@ public class Controller {
      * @author Alessandro Vassallo
      * @author Alessio Riccio
      * @author Emanuele Todisco
-     * @param idReferto
+     * @param idReferto id del referto da visualizzare
      * @return
      */
     public String[] visualizzaReferto(String idReferto){
