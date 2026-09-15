@@ -3,7 +3,6 @@ package controller;
 import dao.*;
 import model.*;
 
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -1576,110 +1575,6 @@ public class Controller {
             throw new RuntimeException(e);
         }
         return saleDisponibili;
-    }
-
-    /**
-     * rimuove un medico dalla lista,
-     * lancia un eccezione se il campo medico è vuoto,
-     * lancia un eccezione se il medico è impegnato in una sala operatoria o in una sala ricovero
-     *
-     * @param idMedico codice identificativo del medico
-     * @throws IllegalStateException
-     * @throws ChiaveException
-     *
-     * @author Alessio Riccio
-     * @author Alessandro Vassallo
-     * @author Emanuele Todisco
-     */
-    public void rimuoviMedico(String idMedico) throws IllegalStateException, ChiaveException, SQLException {
-        if(idMedico.isBlank()){
-            throw new IllegalStateException("id medico vuoto");
-        }
-
-        MedicoDAO medicoDAO=new MedicoDAO();
-        Medico medicoTrovato= medicoDAO.getMedico(idMedico);
-
-        if(medicoTrovato==null){
-            throw new ChiaveException("medico non trovato");
-        }
-
-
-        if(eGiaAllocatoMedSalOp(medicoTrovato.getIdentificativoMedico())){
-            throw new IllegalStateException("il medico si trova in una sala operatoria, impossibile rimuoverlo");
-        }
-
-        SalaRicovero sala=null;
-        try{
-            sala=medicoTrovato.getSalaAssociata();
-        }
-        catch (Exception e){
-            medicoDAO.rimuoviMedico(medicoTrovato.getIdentificativoMedico());
-            medicoDAO.closeConnection();
-        }
-        if(sala!=null){
-            throw new IllegalStateException("il medico si trova in una sala ricovero, impossibile rimuoverlo");
-        }
-    }
-
-    /**
-     * rimuove un ospedale dalla lista,
-     * lancia un eccezione se il campo id ospedale è vuoto,
-     * lancia un eccezione se l'ospedale ha sale occupate da pazienti e medici
-     *
-     * @param idOspedale codice identificativo dell'ospedale
-     * @throws IllegalStateException
-     * @throws ChiaveException
-     *
-     * @author Alessio Riccio
-     * @author Alessandro Vassallo
-     * @author Emanuele Todisco
-     */
-    public void rimuoviOspedale(String idOspedale) throws ChiaveException, IllegalStateException, SQLException {
-        if(idOspedale.isBlank()){
-            throw new ChiaveException("id ospedale vuoto");
-        }
-        OspedaleDAO ospedaleDAO=new OspedaleDAO();
-        Ospedale ospedaleTrovato=ospedaleDAO.getOspedale(idOspedale);
-        if(ospedaleTrovato==null){
-            throw new ChiaveException("ospedale non trovato");
-        }
-
-        List<SalaRicovero> listaSaleRicovero = ospedaleTrovato.getSaleRicovero();
-        for(SalaRicovero sr: listaSaleRicovero){
-            if(sr.getNumeroLetti()!=sr.getLettiLiberi()){
-                throw new IllegalStateException("la sala ricovero " + sr.getCodiceSala() + " non è vuota");
-            }
-
-            SalaRicovero sala=null;
-            for(Medico m: medici){
-                try{
-                    sala= m.getSalaAssociata();
-                }
-                catch (Exception e){
-                    continue;
-                }
-                if(sala.getCodiceSala().equals(sr.getCodiceSala())){
-                    throw new IllegalStateException("il medico " + m.getIdentificativoMedico() +
-                            " è gia presente in una sala ricovero di questo ospedale");
-                }
-            }
-        }
-
-        SalaOperatoriaDAO salaOperatoriaDAO= new SalaOperatoriaDAO();
-        List<SalaOperatoria> listaSaleOperatorie= salaOperatoriaDAO.getSaleOperatoriePerOspedale(ospedaleTrovato.getIdentificativoOspedale());
-        for(SalaOperatoria so:listaSaleOperatorie){
-            if(so.getPazienteAssociato()!=null){
-                throw new IllegalStateException("il paziente " + so.getPazienteAssociato().getIdentificativoPaziente() +
-                        " si trova nella sala operatoria " + so.getCodiceSala());
-            }
-            if(!so.getMediciAssociati().isEmpty()){
-                throw new IllegalStateException("nella sala operatoria " + so.getCodiceSala() +
-                        " si trovano ancora dei medici");
-            }
-        }
-        ospedaleDAO.rimuoviOspedale(ospedaleTrovato.getIdentificativoOspedale());
-        salaOperatoriaDAO.closeConnection();
-        ospedaleDAO.closeConnection();
     }
 
     public List<Object> concludiOperazione(String idOperazione, String esito) throws ChiaveException, ParameterMissingException, IllegalStateException {

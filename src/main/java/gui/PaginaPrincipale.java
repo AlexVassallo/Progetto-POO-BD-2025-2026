@@ -18,7 +18,6 @@ public class PaginaPrincipale {
     private JButton creaRefertoButton;
 
 
-    private JPanel insertPanel;
     //bottoni inserimento
     private JButton inserirePaziente;
 
@@ -34,8 +33,6 @@ public class PaginaPrincipale {
     //bottoni finali
     private JButton gestioneOspedaleButton;
     private JButton logOutButton;
-    private JButton rimuoviMedicoButton;
-    private JButton rimuoviOspedaleButton;
     private JLabel idUtente;
     private JButton effettuaUnOperazioneButton;
     private JButton visualizzaUnOperazioneButton;
@@ -108,32 +105,6 @@ public class PaginaPrincipale {
 
             }
         });
-
-        //listener dei bottoni rimuovi
-        rimuoviMedicoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    controller.verificaAmministratore(idUtente.getText());
-                    new RimuoviMedico(frame, controller);
-                } catch (IllegalAccessException | SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        rimuoviOspedaleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    controller.verificaAmministratore(idUtente.getText());
-                    new RimuoviOspedale(frame, controller);
-                } catch (IllegalAccessException | SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "errore", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
 
         //listener dei bottoni visualizza
         visualizzaMediciButton.addActionListener(new ActionListener() {
