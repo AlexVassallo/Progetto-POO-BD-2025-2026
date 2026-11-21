@@ -2,7 +2,7 @@ package dao;
 
 import database.ConnessioneDatabase;
 import model.Medico;
-import java.time.*;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
@@ -119,31 +119,6 @@ public class MedicoDAO {
             }
         }
 
-    /**
-     * Rimuove medico dal database
-     * @author Alessandro Vassallo
-     * @author Alessio Riccio
-     * @author Emanuele Todisco
-     * @param identificativoMedico
-     * @see Medico
-     * @throws SQLException
-     * @throws RuntimeException
-     */
-        public boolean rimuoviMedico(String identificativoMedico) throws SQLException{
-            String queryMedico= """
-                    DELETE 
-                    FROM medico
-                    WHERE (identificativo_medico=?);
-                    """;
-            try {
-                PreparedStatement ps = connection.prepareStatement(queryMedico);
-                ps.setString(1, identificativoMedico);
-                return ps.execute();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
     /**
      * Prende i parametri del Medico prendendoli da identificativoMedico dalla classe Persona
      * Ti restitusce il medico associato e i dati a lui legato della SalaRicovero

@@ -80,7 +80,7 @@ public class OperazioneDAO {
             throw e;
         } finally {
             if (connection != null) {
-                connection.setAutoCommit(true); // Ripristina l'autocommit senza chiudere la connessione
+                connection.setAutoCommit(true); // Ripristina l'autocommit
             }
         }
     }

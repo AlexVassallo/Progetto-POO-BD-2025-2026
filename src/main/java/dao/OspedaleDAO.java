@@ -72,21 +72,6 @@ public class OspedaleDAO {
     }
 
 
-    public boolean rimuoviOspedale(String idOspedale){
-        String query= """ 
-                DELETE 
-                FROM Ospedale
-                WHERE (identificativo_Ospedale= ?);
-                """;
-        try {
-            PreparedStatement ps = connection.prepareStatement(query);
-            ps.setString(1, idOspedale);
-            return ps.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Chiude la connessione al database
      *
